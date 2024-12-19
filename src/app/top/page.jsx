@@ -36,9 +36,9 @@ const Top = () => {
 
   const handleSearch = async () => {
     if (!search.trim()) return;
-    const params = new URLSearchParams({
-      q: search,
-    });
+    const params = new URLSearchParams({ q: search });
+  
+    setLoading(true);
   
     try {
       const response = await fetch(`/api/search?${params.toString()}`);
@@ -55,7 +55,6 @@ const Top = () => {
       setLoading(false);
     }
   };
-  
 
   return (
     <Box>
