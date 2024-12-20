@@ -1,20 +1,31 @@
-import { PrismaClient } from '@prisma/client';
+import { Client } from 'pg';
 import { NextResponse } from 'next/server';
 
-const prisma = new PrismaClient();
+// クライアントのインスタンスをアプリケーション全体で使い回す
+let client;
+
+async function getClient() {
+  if (!client) {
+    client = new Client({
+      connectionString: process.env.DATABASE_URL, // .env から接続情報を取得
+    });
+    await client.connect();
+  }
+  return client;
+}
 
 export async function GET() {
   try {
-    const bentos = await prisma.bento.findMany();
+    console.log('Connecting to the database...');
+    const client = await getClient(); // 再利用するクライアントを取得
 
-    if (!bentos) {
-      return NextResponse.json([], { status: 200 });
-    }
-    
-    return NextResponse.json(bentos, { status: 200 });
+    console.log('Database connected.');
+    const res = await client.query('SELECT * FROM bentos'); // クエリを実行
+    console.log('Query result:', res.rows);
+
+    return NextResponse.json(res.rows, { status: 200 });
   } catch (error) {
     console.error('データ取得中にエラーが発生しました:', error);
-    console.error('詳細:', error.stack);
     return NextResponse.json({ error: 'データ取得中にエラーが発生しました', details: error.message }, { status: 500 });
   }
 }
