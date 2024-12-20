@@ -1,10 +1,10 @@
 import { Client } from 'pg';
 
 const client = new Client({
-  connectionString: process.env.DATABASE_URL, // .envファイルから接続情報を取得
+  connectionString: process.env.DATABASE_URL,
 });
 
-// クライアントの接続を1回だけ行い、使い回す
+
 let isConnected = false;
 
 async function connectClient() {
@@ -20,10 +20,9 @@ export async function GET(req) {
   const q = searchParams.get('q') || '';
 
   try {
-    await connectClient(); // データベースへの接続
+    await connectClient();
 
-    // SQLクエリを実行
-    const query = `SELECT * FROM bentos WHERE lostProduct ILIKE $1`; // ILIKEを使って大文字小文字を区別せず検索
+    const query = `SELECT * FROM bentos WHERE lostProduct ILIKE $1`;
     const values = [`%${q}%`];
 
     const res = await client.query(query, values);

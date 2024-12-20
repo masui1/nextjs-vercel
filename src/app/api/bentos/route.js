@@ -1,13 +1,12 @@
 import { Client } from 'pg';
 import { NextResponse } from 'next/server';
 
-// クライアントのインスタンスをアプリケーション全体で使い回す
 let client;
 
 async function getClient() {
   if (!client) {
     client = new Client({
-      connectionString: process.env.DATABASE_URL, // .env から接続情報を取得
+      connectionString: process.env.DATABASE_URL,
     });
     await client.connect();
   }
@@ -17,10 +16,10 @@ async function getClient() {
 export async function GET() {
   try {
     console.log('Connecting to the database...');
-    const client = await getClient(); // 再利用するクライアントを取得
+    const client = await getClient();
 
     console.log('Database connected.');
-    const res = await client.query('SELECT * FROM bentos'); // クエリを実行
+    const res = await client.query('SELECT * FROM bentos');
     console.log('Query result:', res.rows);
 
     return NextResponse.json(res.rows, { status: 200 });
