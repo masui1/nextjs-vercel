@@ -68,7 +68,7 @@ const Top = () => {
             検索
           </Button>
           <Button onClick={() => router.push('/top/create')} variant="contained" color="primary">
-            登録はこちらへ
+            弁当の登録はこちらへ
           </Button>
         </Toolbar>
       </AppBar>
@@ -88,17 +88,17 @@ const Top = () => {
             ) : (
               <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
                 {bentos.map((bento) => (
-                  <Card key={bento.id} sx={{ minWidth: 250, maxWidth: 250 }}>
+                  <Card key={bento.id} sx={{ whiteSpace: 'nowrap', minWidth: 400, maxWidth: 400 }}>
                     <CardContent>
-                      <Typography variant="h6" gutterBottom>
-                        {bento.tradingcompany}
-                      </Typography>
+                    <Typography variant="h6" gutterBottom>商品: {bento.lostproduct}</Typography>
                       <Link href="https://mitsuboshifarm.jp/subscription_menu.html?course_id=14&srsltid=AfmBOorpinR4pGt4x2_t8nzDFpYVqHMK-sZDmGZ4xkQNFg5iRLr5tXde">
                         詳細はこちら
                       </Link>
-                      <Typography variant="body2">商品: {bento.lostproduct}</Typography>
+                      <Typography variant="body2">取引企業: {bento.tradingcompany}</Typography>
                       <Typography variant="body2">金額: {bento.price}円</Typography>
-                      <Typography variant="body2">時間: {new Date(bento.datetimeend).toLocaleString()}</Typography>
+                      <Button onClick={() => router.push(`/top/edit/${bento.id}`)} variant="contained" color="primary">
+                        弁当の編集はこちらへ
+                      </Button>
                     </CardContent>
                   </Card>
                 ))}
@@ -120,7 +120,7 @@ const Top = () => {
             ) : (
               <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
                 {bentos.map((bento) => (
-                  <Card key={bento.id} sx={{ minWidth: 250, maxWidth: 250 }}>
+                  <Card key={bento.id} sx={{ whiteSpace: 'nowrap', minWidth: 400, maxWidth: 400 }}>
                     <CardContent>
                       <Typography variant="h6" gutterBottom>
                         {bento.tradingcompany}
@@ -130,7 +130,9 @@ const Top = () => {
                       </Link>
                       <Typography variant="body2">商品: {bento.lostproduct}</Typography>
                       <Typography variant="body2">金額: {bento.price}円</Typography>
-                      <Typography variant="body2">時間: {new Date(bento.datetimeend).toLocaleString()}</Typography>
+                      <Button onClick={() => router.push(`/top/edit/${bento.id}`)} variant="contained" color="primary">
+                        弁当の編集はこちらへ
+                      </Button>
                     </CardContent>
                   </Card>
                 ))}
