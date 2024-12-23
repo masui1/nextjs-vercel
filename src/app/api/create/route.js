@@ -1,25 +1,24 @@
 import { Client } from 'pg'; 
 import { NextResponse } from 'next/server';
 
-const client = new Client({
-  connectionString: process.env.DATABASE_URL,
-});
-
 // **POST**: データ登録
 export async function POST(req) {
+  const client = new Client({
+    connectionString: process.env.DATABASE_URL,
+  });
+
   try {
     const body = await req.json();
-    const { tradingCompany, lostProduct, price } = body;
-
+    const { tradingCompany, lostProduct, price, row, stock, companyId } = body;
     await client.connect();
 
     const query = `
-      INSERT INTO bentos (tradingCompany, lostProduct, price) 
-      VALUES ($1, $2, $3)
+      INSERT INTO bentos (tradingCompany, lostProduct, price, row, stock, company_id)
+      VALUES ($1, $2, $3, $4, $5, $6)
       RETURNING *;
     `;
 
-    const values = [tradingCompany, lostProduct, parseInt(price, 10)];
+    const values = [tradingCompany, lostProduct, parseInt(price, 10), row, parseInt(stock, 10), companyId];
     const res = await client.query(query, values);
 
     return NextResponse.json(res.rows[0], { status: 201 });
