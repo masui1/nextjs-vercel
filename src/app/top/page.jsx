@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { AppBar, Box, Button, Toolbar, Typography, TextField, CircularProgress, Card, CardContent } from '@mui/material';
+import { AppBar, Box, Button, Toolbar, Typography, TextField, CircularProgress, Card, CardContent, MenuItem } from '@mui/material';
 
 const Top = () => {
   const [loading, setLoading] = useState(false);
@@ -12,25 +12,37 @@ const Top = () => {
   const [error, setError] = useState(null);
   const router = useRouter();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const response = await fetch('/api/bentos');
-        if (!response.ok) {
-          throw new Error(`Failed to fetch data: ${response.statusText}`);
-        }
-        const data = await response.json();
-        setBentos(data);
-      } catch (error) {
-        console.error('データの取得に失敗しました:', error);
-        setError(`データの取得に失敗しました: ${error.message}`);
-      } finally {
-        setLoading(false);
+  const fetchData = async (companyId) => {
+    setLoading(true);
+    try {
+      const response = await fetch(`/api/bentos?companyId=${companyId}`);
+      console.log(`/api/bentos?companyId=${companyId}`);
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch data: ${response.statusText}`);
       }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      setError(`データの取得に失敗しました: ${error.message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const fetchAllData = async () => {
+      const dataForRow1to2 = await fetchData(1);
+      const dataForRow3to5 = await fetchData(2);
+
+      setBentos({
+        row1to2: dataForRow1to2,
+        row3to5: dataForRow3to5,
+      });
     };
-  
-    fetchData();
+
+    fetchAllData();
   }, []);
 
   const handleSearch = async () => {
@@ -73,13 +85,12 @@ const Top = () => {
         </Toolbar>
       </AppBar>
 
-    
+      {/* 1〜2段目 - 三ツ星ファーム */}
       <Box sx={{ p: 2 }}>
-        {/* 1〜3段目 */}
-        {Array.from({ length: 3 }, (_, index) => (
+        {Array.from({ length: 2 }, (_, index) => (
           <Box key={index} sx={{ p: 2 }}>
             <Typography variant="h5" gutterBottom>
-              {`${index + 1}段目`}
+              {`${index + 1}段目 (三ツ星ファーム)`}
             </Typography>
             {loading ? (
               <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
@@ -87,14 +98,16 @@ const Top = () => {
               </Box>
             ) : (
               <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
-                {bentos.map((bento) => (
+                {bentos.row1to2?.map((bento) => (
                   <Card key={bento.id} sx={{ whiteSpace: 'nowrap', minWidth: 400, maxWidth: 400 }}>
                     <CardContent>
-                    <Typography variant="h6" gutterBottom>商品: {bento.lostproduct}</Typography>
-                      <Link href="https://mitsuboshifarm.jp/subscription_menu.html?course_id=14&srsltid=AfmBOorpinR4pGt4x2_t8nzDFpYVqHMK-sZDmGZ4xkQNFg5iRLr5tXde">
+                      <Typography variant="h6" gutterBottom>
+                        商品: {bento.lostproduct}
+                      </Typography>
+                      <Link href="https://mitsuboshifarm.jp/subscription_menu_2.html?course_id=14&srsltid=AfmBOopz8xTCwKeA9lqy6IuNklKcWL28yZhSDocsDtNH7BL7LUzzHPfh">
                         詳細はこちら
                       </Link>
-                      <Typography variant="body2">取引企業: {bento.tradingcompany}</Typography>
+                      <Typography variant="body1">取引会社: 三ツ星ファーム</Typography>
                       <Typography variant="body2">金額: {bento.price}円</Typography>
                       <Button onClick={() => router.push(`/top/edit/${bento.id}`)} variant="contained" color="primary">
                         弁当の編集はこちらへ
@@ -106,12 +119,14 @@ const Top = () => {
             )}
           </Box>
         ))}
+      </Box>
 
-        {/* 4〜5段目 */}
-        {Array.from({ length: 2 }, (_, index) => (
+      {/* 3〜5段目 - マッスルデリ */}
+      <Box sx={{ p: 2 }}>
+        {Array.from({ length: 3 }, (_, index) => (
           <Box key={index + 3} sx={{ p: 2 }}>
             <Typography variant="h5" gutterBottom>
-              {`${index + 4}段目`}
+              {`${index + 3}段目 (マッスルデリ)`}
             </Typography>
             {loading ? (
               <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
@@ -119,16 +134,16 @@ const Top = () => {
               </Box>
             ) : (
               <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
-                {bentos.map((bento) => (
+                {bentos.row3to5?.map((bento) => (
                   <Card key={bento.id} sx={{ whiteSpace: 'nowrap', minWidth: 400, maxWidth: 400 }}>
                     <CardContent>
                       <Typography variant="h6" gutterBottom>
-                        {bento.tradingcompany}
+                        商品: {bento.lostproduct}
                       </Typography>
                       <Link href="https://muscledeli.jp/shop/product_categories/md-lowfat?gad_source=1&gclid=CjwKCAiAgoq7BhBxEiwAVcW0LEqVZ9JUQErZtAtbQoMcHPrm8ou88y-tbYfFvW0oXvulKmmz_7jAVhoCEEMQAvD_BwE">
                         詳細はこちら
                       </Link>
-                      <Typography variant="body2">商品: {bento.lostproduct}</Typography>
+                      <Typography variant="body1">取引会社: マッスルデリ</Typography>
                       <Typography variant="body2">金額: {bento.price}円</Typography>
                       <Button onClick={() => router.push(`/top/edit/${bento.id}`)} variant="contained" color="primary">
                         弁当の編集はこちらへ
