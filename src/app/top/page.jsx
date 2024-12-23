@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { AppBar, Box, Button, Toolbar, Typography, TextField, CircularProgress, Card, CardContent, MenuItem } from '@mui/material';
+import { AppBar, Box, Button, Toolbar, Typography, TextField, CircularProgress, Card, CardContent } from '@mui/material';
 
 const Top = () => {
   const [loading, setLoading] = useState(false);
@@ -54,7 +54,12 @@ const Top = () => {
       const response = await fetch(`/api/search?${params.toString()}`);
       if (!response.ok) throw new Error('検索結果の取得に失敗しました。');
       const data = await response.json();
-      setBentos(data);
+      const row1to2 = data.slice(0, 2);
+      const row3to5 = data.slice(2, 5);
+      setBentos({
+        row1to2,
+        row3to5,
+      });
     } catch (error) {
       setError(error.message);
     } finally {
