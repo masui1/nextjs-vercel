@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Box, Button, Typography, TextField } from '@mui/material';
+import { Box, Button, Typography, TextField, InputAdornment } from '@mui/material';
 
 const EditTop = () => {
     const router = useRouter();
@@ -10,6 +10,7 @@ const EditTop = () => {
     const [tradingCompany, setTradingCompany] = useState('');
     const [lostProduct, setLostProduct] = useState('');
     const [price, setPrice] = useState('');
+    const [row, setRow] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
 
     useEffect(() => {
@@ -22,13 +23,14 @@ const EditTop = () => {
         if (id) {
             const fetchData = async () => {
                 try {
-                    const response = await fetch(`/api/edit/${id}`, { method: 'GET' });
+                    const response = await fetch(`/api/user/edit/${id}`, { method: 'GET' });
                     const data = await response.json();
     
                     if (response.ok) {
                         setTradingCompany(data.tradingcompany);
                         setLostProduct(data.lostproduct);
                         setPrice(data.price);
+                        setRow(data.row);
                     } else {
                         setErrorMessage(data.error || 'データ取得に失敗しました');
                     }
@@ -45,12 +47,12 @@ const EditTop = () => {
         event.preventDefault();
     
         try {
-            const response = await fetch(`/api/edit/${id}`, {
+            const response = await fetch(`/api/user/edit/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ tradingCompany, lostProduct, price }),
+                body: JSON.stringify({ tradingCompany, lostProduct, price, row }),
             });
     
             if (!response.ok) {
@@ -70,7 +72,7 @@ const EditTop = () => {
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 4 }}>
             <Typography variant="h4" gutterBottom>
-                届いた弁当を登録画面
+                届いた弁当の編集画面
             </Typography>
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '300px' }}>
                 <TextField
@@ -90,6 +92,18 @@ const EditTop = () => {
                     value={price}
                     onChange={(e) => setPrice(e.target.value)}
                     fullWidth
+                    InputProps={{
+                        endAdornment: <InputAdornment position="end">円</InputAdornment>,
+                    }}
+                />
+                <TextField
+                    label="段目"
+                    value={row}
+                    onChange={(e) => setRow(e.target.value)}
+                    fullWidth
+                    InputProps={{
+                        endAdornment: <InputAdornment position="end">段目</InputAdornment>,
+                    }}
                 />
                 <Button type="submit" variant="contained" color="primary">
                     登録

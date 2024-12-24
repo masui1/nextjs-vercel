@@ -34,10 +34,10 @@ export async function PUT(req, context) {
 
     try {
         const body = await req.json();
-        const { tradingCompany, lostProduct, price } = body;
+        const { tradingCompany, lostProduct, price, row } = body;
 
         // 必須データの検証
-        if (!tradingCompany || !lostProduct || !price) {
+        if (!tradingCompany || !lostProduct || !price || !row) {
             return NextResponse.json({ error: '必要なデータが不足しています' }, { status: 400 });
         }
 
@@ -55,17 +55,17 @@ export async function PUT(req, context) {
         // データを更新
         const updateQuery = `
             UPDATE bentos
-            SET tradingcompany = $1, lostproduct = $2, price = $3
-            WHERE id = $4
+            SET tradingcompany = $1, lostproduct = $2, price = $3, row = $4
+            WHERE id = $5
             RETURNING *;
         `;
-        const updateResult = await client.query(updateQuery, [tradingCompany, lostProduct, price, id]);
+        const updateResult = await client.query(updateQuery, [tradingCompany, lostProduct, price, row, id]);
 
         client.release();
 
         return NextResponse.json(updateResult.rows[0], { status: 200 });
     } catch (error) {
-        console.error('データ更新中にエラーが発生しました:', error);
+        console.error('データ更新中にエラーが発生しました:', error.stack);
         return NextResponse.json({ error: 'データ更新中にエラーが発生しました', details: error.message }, { status: 500 });
     }
 }

@@ -63,7 +63,7 @@ const BuyTop = () => {
         ),
       }));
       setErrorMessage('');
-      router.push('/top'); // Redirect back to the Top page after successful purchase
+      router.push('/top');
     } catch (error) {
       console.error('ネットワークエラー:', error);
       setErrorMessage('ネットワークエラーが発生しました');
@@ -80,8 +80,8 @@ const BuyTop = () => {
           bentos.row1.map((bento) => (
             <Card key={bento.id} sx={{ minWidth: 400, maxWidth: 400 }}>
               <CardContent>
-                <Typography variant="h6" gutterBottom>商品: {bento.productName}</Typography>
-                <Typography variant="body1">取引会社: {bento.tradingCompany}</Typography>
+                <Typography variant="h6" gutterBottom>商品: {bento.lostproduct}</Typography>
+                <Typography variant="body1">取引会社: {bento.tradingcompany}</Typography>
                 <Typography variant="body2">金額: {bento.price}円</Typography>
                 <Typography variant="body2">
                   在庫: {bento.stock > 0 ? `${bento.stock}個` : '売り切れ'}

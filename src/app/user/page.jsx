@@ -30,7 +30,7 @@ const User = () => {
         return;
       }
 
-      router.push('/top');
+      router.push('/user/top');
     } catch (error) {
       setErrorMessage('ネットワークエラーが発生しました。');
     }
