@@ -11,18 +11,22 @@ export async function GET(req) {
 
     const url = new URL(req.url, `http://${req.headers.host}`);
     const companyId = url.searchParams.get('companyId');
+    const row = url.searchParams.get('row');
 
-    if (!companyId) {
-      return NextResponse.json({ error: 'companyId is required' }, { status: 400 });
+    if (!companyId || !row) {
+      return NextResponse.json(
+        { error: 'companyId and row are required' },
+        { status: 400 }
+      );
     }
 
     const query = `
       SELECT * FROM bentos
-      WHERE company_id = $1
-      ORDER BY row;
+      WHERE company_id = $1 AND row = $2
+      ORDER BY id;
     `;
 
-    const result = await client.query(query, [companyId]);
+    const result = await client.query(query, [companyId, parseInt(row, 10)]);
 
     return NextResponse.json(result.rows, { status: 200 });
   } catch (error) {

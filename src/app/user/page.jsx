@@ -69,6 +69,16 @@ const User = () => {
           {errorMessage}
         </Typography>
       )}
+      <Button
+          variant="contained"
+          color="secondary"
+          sx={{ mt: 2 }}
+          onClick={() => {
+              router.back();
+          }}
+      >
+          戻る
+      </Button>
     </Box>
   );
 };
