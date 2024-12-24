@@ -38,18 +38,42 @@ const BuyTop = () => {
     }
   }, [id]);
 
+  const formatDateToJST = (date) => {
+    const options = {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false,
+    };
+
+    const formatter = new Intl.DateTimeFormat('ja-JP', options);
+    return formatter.format(date).replace(/\//g, '/').replace(/,/g, '').replace(/\s+/g, ' ');
+  };
+
+  const currentDate = new Date();
+  const formattedDate = formatDateToJST(currentDate);
+  console.log(formattedDate);
+
   const handleSubmit = async (bentoId) => {
     try {
+      const currentTime = new Date();
+      const formattedTime = formatDateToJST(currentTime);
+
       const requestBody = {
         stock: 0,
         id: bentoId,
+        buies_created: formattedTime,
       };
-      console.log('本文を含むリクエストを送信中:', requestBody);
+
       const response = await fetch(`/api/buy/${bentoId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(requestBody),
       });
+
       const data = await response.json();
       if (!response.ok) {
         console.error('エラー応答ステータス:', response.status);
@@ -57,6 +81,7 @@ const BuyTop = () => {
         setErrorMessage(`購入に失敗しました: ${data.error || '不明なエラー'}`);
         return;
       }
+
       setBentos((prevState) => ({
         row1: prevState.row1.map((bento) =>
           bento.id === bentoId ? { ...bento, stock: 0 } : bento

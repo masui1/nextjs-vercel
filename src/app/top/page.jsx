@@ -99,7 +99,7 @@ const Top = () => {
             検索
           </Button>
           <Button onClick={() => router.push('/user')} variant="contained" color="primary">
-            管理者登録はこちらへ
+            管理者の方はこちらへ
           </Button>
         </Toolbar>
       </AppBar>
@@ -116,36 +116,38 @@ const Top = () => {
         ) : (
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
             {bentos.row1.length > 0 ? (
-              bentos.row1.map((bento) => (
-                <Card
-                  key={bento.id}
-                  sx={{
-                    whiteSpace: 'nowrap',
-                    minWidth: 400,
-                    maxWidth: 400,
-                    opacity: bento.stock === 0 ? 0.5 : 1,
-                    pointerEvents: bento.stock === 0 ? 'none' : 'auto',
-                  }}
-                >
-                  <CardContent>
-                    <Typography variant="h6" gutterBottom>
-                      商品: {bento.lostproduct}
-                    </Typography>
-                    <Link href="https://mitsuboshifarm.jp/subscription_menu_2.html?course_id=14&srsltid=AfmBOopz8xTCwKeA9lqy6IuNklKcWL28yZhSDocsDtNH7BL7LUzzHPfh">
-                      詳細はこちら
-                    </Link>
-                    <Typography variant="body1">取引会社: 三ツ星ファーム</Typography>
-                    <Typography variant="body2">金額: {bento.price}円</Typography>
-                    <Button
-                      onClick={() => handleBuyRedirect(bento.id)}
-                      variant="contained"
-                      color="primary"
-                    >
-                      購入
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))
+              bentos.row1.map((bento) =>
+                !bento.buies_created ? (
+                  <Card
+                    key={bento.id}
+                    sx={{
+                      whiteSpace: 'nowrap',
+                      minWidth: 400,
+                      maxWidth: 400,
+                      opacity: bento.stock === 0 ? 0.5 : 1,
+                      pointerEvents: bento.stock === 0 ? 'none' : 'auto',
+                    }}
+                  >
+                    <CardContent>
+                      <Typography variant="h6" gutterBottom>
+                        商品: {bento.lostproduct}
+                      </Typography>
+                      <Link href="https://mitsuboshifarm.jp/subscription_menu_2.html?course_id=14&srsltid=AfmBOopz8xTCwKeA9lqy6IuNklKcWL28yZhSDocsDtNH7BL7LUzzHPfh">
+                        詳細はこちら
+                      </Link>
+                      <Typography variant="body1">取引会社: 三ツ星ファーム</Typography>
+                      <Typography variant="body2">金額: {bento.price}円</Typography>
+                      <Button
+                        onClick={() => handleBuyRedirect(bento.id)}
+                        variant="contained"
+                        color="primary"
+                      >
+                        購入
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ) : null
+              )
             ) : (
               <Typography variant="body1">データがありません</Typography>
             )}
@@ -165,36 +167,38 @@ const Top = () => {
         ) : (
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
             {bentos.row2.length > 0 ? (
-              bentos.row2.map((bento) => (
-                <Card
-                  key={bento.id}
-                  sx={{
-                    whiteSpace: 'nowrap',
-                    minWidth: 400,
-                    maxWidth: 400,
-                    opacity: bento.stock === 0 ? 0.5 : 1,
-                    pointerEvents: bento.stock === 0 ? 'none' : 'auto',
-                  }}
-                >
-                  <CardContent>
-                    <Typography variant="h6" gutterBottom>
-                      商品: {bento.lostproduct}
-                    </Typography>
-                    <Link href="https://mitsuboshifarm.jp/subscription_menu_2.html?course_id=14&srsltid=AfmBOopz8xTCwKeA9lqy6IuNklKcWL28yZhSDocsDtNH7BL7LUzzHPfh">
-                      詳細はこちら
-                    </Link>
-                    <Typography variant="body1">取引会社: 三ツ星ファーム</Typography>
-                    <Typography variant="body2">金額: {bento.price}円</Typography>
-                    <Button
-                      onClick={() => handleBuyRedirect(bento.id)}
-                      variant="contained"
-                      color="primary"
-                    >
-                      購入
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))
+              bentos.row2.map((bento) =>
+                !bento.buies_created ? (
+                  <Card
+                    key={bento.id}
+                    sx={{
+                      whiteSpace: 'nowrap',
+                      minWidth: 400,
+                      maxWidth: 400,
+                      opacity: bento.stock === 0 ? 0.5 : 1,
+                      pointerEvents: bento.stock === 0 ? 'none' : 'auto',
+                    }}
+                  >
+                    <CardContent>
+                      <Typography variant="h6" gutterBottom>
+                        商品: {bento.lostproduct}
+                      </Typography>
+                      <Link href="https://mitsuboshifarm.jp/subscription_menu_2.html?course_id=14&srsltid=AfmBOopz8xTCwKeA9lqy6IuNklKcWL28yZhSDocsDtNH7BL7LUzzHPfh">
+                        詳細はこちら
+                      </Link>
+                      <Typography variant="body1">取引会社: 三ツ星ファーム</Typography>
+                      <Typography variant="body2">金額: {bento.price}円</Typography>
+                      <Button
+                        onClick={() => handleBuyRedirect(bento.id)}
+                        variant="contained"
+                        color="primary"
+                      >
+                        購入
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ) : null
+              )
             ) : (
               <Typography variant="body1">データがありません</Typography>
             )}
@@ -213,8 +217,9 @@ const Top = () => {
         ) : (
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
             {bentos.row3.length > 0 ? (
-              bentos.row3.map((bento) => (
-                <Card
+              bentos.row3.map((bento) =>
+                !bento.buies_created ? (
+                  <Card
                     key={bento.id}
                     sx={{
                       whiteSpace: 'nowrap',
@@ -224,25 +229,26 @@ const Top = () => {
                       pointerEvents: bento.stock === 0 ? 'none' : 'auto',
                     }}
                   >
-                  <CardContent>
-                    <Typography variant="h6" gutterBottom>
-                      商品: {bento.lostproduct}
-                    </Typography>
-                    <Link href="https://muscledeli.jp/shop/product_categories/md-lowfat?gad_source=1&gclid=CjwKCAiAgoq7BhBxEiwAVcW0LEqVZ9JUQErZtAtbQoMcHPrm8ou88y-tbYfFvW0oXvulKmmz_7jAVhoCEEMQAvD_BwE">
-                      詳細はこちら
-                    </Link>
-                    <Typography variant="body1">取引会社: マッスルデリ</Typography>
-                    <Typography variant="body2">金額: {bento.price}円</Typography>
-                    <Button
-                      onClick={() => handleBuyRedirect(bento.id)}
-                      variant="contained"
-                      color="primary"
-                    >
-                      購入
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))
+                    <CardContent>
+                      <Typography variant="h6" gutterBottom>
+                        商品: {bento.lostproduct}
+                      </Typography>
+                      <Link href="https://mitsuboshifarm.jp/subscription_menu_2.html?course_id=14&srsltid=AfmBOopz8xTCwKeA9lqy6IuNklKcWL28yZhSDocsDtNH7BL7LUzzHPfh">
+                        詳細はこちら
+                      </Link>
+                      <Typography variant="body1">取引会社: 三ツ星ファーム</Typography>
+                      <Typography variant="body2">金額: {bento.price}円</Typography>
+                      <Button
+                        onClick={() => handleBuyRedirect(bento.id)}
+                        variant="contained"
+                        color="primary"
+                      >
+                        購入
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ) : null
+              )
             ) : (
               <Typography variant="body1">データがありません</Typography>
             )}
@@ -261,8 +267,9 @@ const Top = () => {
         ) : (
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
             {bentos.row4.length > 0 ? (
-              bentos.row4.map((bento) => (
-                <Card
+              bentos.row4.map((bento) =>
+                !bento.buies_created ? (
+                  <Card
                     key={bento.id}
                     sx={{
                       whiteSpace: 'nowrap',
@@ -272,25 +279,26 @@ const Top = () => {
                       pointerEvents: bento.stock === 0 ? 'none' : 'auto',
                     }}
                   >
-                  <CardContent>
-                    <Typography variant="h6" gutterBottom>
-                      商品: {bento.lostproduct}
-                    </Typography>
-                    <Link href="https://muscledeli.jp/shop/product_categories/md-lowfat?gad_source=1&gclid=CjwKCAiAgoq7BhBxEiwAVcW0LEqVZ9JUQErZtAtbQoMcHPrm8ou88y-tbYfFvW0oXvulKmmz_7jAVhoCEEMQAvD_BwE">
-                      詳細はこちら
-                    </Link>
-                    <Typography variant="body1">取引会社: マッスルデリ</Typography>
-                    <Typography variant="body2">金額: {bento.price}円</Typography>
-                    <Button
-                      onClick={() => handleBuyRedirect(bento.id)}
-                      variant="contained"
-                      color="primary"
-                    >
-                      購入
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))
+                    <CardContent>
+                      <Typography variant="h6" gutterBottom>
+                        商品: {bento.lostproduct}
+                      </Typography>
+                      <Link href="https://mitsuboshifarm.jp/subscription_menu_2.html?course_id=14&srsltid=AfmBOopz8xTCwKeA9lqy6IuNklKcWL28yZhSDocsDtNH7BL7LUzzHPfh">
+                        詳細はこちら
+                      </Link>
+                      <Typography variant="body1">取引会社: 三ツ星ファーム</Typography>
+                      <Typography variant="body2">金額: {bento.price}円</Typography>
+                      <Button
+                        onClick={() => handleBuyRedirect(bento.id)}
+                        variant="contained"
+                        color="primary"
+                      >
+                        購入
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ) : null
+              )
             ) : (
               <Typography variant="body1">データがありません</Typography>
             )}
@@ -309,36 +317,38 @@ const Top = () => {
         ) : (
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
             {bentos.row5.length > 0 ? (
-              bentos.row5.map((bento) => (
-                <Card
-                  key={bento.id}
-                  sx={{
-                    whiteSpace: 'nowrap',
-                    minWidth: 400,
-                    maxWidth: 400,
-                    opacity: bento.stock === 0 ? 0.5 : 1,
-                    pointerEvents: bento.stock === 0 ? 'none' : 'auto',
-                  }}
-                >
-                  <CardContent>
-                    <Typography variant="h6" gutterBottom>
-                      商品: {bento.lostproduct}
-                    </Typography>
-                    <Link href="https://muscledeli.jp/shop/product_categories/md-lowfat?gad_source=1&gclid=CjwKCAiAgoq7BhBxEiwAVcW0LEqVZ9JUQErZtAtbQoMcHPrm8ou88y-tbYfFvW0oXvulKmmz_7jAVhoCEEMQAvD_BwE">
-                      詳細はこちら
-                    </Link>
-                    <Typography variant="body1">取引会社: マッスルデリ</Typography>
-                    <Typography variant="body2">金額: {bento.price}円</Typography>
-                    <Button
-                      onClick={() => handleBuyRedirect(bento.id)}
-                      variant="contained"
-                      color="primary"
-                    >
-                      購入
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))
+              bentos.row5.map((bento) =>
+                !bento.buies_created ? (
+                  <Card
+                    key={bento.id}
+                    sx={{
+                      whiteSpace: 'nowrap',
+                      minWidth: 400,
+                      maxWidth: 400,
+                      opacity: bento.stock === 0 ? 0.5 : 1,
+                      pointerEvents: bento.stock === 0 ? 'none' : 'auto',
+                    }}
+                  >
+                    <CardContent>
+                      <Typography variant="h6" gutterBottom>
+                        商品: {bento.lostproduct}
+                      </Typography>
+                      <Link href="https://mitsuboshifarm.jp/subscription_menu_2.html?course_id=14&srsltid=AfmBOopz8xTCwKeA9lqy6IuNklKcWL28yZhSDocsDtNH7BL7LUzzHPfh">
+                        詳細はこちら
+                      </Link>
+                      <Typography variant="body1">取引会社: 三ツ星ファーム</Typography>
+                      <Typography variant="body2">金額: {bento.price}円</Typography>
+                      <Button
+                        onClick={() => handleBuyRedirect(bento.id)}
+                        variant="contained"
+                        color="primary"
+                      >
+                        購入
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ) : null
+              )
             ) : (
               <Typography variant="body1">データがありません</Typography>
             )}

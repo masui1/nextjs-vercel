@@ -115,13 +115,7 @@ const UserTop = () => {
               bentos.row1.map((bento) => (
                 <Card
                   key={bento.id}
-                  sx={{
-                    whiteSpace: 'nowrap',
-                    minWidth: 400,
-                    maxWidth: 400,
-                    opacity: bento.stock === 0 ? 0.5 : 1,
-                    pointerEvents: bento.stock === 0 ? 'none' : 'auto',
-                  }}
+                  sx={{ whiteSpace: 'nowrap', minWidth: 400, maxWidth: 400 }}
                 >
                   <CardContent>
                     <Typography variant="h6" gutterBottom>
@@ -160,13 +154,7 @@ const UserTop = () => {
               bentos.row2.map((bento) => (
                 <Card
                   key={bento.id}
-                  sx={{
-                    whiteSpace: 'nowrap',
-                    minWidth: 400,
-                    maxWidth: 400,
-                    opacity: bento.stock === 0 ? 0.5 : 1,
-                    pointerEvents: bento.stock === 0 ? 'none' : 'auto',
-                  }}
+                  sx={{ whiteSpace: 'nowrap', minWidth: 400, maxWidth: 400 }}
                 >
                   <CardContent>
                     <Typography variant="h6" gutterBottom>
@@ -203,15 +191,9 @@ const UserTop = () => {
             {bentos.row3.length > 0 ? (
               bentos.row3.map((bento) => (
                 <Card
-                    key={bento.id}
-                    sx={{
-                      whiteSpace: 'nowrap',
-                      minWidth: 400,
-                      maxWidth: 400,
-                      opacity: bento.stock === 0 ? 0.5 : 1,
-                      pointerEvents: bento.stock === 0 ? 'none' : 'auto',
-                    }}
-                  >
+                  key={bento.id}
+                  sx={{ whiteSpace: 'nowrap', minWidth: 400, maxWidth: 400 }}
+                >
                   <CardContent>
                     <Typography variant="h6" gutterBottom>
                       商品: {bento.lostproduct}
@@ -247,15 +229,9 @@ const UserTop = () => {
             {bentos.row4.length > 0 ? (
               bentos.row4.map((bento) => (
                 <Card
-                    key={bento.id}
-                    sx={{
-                      whiteSpace: 'nowrap',
-                      minWidth: 400,
-                      maxWidth: 400,
-                      opacity: bento.stock === 0 ? 0.5 : 1,
-                      pointerEvents: bento.stock === 0 ? 'none' : 'auto',
-                    }}
-                  >
+                  key={bento.id}
+                  sx={{ whiteSpace: 'nowrap', minWidth: 400, maxWidth: 400 }}
+                >
                   <CardContent>
                     <Typography variant="h6" gutterBottom>
                       商品: {bento.lostproduct}
@@ -292,13 +268,7 @@ const UserTop = () => {
               bentos.row5.map((bento) => (
                 <Card
                   key={bento.id}
-                  sx={{
-                    whiteSpace: 'nowrap',
-                    minWidth: 400,
-                    maxWidth: 400,
-                    opacity: bento.stock === 0 ? 0.5 : 1,
-                    pointerEvents: bento.stock === 0 ? 'none' : 'auto',
-                  }}
+                  sx={{ whiteSpace: 'nowrap', minWidth: 400, maxWidth: 400 }}
                 >
                   <CardContent>
                     <Typography variant="h6" gutterBottom>
