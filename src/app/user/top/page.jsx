@@ -26,7 +26,8 @@ const UserTop = () => {
         throw new Error(`Failed to fetch data: ${response.statusText}`);
       }
       const data = await response.json();
-      return data;
+      const filteredData = data.filter(bento => !bento.buies_created);
+      return filteredData;
     } catch (error) {
       setError(`データの取得に失敗しました: ${error.message}`);
     } finally {
@@ -63,12 +64,13 @@ const UserTop = () => {
       const response = await fetch(`/api/user/search?${params.toString()}`);
       if (!response.ok) throw new Error('検索結果の取得に失敗しました。');
       const data = await response.json();
+      const filteredData = data.filter(bento => !bento.buies_created);
       setBentos({
-        row1: data.slice(0, 1), // row1
-        row2: data.slice(1, 2), // row2
-        row3: data.slice(2, 3), // row3
-        row4: data.slice(3, 4), // row4
-        row5: data.slice(4, 5), // row5
+        row1: filteredData.slice(0, 1), // row1
+        row2: filteredData.slice(1, 2), // row2
+        row3: filteredData.slice(2, 3), // row3
+        row4: filteredData.slice(3, 4), // row4
+        row5: filteredData.slice(4, 5), // row5
       });
     } catch (error) {
       setError(error.message);
