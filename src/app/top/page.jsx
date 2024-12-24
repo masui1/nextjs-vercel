@@ -77,6 +77,10 @@ const Top = () => {
     }
   };
 
+  const handleBuyRedirect = (bentoId) => {
+    router.push(`/top/buy/${bentoId}`);
+  };
+
   return (
     <Box>
       <AppBar position="static">
@@ -116,7 +120,16 @@ const Top = () => {
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
             {bentos.row1.length > 0 ? (
               bentos.row1.map((bento) => (
-                <Card key={bento.id} sx={{ whiteSpace: 'nowrap', minWidth: 400, maxWidth: 400 }}>
+                <Card
+                  key={bento.id}
+                  sx={{
+                    whiteSpace: 'nowrap',
+                    minWidth: 400,
+                    maxWidth: 400,
+                    opacity: bento.stock === 0 ? 0.5 : 1,
+                    pointerEvents: bento.stock === 0 ? 'none' : 'auto',
+                  }}
+                >
                   <CardContent>
                     <Typography variant="h6" gutterBottom>
                       商品: {bento.lostproduct}
@@ -126,6 +139,13 @@ const Top = () => {
                     </Link>
                     <Typography variant="body1">取引会社: 三ツ星ファーム</Typography>
                     <Typography variant="body2">金額: {bento.price}円</Typography>
+                    <Button
+                      onClick={() => handleBuyRedirect(bento.id)}
+                      variant="contained"
+                      color="primary"
+                    >
+                      購入
+                    </Button>
                     <Button onClick={() => router.push(`/top/edit/${bento.id}`)} variant="contained" color="primary">
                       弁当の編集はこちらへ
                     </Button>
@@ -152,7 +172,16 @@ const Top = () => {
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
             {bentos.row2.length > 0 ? (
               bentos.row2.map((bento) => (
-                <Card key={bento.id} sx={{ whiteSpace: 'nowrap', minWidth: 400, maxWidth: 400 }}>
+                <Card
+                  key={bento.id}
+                  sx={{
+                    whiteSpace: 'nowrap',
+                    minWidth: 400,
+                    maxWidth: 400,
+                    opacity: bento.stock === 0 ? 0.5 : 1,
+                    pointerEvents: bento.stock === 0 ? 'none' : 'auto',
+                  }}
+                >
                   <CardContent>
                     <Typography variant="h6" gutterBottom>
                       商品: {bento.lostproduct}
@@ -162,6 +191,13 @@ const Top = () => {
                     </Link>
                     <Typography variant="body1">取引会社: 三ツ星ファーム</Typography>
                     <Typography variant="body2">金額: {bento.price}円</Typography>
+                    <Button
+                      onClick={() => handleBuyRedirect(bento.id)}
+                      variant="contained"
+                      color="primary"
+                    >
+                      購入
+                    </Button>
                     <Button onClick={() => router.push(`/top/edit/${bento.id}`)} variant="contained" color="primary">
                       弁当の編集はこちらへ
                     </Button>
@@ -187,7 +223,16 @@ const Top = () => {
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
             {bentos.row3.length > 0 ? (
               bentos.row3.map((bento) => (
-                <Card key={bento.id} sx={{ whiteSpace: 'nowrap', minWidth: 400, maxWidth: 400 }}>
+                <Card
+                    key={bento.id}
+                    sx={{
+                      whiteSpace: 'nowrap',
+                      minWidth: 400,
+                      maxWidth: 400,
+                      opacity: bento.stock === 0 ? 0.5 : 1,
+                      pointerEvents: bento.stock === 0 ? 'none' : 'auto',
+                    }}
+                  >
                   <CardContent>
                     <Typography variant="h6" gutterBottom>
                       商品: {bento.lostproduct}
@@ -197,6 +242,13 @@ const Top = () => {
                     </Link>
                     <Typography variant="body1">取引会社: マッスルデリ</Typography>
                     <Typography variant="body2">金額: {bento.price}円</Typography>
+                    <Button
+                      onClick={() => handleBuyRedirect(bento.id)}
+                      variant="contained"
+                      color="primary"
+                    >
+                      購入
+                    </Button>
                     <Button onClick={() => router.push(`/top/edit/${bento.id}`)} variant="contained" color="primary">
                       弁当の編集はこちらへ
                     </Button>
@@ -222,7 +274,16 @@ const Top = () => {
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
             {bentos.row4.length > 0 ? (
               bentos.row4.map((bento) => (
-                <Card key={bento.id} sx={{ whiteSpace: 'nowrap', minWidth: 400, maxWidth: 400 }}>
+                <Card
+                    key={bento.id}
+                    sx={{
+                      whiteSpace: 'nowrap',
+                      minWidth: 400,
+                      maxWidth: 400,
+                      opacity: bento.stock === 0 ? 0.5 : 1,
+                      pointerEvents: bento.stock === 0 ? 'none' : 'auto',
+                    }}
+                  >
                   <CardContent>
                     <Typography variant="h6" gutterBottom>
                       商品: {bento.lostproduct}
@@ -232,6 +293,13 @@ const Top = () => {
                     </Link>
                     <Typography variant="body1">取引会社: マッスルデリ</Typography>
                     <Typography variant="body2">金額: {bento.price}円</Typography>
+                    <Button
+                      onClick={() => handleBuyRedirect(bento.id)}
+                      variant="contained"
+                      color="primary"
+                    >
+                      購入
+                    </Button>
                     <Button onClick={() => router.push(`/top/edit/${bento.id}`)} variant="contained" color="primary">
                       弁当の編集はこちらへ
                     </Button>
@@ -257,7 +325,16 @@ const Top = () => {
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
             {bentos.row5.length > 0 ? (
               bentos.row5.map((bento) => (
-                <Card key={bento.id} sx={{ whiteSpace: 'nowrap', minWidth: 400, maxWidth: 400 }}>
+                <Card
+                  key={bento.id}
+                  sx={{
+                    whiteSpace: 'nowrap',
+                    minWidth: 400,
+                    maxWidth: 400,
+                    opacity: bento.stock === 0 ? 0.5 : 1,
+                    pointerEvents: bento.stock === 0 ? 'none' : 'auto',
+                  }}
+                >
                   <CardContent>
                     <Typography variant="h6" gutterBottom>
                       商品: {bento.lostproduct}
@@ -267,6 +344,13 @@ const Top = () => {
                     </Link>
                     <Typography variant="body1">取引会社: マッスルデリ</Typography>
                     <Typography variant="body2">金額: {bento.price}円</Typography>
+                    <Button
+                      onClick={() => handleBuyRedirect(bento.id)}
+                      variant="contained"
+                      color="primary"
+                    >
+                      購入
+                    </Button>
                     <Button onClick={() => router.push(`/top/edit/${bento.id}`)} variant="contained" color="primary">
                       弁当の編集はこちらへ
                     </Button>
