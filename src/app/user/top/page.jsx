@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { AppBar, Box, Button, Toolbar, Typography, TextField, CircularProgress, Card, CardContent } from '@mui/material';
 
-const Top = () => {
+const UserTop = () => {
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState('');
   const [bentos, setBentos] = useState({
@@ -21,7 +21,7 @@ const Top = () => {
   const fetchData = async (companyId, row) => {
     setLoading(true);
     try {
-      const response = await fetch(`/api/bentos?companyId=${companyId}&row=${row}`);
+      const response = await fetch(`/api/user/bentos?companyId=${companyId}&row=${row}`);
       if (!response.ok) {
         throw new Error(`Failed to fetch data: ${response.statusText}`);
       }
@@ -60,7 +60,7 @@ const Top = () => {
     const params = new URLSearchParams({ q: search });
 
     try {
-      const response = await fetch(`/api/search?${params.toString()}`);
+      const response = await fetch(`/api/user/search?${params.toString()}`);
       if (!response.ok) throw new Error('検索結果の取得に失敗しました。');
       const data = await response.json();
       setBentos({
@@ -77,15 +77,11 @@ const Top = () => {
     }
   };
 
-  const handleBuyRedirect = (bentoId) => {
-    router.push(`/top/buy/${bentoId}`);
-  };
-
   return (
     <Box>
-      <AppBar position="static">
+      <AppBar position="static" sx={{ backgroundColor: '#9acd32' }}>
         <Toolbar sx={{ justifyContent: 'space-between' }}>
-          <Typography variant="h6">弁当管理サイト</Typography>
+          <Typography variant="h6" color="inherit">管理者用弁当管理サイト</Typography>
           <TextField
             label="弁当名"
             variant="outlined"
@@ -98,8 +94,8 @@ const Top = () => {
           <Button onClick={handleSearch} variant="contained" color="primary" disabled={loading}>
             検索
           </Button>
-          <Button onClick={() => router.push('/user')} variant="contained" color="primary">
-            管理者登録はこちらへ
+          <Button onClick={() => router.push('/user/top/create')} variant="contained" color="primary">
+            弁当の登録はこちらへ
           </Button>
         </Toolbar>
       </AppBar>
@@ -136,12 +132,8 @@ const Top = () => {
                     </Link>
                     <Typography variant="body1">取引会社: 三ツ星ファーム</Typography>
                     <Typography variant="body2">金額: {bento.price}円</Typography>
-                    <Button
-                      onClick={() => handleBuyRedirect(bento.id)}
-                      variant="contained"
-                      color="primary"
-                    >
-                      購入
+                    <Button onClick={() => router.push(`/user/top/edit/${bento.id}`)} variant="contained" color="primary">
+                      弁当の編集はこちらへ
                     </Button>
                   </CardContent>
                 </Card>
@@ -185,12 +177,8 @@ const Top = () => {
                     </Link>
                     <Typography variant="body1">取引会社: 三ツ星ファーム</Typography>
                     <Typography variant="body2">金額: {bento.price}円</Typography>
-                    <Button
-                      onClick={() => handleBuyRedirect(bento.id)}
-                      variant="contained"
-                      color="primary"
-                    >
-                      購入
+                    <Button onClick={() => router.push(`/user/top/edit/${bento.id}`)} variant="contained" color="primary">
+                      弁当の編集はこちらへ
                     </Button>
                   </CardContent>
                 </Card>
@@ -233,12 +221,8 @@ const Top = () => {
                     </Link>
                     <Typography variant="body1">取引会社: マッスルデリ</Typography>
                     <Typography variant="body2">金額: {bento.price}円</Typography>
-                    <Button
-                      onClick={() => handleBuyRedirect(bento.id)}
-                      variant="contained"
-                      color="primary"
-                    >
-                      購入
+                    <Button onClick={() => router.push(`/user/top/edit/${bento.id}`)} variant="contained" color="primary">
+                      弁当の編集はこちらへ
                     </Button>
                   </CardContent>
                 </Card>
@@ -281,12 +265,8 @@ const Top = () => {
                     </Link>
                     <Typography variant="body1">取引会社: マッスルデリ</Typography>
                     <Typography variant="body2">金額: {bento.price}円</Typography>
-                    <Button
-                      onClick={() => handleBuyRedirect(bento.id)}
-                      variant="contained"
-                      color="primary"
-                    >
-                      購入
+                    <Button onClick={() => router.push(`/user/top/edit/${bento.id}`)} variant="contained" color="primary">
+                      弁当の編集はこちらへ
                     </Button>
                   </CardContent>
                 </Card>
@@ -329,12 +309,8 @@ const Top = () => {
                     </Link>
                     <Typography variant="body1">取引会社: マッスルデリ</Typography>
                     <Typography variant="body2">金額: {bento.price}円</Typography>
-                    <Button
-                      onClick={() => handleBuyRedirect(bento.id)}
-                      variant="contained"
-                      color="primary"
-                    >
-                      購入
+                    <Button onClick={() => router.push(`/user/top/edit/${bento.id}`)} variant="contained" color="primary">
+                      弁当の編集はこちらへ
                     </Button>
                   </CardContent>
                 </Card>
@@ -349,4 +325,4 @@ const Top = () => {
   );
 };
 
-export default Top;
+export default UserTop;
