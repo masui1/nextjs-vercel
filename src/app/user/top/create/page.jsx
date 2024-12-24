@@ -39,7 +39,7 @@ const Create = () => {
                 setErrorMessage(`弁当登録に失敗しました: ${errorData.error || '不明なエラー'}`);
                 return;
             }
-            router.push('/top');
+            router.push('/user/top');
         } catch (error) {
             setErrorMessage('ネットワークエラーが発生しました。');
         }

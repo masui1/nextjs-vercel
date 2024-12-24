@@ -27,44 +27,43 @@ export async function GET(req, context) {
 }
 
 // PUT メソッド - 在庫を更新
-// PUT method - Update stock
 export async function PUT(req, context) {
     const { id } = context.params;
 
     try {
-        const body = await req.json();
-        const { stock } = body;
+      const body = await req.json();
+      const { stock, buies_created } = body;
 
-        if (stock === undefined) {
-            return new Response(JSON.stringify({ error: 'Stock is required' }), { status: 400 });
-        }
+      if (stock === undefined || !buies_created) {
+        return new Response(JSON.stringify({ error: 'Stock and buies_created are required' }), { status: 400 });
+      }
 
-        const client = await pool.connect();
+      const client = await pool.connect();
 
-        const checkQuery = 'SELECT * FROM bentos WHERE id = $1';
-        const checkResult = await client.query(checkQuery, [id]);
+      const checkQuery = 'SELECT * FROM bentos WHERE id = $1';
+      const checkResult = await client.query(checkQuery, [id]);
 
-        if (checkResult.rows.length === 0) {
-            client.release();
-            return new Response(JSON.stringify({ error: 'Bento not found' }), { status: 404 });
-        }
+      if (checkResult.rows.length === 0) {
+        client.release();
+        return new Response(JSON.stringify({ error: 'Bento not found' }), { status: 404 });
+      }
 
-        const updateQuery = `
-            UPDATE bentos
-            SET stock = $1
-            WHERE id = $2
-            RETURNING *;
-        `;
-        const updateResult = await client.query(updateQuery, [stock, id]);
+      const updateQuery = `
+        UPDATE bentos
+        SET stock = $1, buies_created = $2
+        WHERE id = $3
+        RETURNING *;
+      `;
+      const updateResult = await client.query(updateQuery, [stock, buies_created, id]);
 
         client.release();
 
-        return new Response(JSON.stringify(updateResult.rows[0]), { status: 200 });
+      return new Response(JSON.stringify(updateResult.rows[0]), { status: 200 });
     } catch (error) {
-        console.error('Error while updating data:', error);
-        return new Response(JSON.stringify({
-            error: 'Internal server error',
-            details: error.message || 'No additional details available',
-        }), { status: 500 });
+      console.error('Error while updating data:', error);
+      return new Response(JSON.stringify({
+        error: 'Internal server error',
+        details: error.message || 'No additional details available',
+      }), { status: 500 });
     }
-}
+  }
