@@ -9,16 +9,16 @@ export async function POST(req) {
 
   try {
     const body = await req.json();
-    const { tradingCompany, lostProduct, price, row, stock, companyId } = body;
+    const { tradingCompany, lostProduct, price, stock, row, companyId } = body;
     await client.connect();
 
     const query = `
-      INSERT INTO bentos (tradingCompany, lostProduct, price, row, stock, company_id)
+      INSERT INTO bentos (tradingCompany, lostProduct, price, stock, row, company_id)
       VALUES ($1, $2, $3, $4, $5, $6)
       RETURNING *;
     `;
 
-    const values = [tradingCompany, lostProduct, parseInt(price, 10), row, parseInt(stock, 10), companyId];
+    const values = [tradingCompany, lostProduct, parseInt(price, 10), parseInt(stock, 10), parseInt(row, 10), companyId];
     const res = await client.query(query, values);
 
     return NextResponse.json(res.rows[0], { status: 201 });

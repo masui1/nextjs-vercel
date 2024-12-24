@@ -45,6 +45,8 @@ const Create = () => {
         }
     };
 
+    const availableRows = tradingCompany === '三ツ星ファーム' ? [1, 2] : tradingCompany === 'マッスルデリ' ? [3, 4, 5] : [];
+
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 4 }}>
             <Typography variant="h4" gutterBottom>
@@ -64,8 +66,8 @@ const Create = () => {
                     onChange={(e) => setTradingCompany(e.target.value)}
                     fullWidth
                 >
-                <MenuItem value="三ツ星ファーム">三ツ星ファーム</MenuItem>
-                <MenuItem value="マッスルデリ">マッスルデリ</MenuItem>
+                    <MenuItem value="三ツ星ファーム">三ツ星ファーム</MenuItem>
+                    <MenuItem value="マッスルデリ">マッスルデリ</MenuItem>
                 </TextField>
                 <TextField
                     label="金額"
@@ -81,18 +83,18 @@ const Create = () => {
                     type="number"
                     inputProps={{ min: 0, max: 1 }}
                 />
-               <FormControl fullWidth>
+                <FormControl fullWidth>
                     <InputLabel>段数</InputLabel>
                     <Select
-                    value={row}
-                    onChange={(e) => setRow(e.target.value)}
-                    label="段目"
+                        value={row}
+                        onChange={(e) => setRow(e.target.value)}
+                        label="段目"
                     >
-                    {[1, 2, 3, 4, 5].map((value) => (
-                        <MenuItem key={value} value={value}>
-                        {value}段目
-                        </MenuItem>
-                    ))}
+                        {availableRows.map((value) => (
+                            <MenuItem key={value} value={value}>
+                                {value}段目
+                            </MenuItem>
+                        ))}
                     </Select>
                 </FormControl>
                 <Button type="submit" variant="contained" color="primary">
