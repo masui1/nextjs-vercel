@@ -28,42 +28,38 @@ export async function GET(req, context) {
 
 // PUT メソッド - 在庫を更新
 export async function PUT(req, context) {
-    const { id } = context.params;
+  const { id } = context.params;
 
-    try {
-      const body = await req.json();
-      const { stock, buies_created } = body;
+  try {
+    const body = await req.json();
+    const { is_purchased } = body;
 
-      if (stock === undefined || !buies_created) {
-        return new Response(JSON.stringify({ error: 'Stock and buies_created are required' }), { status: 400 });
-      }
-
-      const client = await pool.connect();
-
-      const checkQuery = 'SELECT * FROM bentos WHERE id = $1';
-      const checkResult = await client.query(checkQuery, [id]);
-
-      if (checkResult.rows.length === 0) {
-        client.release();
-        return new Response(JSON.stringify({ error: 'Bento not found' }), { status: 404 });
-      }
-
-      const updateQuery = `
-        UPDATE bentos
-        SET stock = $1, buies_created = $2
-        WHERE id = $3
-        RETURNING *;
-      `;
-      const updateResult = await client.query(updateQuery, [stock, buies_created, id]);
-
-        client.release();
-
-      return new Response(JSON.stringify(updateResult.rows[0]), { status: 200 });
-    } catch (error) {
-      console.error('Error while updating data:', error);
-      return new Response(JSON.stringify({
-        error: 'Internal server error',
-        details: error.message || 'No additional details available',
-      }), { status: 500 });
+    if (typeof is_purchased !== 'boolean') {
+      return new Response(JSON.stringify({ error: 'is_purchased is required and must be a boolean' }), { status: 400 });
     }
+
+    const client = await pool.connect();
+
+    const checkQuery = 'SELECT * FROM bentos WHERE id = $1';
+    const checkResult = await client.query(checkQuery, [id]);
+
+    if (checkResult.rows.length === 0) {
+      client.release();
+      return new Response(JSON.stringify({ error: 'Bento not found' }), { status: 404 });
+    }
+
+    const updateQuery = `
+      UPDATE bentos
+      SET is_purchased = $1, buies_created = CURRENT_TIMESTAMP
+      WHERE id = $2
+      RETURNING *;
+    `;
+    const updateResult = await client.query(updateQuery, [is_purchased, id]);
+
+    client.release();
+
+    return new Response(JSON.stringify(updateResult.rows[0]), { status: 200 });
+  } catch (error) {
+    return new Response(JSON.stringify({ error: 'Internal server error', details: error.message }), { status: 500 });
   }
+}

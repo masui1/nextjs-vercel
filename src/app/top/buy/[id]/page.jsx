@@ -38,59 +38,28 @@ const BuyTop = () => {
     }
   }, [id]);
 
-  const formatDateToJST = (date) => {
-    const options = {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      hour12: false,
-    };
-
-    const formatter = new Intl.DateTimeFormat('ja-JP', options);
-    return formatter.format(date).replace(/\//g, '/').replace(/,/g, '').replace(/\s+/g, ' ');
-  };
-
-  const currentDate = new Date();
-  const formattedDate = formatDateToJST(currentDate);
-  console.log(formattedDate);
-
   const handleSubmit = async (bentoId) => {
     try {
-      const currentTime = new Date();
-      const formattedTime = formatDateToJST(currentTime);
-
-      const requestBody = {
-        stock: 0,
-        id: bentoId,
-        buies_created: formattedTime,
-      };
-
       const response = await fetch(`/api/buy/${bentoId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(requestBody),
+        body: JSON.stringify({ is_purchased: true }),
       });
 
       const data = await response.json();
       if (!response.ok) {
-        console.error('エラー応答ステータス:', response.status);
-        console.error('エラー応答データ:', data);
         setErrorMessage(`購入に失敗しました: ${data.error || '不明なエラー'}`);
         return;
       }
 
       setBentos((prevState) => ({
         row1: prevState.row1.map((bento) =>
-          bento.id === bentoId ? { ...bento, stock: 0 } : bento
+          bento.id === bentoId ? { ...bento, is_purchased: true } : bento
         ),
       }));
       setErrorMessage('');
       router.push('/top');
     } catch (error) {
-      console.error('ネットワークエラー:', error);
       setErrorMessage('ネットワークエラーが発生しました');
     }
   };
@@ -102,21 +71,24 @@ const BuyTop = () => {
         {loading ? (
           <CircularProgress />
         ) : bentos.row1.length > 0 ? (
-          bentos.row1
-            .filter((bento) => bento.stock > 0)
-            .map((bento) => (
-              <Card key={bento.id} sx={{ minWidth: 400, maxWidth: 400 }}>
-                <CardContent>
-                  <Typography variant="h6" gutterBottom>商品: {bento.lostproduct}</Typography>
-                  <Typography variant="body1">取引会社: {bento.tradingcompany}</Typography>
-                  <Typography variant="body2">金額: {bento.price}円</Typography>
-                  <Typography variant="body2">在庫: {bento.stock}個</Typography>
-                  <Button onClick={() => handleSubmit(bento.id)} variant="contained" color="primary">
-                    購入
-                  </Button>
-                </CardContent>
-              </Card>
-            ))
+          bentos.row1.map((bento) => (
+            <Card key={bento.id} sx={{ minWidth: 400, maxWidth: 400 }}>
+              <CardContent>
+                <Typography variant="h6" gutterBottom>商品: {bento.lostproduct}</Typography>
+                <Typography variant="body1">取引会社: {bento.tradingcompany}</Typography>
+                <Typography variant="body2">金額: {bento.price}円</Typography>
+                <Typography variant="body2">購入済み: {bento.is_purchased ? 'はい' : 'いいえ'}</Typography>
+                <Button
+                  onClick={() => handleSubmit(bento.id)}
+                  variant="contained"
+                  color="primary"
+                  disabled={bento.is_purchased}
+                >
+                  {bento.is_purchased ? '購入済み' : '購入'}
+                </Button>
+              </CardContent>
+            </Card>
+          ))
         ) : (
           <Typography variant="body1">データがありません</Typography>
         )}
