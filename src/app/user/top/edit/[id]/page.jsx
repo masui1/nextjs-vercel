@@ -23,7 +23,7 @@ const EditTop = () => {
         if (id) {
             const fetchData = async () => {
                 try {
-                    const response = await fetch(`/api/user/edit/${id}`, { method: 'GET' });
+                    const response = await fetch(`/api/users/edit/${id}`, { method: 'GET' });
                     const data = await response.json();
     
                     if (response.ok) {
@@ -47,7 +47,7 @@ const EditTop = () => {
         event.preventDefault();
     
         try {
-            const response = await fetch(`/api/user/edit/${id}`, {
+            const response = await fetch(`/api/users/edit/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

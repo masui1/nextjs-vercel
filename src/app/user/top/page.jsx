@@ -1,13 +1,13 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { AppBar, Box, Button, Toolbar, Typography, TextField, CircularProgress, Card, CardContent } from '@mui/material';
 
 const UserTop = () => {
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState('');
+  const [users, setUsers] = useState(null); 
   const [bentos, setBentos] = useState({
     row1: [],
     row2: [],
@@ -21,19 +21,35 @@ const UserTop = () => {
   const fetchData = async (companyId, row) => {
     setLoading(true);
     try {
-      const response = await fetch(`/api/user/bentos?companyId=${companyId}&row=${row}`);
+      const response = await fetch(`/api/users/bentos?companyId=${companyId}&row=${row}`);
       if (!response.ok) {
         throw new Error(`Failed to fetch data: ${response.statusText}`);
       }
       const data = await response.json();
-      const filteredData = data.filter(bento => !bento.buies_created);
-      return filteredData;
+      return data;
     } catch (error) {
       setError(`データの取得に失敗しました: ${error.message}`);
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await fetch('/api/users', { method: 'GET', credentials: 'include' });
+        const userData = await response.json();
+        if (!response.ok) {
+          throw new Error('ユーザー情報の取得に失敗しました');
+        }
+        setUsers(userData.user || userData);
+      } catch (error) {
+        setError(error.message);
+      }
+    };
+  
+    fetchUser();
+  }, []);
 
   useEffect(() => {
     const fetchAllData = async () => {
@@ -43,12 +59,22 @@ const UserTop = () => {
       const dataForRow4 = await fetchData(2, 4); // company_id:2, row:4
       const dataForRow5 = await fetchData(2, 5); // company_id:2, row:5
 
+      const filterExpired = (items) => {
+        const now = new Date();
+        return items.filter((item) => {
+          if (!item.buies_created) return true;
+          const createdDate = new Date(item.buies_created);
+          const timeDiff = now - createdDate;
+          return timeDiff <= 24 * 60 * 60 * 1000;
+        });
+      };
+
       setBentos({
-        row1: dataForRow1,
-        row2: dataForRow2,
-        row3: dataForRow3,
-        row4: dataForRow4,
-        row5: dataForRow5,
+        row1: filterExpired(dataForRow1),
+        row2: filterExpired(dataForRow2),
+        row3: filterExpired(dataForRow3),
+        row4: filterExpired(dataForRow4),
+        row5: filterExpired(dataForRow5),
       });
     };
 
@@ -61,16 +87,26 @@ const UserTop = () => {
     const params = new URLSearchParams({ q: search });
 
     try {
-      const response = await fetch(`/api/user/search?${params.toString()}`);
+      const response = await fetch(`/api/users/search?${params.toString()}`);
       if (!response.ok) throw new Error('検索結果の取得に失敗しました。');
       const data = await response.json();
-      const filteredData = data.filter(bento => !bento.buies_created);
+
+      const filterExpired = (items) => {
+        const now = new Date();
+        return items.filter((item) => {
+          if (!item.buies_created) return true;
+          const createdDate = new Date(item.buies_created);
+          const timeDiff = now - createdDate;
+          return timeDiff <= 24 * 60 * 60 * 1000;
+        });
+      };
+
       setBentos({
-        row1: filteredData.slice(0, 1), // row1
-        row2: filteredData.slice(1, 2), // row2
-        row3: filteredData.slice(2, 3), // row3
-        row4: filteredData.slice(3, 4), // row4
-        row5: filteredData.slice(4, 5), // row5
+        row1: filterExpired(data.slice(0, 1)),
+        row2: filterExpired(data.slice(1, 2)),
+        row3: filterExpired(data.slice(2, 3)),
+        row4: filterExpired(data.slice(3, 4)),
+        row5: filterExpired(data.slice(4, 5)),
       });
     } catch (error) {
       setError(error.message);
@@ -83,7 +119,10 @@ const UserTop = () => {
     <Box>
       <AppBar position="static" sx={{ backgroundColor: '#9acd32' }}>
         <Toolbar sx={{ justifyContent: 'space-between' }}>
-          <Typography variant="h6" color="inherit">管理者用弁当管理サイト</Typography>
+          <Typography variant="h6" color="inherit">弁当一覧</Typography>
+          <Typography variant="body1">
+            ユーザー: {users && users.username ? users.username : '未ログイン'}
+          </Typography>
           <TextField
             label="弁当名"
             variant="outlined"
@@ -123,9 +162,6 @@ const UserTop = () => {
                     <Typography variant="h6" gutterBottom>
                       商品: {bento.lostproduct}
                     </Typography>
-                    <Link href="https://mitsuboshifarm.jp/subscription_menu_2.html?course_id=14&srsltid=AfmBOopz8xTCwKeA9lqy6IuNklKcWL28yZhSDocsDtNH7BL7LUzzHPfh">
-                      詳細はこちら
-                    </Link>
                     <Typography variant="body1">取引会社: 三ツ星ファーム</Typography>
                     <Typography variant="body2">金額: {bento.price}円</Typography>
                     <Button onClick={() => router.push(`/user/top/edit/${bento.id}`)} variant="contained" color="primary">
@@ -162,9 +198,6 @@ const UserTop = () => {
                     <Typography variant="h6" gutterBottom>
                       商品: {bento.lostproduct}
                     </Typography>
-                    <Link href="https://mitsuboshifarm.jp/subscription_menu_2.html?course_id=14&srsltid=AfmBOopz8xTCwKeA9lqy6IuNklKcWL28yZhSDocsDtNH7BL7LUzzHPfh">
-                      詳細はこちら
-                    </Link>
                     <Typography variant="body1">取引会社: 三ツ星ファーム</Typography>
                     <Typography variant="body2">金額: {bento.price}円</Typography>
                     <Button onClick={() => router.push(`/user/top/edit/${bento.id}`)} variant="contained" color="primary">
@@ -200,9 +233,6 @@ const UserTop = () => {
                     <Typography variant="h6" gutterBottom>
                       商品: {bento.lostproduct}
                     </Typography>
-                    <Link href="https://muscledeli.jp/shop/product_categories/md-lowfat?gad_source=1&gclid=CjwKCAiAgoq7BhBxEiwAVcW0LEqVZ9JUQErZtAtbQoMcHPrm8ou88y-tbYfFvW0oXvulKmmz_7jAVhoCEEMQAvD_BwE">
-                      詳細はこちら
-                    </Link>
                     <Typography variant="body1">取引会社: マッスルデリ</Typography>
                     <Typography variant="body2">金額: {bento.price}円</Typography>
                     <Button onClick={() => router.push(`/user/top/edit/${bento.id}`)} variant="contained" color="primary">
@@ -238,9 +268,6 @@ const UserTop = () => {
                     <Typography variant="h6" gutterBottom>
                       商品: {bento.lostproduct}
                     </Typography>
-                    <Link href="https://muscledeli.jp/shop/product_categories/md-lowfat?gad_source=1&gclid=CjwKCAiAgoq7BhBxEiwAVcW0LEqVZ9JUQErZtAtbQoMcHPrm8ou88y-tbYfFvW0oXvulKmmz_7jAVhoCEEMQAvD_BwE">
-                      詳細はこちら
-                    </Link>
                     <Typography variant="body1">取引会社: マッスルデリ</Typography>
                     <Typography variant="body2">金額: {bento.price}円</Typography>
                     <Button onClick={() => router.push(`/user/top/edit/${bento.id}`)} variant="contained" color="primary">
@@ -276,9 +303,6 @@ const UserTop = () => {
                     <Typography variant="h6" gutterBottom>
                       商品: {bento.lostproduct}
                     </Typography>
-                    <Link href="https://muscledeli.jp/shop/product_categories/md-lowfat?gad_source=1&gclid=CjwKCAiAgoq7BhBxEiwAVcW0LEqVZ9JUQErZtAtbQoMcHPrm8ou88y-tbYfFvW0oXvulKmmz_7jAVhoCEEMQAvD_BwE">
-                      詳細はこちら
-                    </Link>
                     <Typography variant="body1">取引会社: マッスルデリ</Typography>
                     <Typography variant="body2">金額: {bento.price}円</Typography>
                     <Button onClick={() => router.push(`/user/top/edit/${bento.id}`)} variant="contained" color="primary">
