@@ -124,6 +124,9 @@ const Top = () => {
                       whiteSpace: 'nowrap',
                       minWidth: 400,
                       maxWidth: 400,
+                      borderRadius: '16px',
+                      boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
+                      background: 'linear-gradient(135deg, #f3f4f6, #e5e7eb)',
                       opacity: bento.stock === 0 ? 0.5 : 1,
                       pointerEvents: bento.stock === 0 ? 'none' : 'auto',
                     }}
@@ -175,6 +178,9 @@ const Top = () => {
                       whiteSpace: 'nowrap',
                       minWidth: 400,
                       maxWidth: 400,
+                      borderRadius: '16px',
+                      boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
+                      background: 'linear-gradient(135deg, #f3f4f6, #e5e7eb)',
                       opacity: bento.stock === 0 ? 0.5 : 1,
                       pointerEvents: bento.stock === 0 ? 'none' : 'auto',
                     }}
@@ -225,6 +231,9 @@ const Top = () => {
                       whiteSpace: 'nowrap',
                       minWidth: 400,
                       maxWidth: 400,
+                      borderRadius: '16px',
+                      boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
+                      background: 'linear-gradient(135deg, #f3f4f6, #e5e7eb)',
                       opacity: bento.stock === 0 ? 0.5 : 1,
                       pointerEvents: bento.stock === 0 ? 'none' : 'auto',
                     }}
@@ -275,6 +284,9 @@ const Top = () => {
                       whiteSpace: 'nowrap',
                       minWidth: 400,
                       maxWidth: 400,
+                      borderRadius: '16px',
+                      boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
+                      background: 'linear-gradient(135deg, #f3f4f6, #e5e7eb)',
                       opacity: bento.stock === 0 ? 0.5 : 1,
                       pointerEvents: bento.stock === 0 ? 'none' : 'auto',
                     }}
@@ -325,6 +337,9 @@ const Top = () => {
                       whiteSpace: 'nowrap',
                       minWidth: 400,
                       maxWidth: 400,
+                      borderRadius: '16px',
+                      boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
+                      background: 'linear-gradient(135deg, #f3f4f6, #e5e7eb)',
                       opacity: bento.stock === 0 ? 0.5 : 1,
                       pointerEvents: bento.stock === 0 ? 'none' : 'auto',
                     }}
