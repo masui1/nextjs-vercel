@@ -9,7 +9,6 @@ const Create = () => {
     const [lostProduct, setLostProduct] = useState('');
     const [tradingCompany, setTradingCompany] = useState('');
     const [price, setPrice] = useState('');
-    const [stock, setStock] = useState('');
     const [row, setRow] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
 
@@ -29,7 +28,7 @@ const Create = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ companyId, tradingCompany, lostProduct, price, stock, row }),
+                body: JSON.stringify({ companyId, tradingCompany, lostProduct, price, row }),
             });
     
             if (!response.ok) {
@@ -74,14 +73,6 @@ const Create = () => {
                     value={price}
                     onChange={(e) => setPrice(e.target.value)}
                     fullWidth
-                />
-                <TextField
-                     label={`在庫 (${stock}個)`}
-                    value={stock}
-                    onChange={(e) => setStock(e.target.value)}
-                    fullWidth
-                    type="number"
-                    inputProps={{ min: 0, max: 1 }}
                 />
                 <FormControl fullWidth>
                     <InputLabel>段数</InputLabel>
