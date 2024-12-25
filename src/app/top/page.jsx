@@ -242,10 +242,10 @@ const Top = () => {
                       <Typography variant="h6" gutterBottom>
                         商品: {bento.lostproduct}
                       </Typography>
-                      <Link href="https://mitsuboshifarm.jp/subscription_menu_2.html?course_id=14&srsltid=AfmBOopz8xTCwKeA9lqy6IuNklKcWL28yZhSDocsDtNH7BL7LUzzHPfh">
+                      <Link href="https://muscledeli.jp/shop/product_categories/md-lowfat">
                         詳細はこちら
                       </Link>
-                      <Typography variant="body1">取引会社: 三ツ星ファーム</Typography>
+                      <Typography variant="body1">取引会社: マッスルデリ</Typography>
                       <Typography variant="body2">金額: {bento.price}円</Typography>
                       <Button
                         onClick={() => handleBuyRedirect(bento.id)}
@@ -295,10 +295,10 @@ const Top = () => {
                       <Typography variant="h6" gutterBottom>
                         商品: {bento.lostproduct}
                       </Typography>
-                      <Link href="https://mitsuboshifarm.jp/subscription_menu_2.html?course_id=14&srsltid=AfmBOopz8xTCwKeA9lqy6IuNklKcWL28yZhSDocsDtNH7BL7LUzzHPfh">
+                      <Link href="https://muscledeli.jp/shop/product_categories/md-lowfat">
                         詳細はこちら
                       </Link>
-                      <Typography variant="body1">取引会社: 三ツ星ファーム</Typography>
+                      <Typography variant="body1">取引会社: マッスルデリ</Typography>
                       <Typography variant="body2">金額: {bento.price}円</Typography>
                       <Button
                         onClick={() => handleBuyRedirect(bento.id)}
@@ -348,10 +348,10 @@ const Top = () => {
                       <Typography variant="h6" gutterBottom>
                         商品: {bento.lostproduct}
                       </Typography>
-                      <Link href="https://mitsuboshifarm.jp/subscription_menu_2.html?course_id=14&srsltid=AfmBOopz8xTCwKeA9lqy6IuNklKcWL28yZhSDocsDtNH7BL7LUzzHPfh">
+                      <Link href="https://muscledeli.jp/shop/product_categories/md-lowfat">
                         詳細はこちら
                       </Link>
-                      <Typography variant="body1">取引会社: 三ツ星ファーム</Typography>
+                      <Typography variant="body1">取引会社: マッスルデリ</Typography>
                       <Typography variant="body2">金額: {bento.price}円</Typography>
                       <Button
                         onClick={() => handleBuyRedirect(bento.id)}
