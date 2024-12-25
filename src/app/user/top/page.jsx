@@ -156,7 +156,14 @@ const UserTop = () => {
               bentos.row1.map((bento) => (
                 <Card
                   key={bento.id}
-                  sx={{ whiteSpace: 'nowrap', minWidth: 400, maxWidth: 400 }}
+                  sx={{
+                    whiteSpace: 'nowrap',
+                    minWidth: 400,
+                    maxWidth: 400,
+                    borderRadius: '16px',
+                    boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
+                    background: 'linear-gradient(135deg, #f3f4f6, #e5e7eb)',
+                  }}
                 >
                   <CardContent>
                     <Typography variant="h6" gutterBottom>
@@ -192,7 +199,14 @@ const UserTop = () => {
               bentos.row2.map((bento) => (
                 <Card
                   key={bento.id}
-                  sx={{ whiteSpace: 'nowrap', minWidth: 400, maxWidth: 400 }}
+                  sx={{
+                    whiteSpace: 'nowrap',
+                    minWidth: 400,
+                    maxWidth: 400,
+                    borderRadius: '16px',
+                    boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
+                    background: 'linear-gradient(135deg, #f3f4f6, #e5e7eb)',
+                  }}
                 >
                   <CardContent>
                     <Typography variant="h6" gutterBottom>
@@ -227,7 +241,14 @@ const UserTop = () => {
               bentos.row3.map((bento) => (
                 <Card
                   key={bento.id}
-                  sx={{ whiteSpace: 'nowrap', minWidth: 400, maxWidth: 400 }}
+                  sx={{
+                    whiteSpace: 'nowrap',
+                    minWidth: 400,
+                    maxWidth: 400,
+                    borderRadius: '16px',
+                    boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
+                    background: 'linear-gradient(135deg, #f3f4f6, #e5e7eb)',
+                  }}
                 >
                   <CardContent>
                     <Typography variant="h6" gutterBottom>
@@ -262,7 +283,14 @@ const UserTop = () => {
               bentos.row4.map((bento) => (
                 <Card
                   key={bento.id}
-                  sx={{ whiteSpace: 'nowrap', minWidth: 400, maxWidth: 400 }}
+                  sx={{
+                    whiteSpace: 'nowrap',
+                    minWidth: 400,
+                    maxWidth: 400,
+                    borderRadius: '16px',
+                    boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
+                    background: 'linear-gradient(135deg, #f3f4f6, #e5e7eb)',
+                  }}
                 >
                   <CardContent>
                     <Typography variant="h6" gutterBottom>
@@ -297,7 +325,14 @@ const UserTop = () => {
               bentos.row5.map((bento) => (
                 <Card
                   key={bento.id}
-                  sx={{ whiteSpace: 'nowrap', minWidth: 400, maxWidth: 400 }}
+                  sx={{
+                    whiteSpace: 'nowrap',
+                    minWidth: 400,
+                    maxWidth: 400,
+                    borderRadius: '16px',
+                    boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
+                    background: 'linear-gradient(135deg, #f3f4f6, #e5e7eb)',
+                  }}
                 >
                   <CardContent>
                     <Typography variant="h6" gutterBottom>

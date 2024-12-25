@@ -102,23 +102,21 @@ const BuyTop = () => {
         {loading ? (
           <CircularProgress />
         ) : bentos.row1.length > 0 ? (
-          bentos.row1.map((bento) => (
-            <Card key={bento.id} sx={{ minWidth: 400, maxWidth: 400 }}>
-              <CardContent>
-                <Typography variant="h6" gutterBottom>商品: {bento.lostproduct}</Typography>
-                <Typography variant="body1">取引会社: {bento.tradingcompany}</Typography>
-                <Typography variant="body2">金額: {bento.price}円</Typography>
-                <Typography variant="body2">
-                  在庫: {bento.stock > 0 ? `${bento.stock}個` : '売り切れ'}
-                </Typography>
-                {bento.stock > 0 && (
+          bentos.row1
+            .filter((bento) => bento.stock > 0)
+            .map((bento) => (
+              <Card key={bento.id} sx={{ minWidth: 400, maxWidth: 400 }}>
+                <CardContent>
+                  <Typography variant="h6" gutterBottom>商品: {bento.lostproduct}</Typography>
+                  <Typography variant="body1">取引会社: {bento.tradingcompany}</Typography>
+                  <Typography variant="body2">金額: {bento.price}円</Typography>
+                  <Typography variant="body2">在庫: {bento.stock}個</Typography>
                   <Button onClick={() => handleSubmit(bento.id)} variant="contained" color="primary">
                     購入
                   </Button>
-                )}
-              </CardContent>
-            </Card>
-          ))
+                </CardContent>
+              </Card>
+            ))
         ) : (
           <Typography variant="body1">データがありません</Typography>
         )}
