@@ -98,7 +98,7 @@ const Top = () => {
           <Button onClick={handleSearch} variant="contained" color="primary" disabled={loading}>
             検索
           </Button>
-          <Button onClick={() => router.push('/user')} variant="contained" color="primary">
+          <Button onClick={() => router.push('/user/login')} variant="contained" color="primary">
             管理者の方はこちらへ
           </Button>
         </Toolbar>

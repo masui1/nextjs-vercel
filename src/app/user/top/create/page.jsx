@@ -24,7 +24,7 @@ const Create = () => {
         }
     
         try {
-            const response = await fetch('/api/user/create', {
+            const response = await fetch('/api/users/create', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
