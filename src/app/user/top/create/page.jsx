@@ -1,61 +1,100 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { Typography, Box, Button, TextField, MenuItem, FormControl, InputLabel, Select } from '@mui/material';
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import {
+    Typography,
+    Box,
+    Button,
+    TextField,
+    MenuItem,
+    FormControl,
+    InputLabel,
+    Select,
+} from "@mui/material";
 
 const Create = () => {
     const router = useRouter();
-    const [lostProduct, setLostProduct] = useState('');
-    const [tradingCompany, setTradingCompany] = useState('');
-    const [price, setPrice] = useState('');
-    const [row, setRow] = useState('');
-    const [errorMessage, setErrorMessage] = useState('');
+    const [productName, setProductName] = useState("");
+    const [tradingCompany, setTradingCompany] = useState("");
+    const [price, setPrice] = useState("");
+    const [row, setRow] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-    
+
         let companyId = null;
-        if (tradingCompany === '三ツ星ファーム') {
+        if (tradingCompany === "三ツ星ファーム") {
             companyId = 1;
-        } else if (tradingCompany === 'マッスルデリ') {
+        } else if (tradingCompany === "マッスルデリ") {
             companyId = 2;
         }
-    
+
         try {
-            const response = await fetch('/api/users/create', {
-                method: 'POST',
+            const response = await fetch("/api/users/create", {
+                method: "POST",
                 headers: {
-                    'Content-Type': 'application/json',
+                    "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ companyId, tradingCompany, lostProduct, price, row }),
+                body: JSON.stringify({
+                    companyId,
+                    trading_company: tradingCompany,
+                    product_name: productName,
+                    price,
+                    row,
+                }),
             });
-    
+
             if (!response.ok) {
                 const errorData = await response.json().catch(() => ({
-                    error: '不明なサーバーエラーが発生しました。',
+                    error: "不明なサーバーエラーが発生しました。",
                 }));
-                setErrorMessage(`弁当登録に失敗しました: ${errorData.error || '不明なエラー'}`);
+                setErrorMessage(
+                    `弁当登録に失敗しました: ${
+                        errorData.error || "不明なエラー"
+                    }`
+                );
                 return;
             }
-            router.push('/user/top');
+            router.push("/user/top");
         } catch (error) {
-            setErrorMessage('ネットワークエラーが発生しました。');
+            setErrorMessage("ネットワークエラーが発生しました。");
         }
     };
 
-    const availableRows = tradingCompany === '三ツ星ファーム' ? [1, 2] : tradingCompany === 'マッスルデリ' ? [3, 4, 5] : [];
+    const availableRows =
+        tradingCompany === "三ツ星ファーム"
+            ? [1, 2]
+            : tradingCompany === "マッスルデリ"
+            ? [3, 4, 5]
+            : [];
 
     return (
-        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 4 }}>
+        <Box
+            sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                mt: 4,
+            }}
+        >
             <Typography variant="h4" gutterBottom>
                 届いた弁当を登録画面
             </Typography>
-            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '300px' }}>
+            <form
+                onSubmit={handleSubmit}
+                style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "16px",
+                    width: "300px",
+                }}
+            >
                 <TextField
                     label="無くなった品"
-                    value={lostProduct}
-                    onChange={(e) => setLostProduct(e.target.value)}
+                    value={productName}
+                    onChange={(e) => setProductName(e.target.value)}
                     fullWidth
                 />
                 <TextField
