@@ -9,22 +9,35 @@ export async function POST(req) {
 
   try {
     const body = await req.json();
-    const { tradingCompany, lostProduct, price, row, companyId } = body;
+    const { tradingCompany, lostProduct, price, row, barcode, companyId } = body;
+
     await client.connect();
 
+    // データ登録のクエリ
     const query = `
-      INSERT INTO bentos (tradingCompany, lostProduct, price, row, company_id)
+      INSERT INTO bentos (tradingCompany, lostProduct, price, row, barcode, company_id)
       VALUES ($1, $2, $3, $4, $5, $6)
       RETURNING *;
     `;
+    const values = [
+      tradingCompany,
+      lostProduct,
+      parseInt(price, 10),
+      parseInt(row, 10),
+      barcode, // バーコードを含める
+      companyId,
+    ];
 
-    const values = [tradingCompany, lostProduct, parseInt(price, 10), parseInt(row, 10), companyId];
     const res = await client.query(query, values);
 
     return NextResponse.json(res.rows[0], { status: 201 });
   } catch (error) {
     console.error('データ登録中にエラーが発生しました:', error);
-    return NextResponse.json({ error: 'データ登録中にエラーが発生しました', details: error.message }, { status: 500 });
+
+    return NextResponse.json(
+      { error: 'データ登録中にエラーが発生しました', details: error.message },
+      { status: 500 }
+    );
   } finally {
     await client.end();
   }

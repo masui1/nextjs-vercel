@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Typography, Box, Button, TextField, MenuItem, FormControl, InputLabel, Select } from '@mui/material';
+import BarcodeScanner from '@/app/components/BarcodeScanner';
 
 const Create = () => {
     const router = useRouter();
@@ -10,27 +11,28 @@ const Create = () => {
     const [tradingCompany, setTradingCompany] = useState('');
     const [price, setPrice] = useState('');
     const [row, setRow] = useState('');
+    const [barcode, setBarcode] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-    
+
         let companyId = null;
         if (tradingCompany === '三ツ星ファーム') {
             companyId = 1;
         } else if (tradingCompany === 'マッスルデリ') {
             companyId = 2;
         }
-    
+
         try {
             const response = await fetch('/api/users/create', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ companyId, tradingCompany, lostProduct, price, row }),
+                body: JSON.stringify({ companyId, tradingCompany, lostProduct, price, row, barcode }),
             });
-    
+
             if (!response.ok) {
                 const errorData = await response.json().catch(() => ({
                     error: '不明なサーバーエラーが発生しました。',
@@ -53,7 +55,7 @@ const Create = () => {
             </Typography>
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '300px' }}>
                 <TextField
-                    label="無くなった品"
+                    label="弁当名"
                     value={lostProduct}
                     onChange={(e) => setLostProduct(e.target.value)}
                     fullWidth
@@ -88,7 +90,19 @@ const Create = () => {
                         ))}
                     </Select>
                 </FormControl>
-                <Button type="submit" variant="contained" color="primary">
+
+                {/* バーコードスキャナー */}
+                <Box>
+                    <Typography variant="h6" gutterBottom>
+                        バーコードスキャン
+                    </Typography>
+                    <BarcodeScanner onDetected={setBarcode} />
+                    <Typography variant="body1" gutterBottom>
+                        バーコード: {barcode || 'スキャン待機中...'}
+                    </Typography>
+                </Box>
+
+                <Button type="submit" variant="contained" color="primary" disabled={!barcode}>
                     登録
                 </Button>
             </form>

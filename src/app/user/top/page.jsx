@@ -83,6 +83,10 @@ const UserTop = () => {
 
   const handleSearch = async () => {
     setError(null);
+    if (search.trim() === '') {
+      return;
+    }
+
     setLoading(true);
     const params = new URLSearchParams({ q: search });
 
