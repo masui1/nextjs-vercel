@@ -12,6 +12,7 @@ import {
     InputLabel,
     Select,
 } from "@mui/material";
+import BarcodeScanner from '@/app/components/BarcodeScanner';
 
 const Create = () => {
     const router = useRouter();
@@ -19,6 +20,7 @@ const Create = () => {
     const [tradingCompany, setTradingCompany] = useState("");
     const [price, setPrice] = useState("");
     const [row, setRow] = useState("");
+    const [barcode, setBarcode] = useState('');
     const [errorMessage, setErrorMessage] = useState("");
 
     const handleSubmit = async (event) => {
@@ -43,6 +45,7 @@ const Create = () => {
                     product_name: productName,
                     price,
                     row,
+                    barcode,
                 }),
             });
 
@@ -127,7 +130,19 @@ const Create = () => {
                         ))}
                     </Select>
                 </FormControl>
-                <Button type="submit" variant="contained" color="primary">
+
+                {/* バーコードスキャナー */}
+                <Box>
+                    <Typography variant="h6" gutterBottom>
+                        バーコードスキャン
+                    </Typography>
+                    <BarcodeScanner onDetected={setBarcode} />
+                    <Typography variant="body1" gutterBottom>
+                        バーコード: {barcode || 'スキャン待機中...'}
+                    </Typography>
+                </Box>
+
+                <Button type="submit" variant="contained" color="primary" disabled={!barcode}>
                     登録
                 </Button>
             </form>
