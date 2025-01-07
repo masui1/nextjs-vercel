@@ -1,9 +1,4 @@
 import { PrismaClient } from "@prisma/client";
-import { Pool } from "pg";
-
-// const pool = new Pool({
-//     connectionString: process.env.DATABASE_URL,
-// });
 
 const prisma = new PrismaClient();
 
@@ -12,18 +7,9 @@ export async function GET(req, context) {
     const { id } = await context.params;
 
     try {
-        // const client = await pool.connect();
-        // const query = 'SELECT * FROM bentos WHERE id = $1';
-        // const result = await client.query(query, [id]);
         const result = await prisma.bentos.findUnique({
             where: { id: parseInt(id, 10) },
         });
-
-        // client.release();
-
-        // if (result.rows.length === 0) {
-        //     return new Response(JSON.stringify({ error: '弁当データが見つかりません' }), { status: 404 });
-        // }
         if (!result) {
             return new Response(
                 JSON.stringify({ error: "弁当データが見つかりません" }),
@@ -58,35 +44,6 @@ export async function PUT(req, context) {
             );
         }
 
-        //   const client = await pool.connect();
-
-        //   const checkQuery = "SELECT * FROM bentos WHERE id = $1";
-        //   const checkResult = await client.query(checkQuery, [id]);
-
-        //   if (checkResult.rows.length === 0) {
-        //       client.release();
-        //       return new Response(JSON.stringify({ error: "Bento not found" }), {
-        //           status: 404,
-        //       });
-        //   }
-
-        //   const updateQuery = `
-        //   UPDATE bentos
-        //   SET stock = $1, buies_created = $2
-        //   WHERE id = $3
-        //   RETURNING *;
-        // `;
-        //   const updateResult = await client.query(updateQuery, [
-        //       stock,
-        //       buies_created,
-        //       id,
-        //   ]);
-
-        //   client.release();
-
-        //   return new Response(JSON.stringify(updateResult.rows[0]), {
-        //       status: 200,
-        //   });
         const bento = await prisma.bentos.findUnique({
             where: { id: parseInt(id, 10) },
         });
@@ -102,7 +59,7 @@ export async function PUT(req, context) {
             where: { id: parseInt(id, 10) },
             data: {
                 is_purchased,
-                purchasedDate: new Date(purchasedDate),
+                purchasedDate: is_purchased ? new Date() : null,
             },
         });
 

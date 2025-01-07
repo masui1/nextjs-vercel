@@ -26,11 +26,11 @@ const Create = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        let companyId = null;
+        let company_id = null;
         if (tradingCompany === "三ツ星ファーム") {
-            companyId = 1;
+            company_id = 1;
         } else if (tradingCompany === "マッスルデリ") {
-            companyId = 2;
+            company_id = 2;
         }
 
         try {
@@ -40,12 +40,11 @@ const Create = () => {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    companyId,
+                    company_id,
                     trading_company: tradingCompany,
                     product_name: productName,
                     price,
                     row,
-                    barcode,
                 }),
             });
 
@@ -131,18 +130,7 @@ const Create = () => {
                     </Select>
                 </FormControl>
 
-                {/* バーコードスキャナー */}
-                <Box>
-                    <Typography variant="h6" gutterBottom>
-                        バーコードスキャン
-                    </Typography>
-                    <BarcodeScanner onDetected={setBarcode} />
-                    <Typography variant="body1" gutterBottom>
-                        バーコード: {barcode || 'スキャン待機中...'}
-                    </Typography>
-                </Box>
-
-                <Button type="submit" variant="contained" color="primary" disabled={!barcode}>
+                <Button type="submit" variant="contained" color="primary">
                     登録
                 </Button>
             </form>
