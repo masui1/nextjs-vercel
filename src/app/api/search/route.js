@@ -1,19 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { Client } from "pg";
 
-// const client = new Client({
-//     connectionString: process.env.DATABASE_URL,
-// });
-
-// let isConnected = false;
-
-// async function connectClient() {
-//     if (!isConnected) {
-//         await client.connect();
-//         isConnected = true;
-//         console.log("Connected to the database");
-//     }
-// }
 const prisma = new PrismaClient();
 
 export async function GET(req) {
@@ -21,17 +7,6 @@ export async function GET(req) {
     const q = searchParams.get("q") || "";
 
     try {
-        // await connectClient();
-
-        // const query = `SELECT * FROM bentos WHERE lostProduct ILIKE $1`;
-        // const values = [`%${q}%`];
-
-        // const res = await client.query(query, values);
-
-        // return new Response(JSON.stringify(res.rows), {
-        //     status: 200,
-        //     headers: { "Content-Type": "application/json" },
-        // });
         const bentos = await prisma.bentos.findMany({
             where: {
                 product_name: {

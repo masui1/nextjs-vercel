@@ -1,11 +1,7 @@
-import { Pool } from "pg";
 import { NextResponse } from "next/server";
 import bcrypt from "bcrypt";
 import { PrismaClient } from "@prisma/client";
 
-// const pool = new Pool({
-//   connectionString: process.env.DATABASE_URL,
-// });
 const prisma = new PrismaClient();
 
 // **GET**: ユーザー情報取得
@@ -17,15 +13,6 @@ export async function GET(req) {
     }
 
     try {
-        // const query = 'SELECT id, username FROM users WHERE id = $1;';
-        // const values = [userId];
-        // const res = await pool.query(query, values);
-
-        // if (res.rows.length === 0) {
-        //   return NextResponse.json({ error: 'ユーザーが見つかりません' }, { status: 404 });
-        // }
-
-        // return NextResponse.json({ user: res.rows[0] }, { status: 200 });
         const result = await prisma.users.findUnique({
             where: { id: parseInt(userId) },
         });
@@ -66,17 +53,6 @@ export async function POST(req) {
         // パスワードのハッシュ化
         const hashedPassword = await bcrypt.hash(password, 10);
         console.log(hashedPassword);
-
-        //     const query = `
-        //   INSERT INTO users (username, password)
-        //   VALUES ($1, $2)
-        //   RETURNING *;
-        // `;
-
-        //     const values = [username, hashedPassword];
-        //     const res = await pool.query(query, values);
-
-        //     return NextResponse.json(res.rows[0], { status: 201 });
         const result = await prisma.users.create({
             data: {
                 username: username,

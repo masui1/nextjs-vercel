@@ -12,18 +12,12 @@ import {
 
 const EditTop = () => {
     const router = useRouter();
-    // const [id, setId] = useState(null);
     const [tradingCompany, setTradingCompany] = useState("");
     const [productName, setProductName] = useState("");
     const [price, setPrice] = useState("");
     const [row, setRow] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
 
-    // useEffect(() => {
-    //     const pathParts = window.location.pathname.split("/");
-    //     const bentoId = pathParts[pathParts.length - 1];
-    //     setId(bentoId);
-    // }, []);
     const { id } = useParams();
 
     useEffect(() => {
@@ -37,7 +31,7 @@ const EditTop = () => {
                     console.log(data);
 
                     if (response.ok) {
-                        setTradingCompany(data.tradingCompany);
+                        setTradingCompany(data.trading_company);
                         setProductName(data.product_name);
                         setPrice(data.price);
                         setRow(data.row);

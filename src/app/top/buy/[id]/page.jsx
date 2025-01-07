@@ -51,10 +51,13 @@ const BuyTop = () => {
 
     const handleSubmit = async (bentoId) => {
         try {
+            const purchasedDate = new Date();
+            const requestBody = { is_purchased: true, purchasedDate };
+
             const response = await fetch(`/api/buy/${bentoId}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ is_purchased: true }),
+                body: JSON.stringify(requestBody),
             });
 
             const data = await response.json();
@@ -68,7 +71,7 @@ const BuyTop = () => {
             setBentos((prevState) => ({
                 row1: prevState.row1.map((bento) =>
                     bento.id === bentoId
-                        ? { ...bento, is_purchased: true }
+                        ? { ...bento, is_purchased: true, purchasedDate }
                         : bento
                 ),
             }));

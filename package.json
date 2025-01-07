@@ -22,6 +22,7 @@
         "next": "15.1.0",
         "pg": "^8.13.1",
         "prisma": "^6.1.0",
+        "quagga": "^0.12.1",
         "ra-data-json-server": "^5.4.2",
         "react": "^19.0.0",
         "react-admin": "^5.4.2",
