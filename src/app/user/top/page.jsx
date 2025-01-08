@@ -171,7 +171,7 @@ const UserTop = () => {
                 >
                   <CardContent>
                     <Typography variant="h6" gutterBottom>
-                      商品: {bento.lostproduct}
+                      商品: {bento.product_name}
                     </Typography>
                     <Typography variant="body1">取引会社: 三ツ星ファーム</Typography>
                     <Typography variant="body2">金額: {bento.price}円</Typography>
@@ -214,7 +214,7 @@ const UserTop = () => {
                 >
                   <CardContent>
                     <Typography variant="h6" gutterBottom>
-                      商品: {bento.lostproduct}
+                      商品: {bento.product_name}
                     </Typography>
                     <Typography variant="body1">取引会社: 三ツ星ファーム</Typography>
                     <Typography variant="body2">金額: {bento.price}円</Typography>
@@ -256,7 +256,7 @@ const UserTop = () => {
                 >
                   <CardContent>
                     <Typography variant="h6" gutterBottom>
-                      商品: {bento.lostproduct}
+                      商品: {bento.product_name}
                     </Typography>
                     <Typography variant="body1">取引会社: マッスルデリ</Typography>
                     <Typography variant="body2">金額: {bento.price}円</Typography>
@@ -298,7 +298,7 @@ const UserTop = () => {
                 >
                   <CardContent>
                     <Typography variant="h6" gutterBottom>
-                      商品: {bento.lostproduct}
+                      商品: {bento.product_name}
                     </Typography>
                     <Typography variant="body1">取引会社: マッスルデリ</Typography>
                     <Typography variant="body2">金額: {bento.price}円</Typography>
@@ -340,7 +340,7 @@ const UserTop = () => {
                 >
                   <CardContent>
                     <Typography variant="h6" gutterBottom>
-                      商品: {bento.lostproduct}
+                      商品: {bento.product_name}
                     </Typography>
                     <Typography variant="body1">取引会社: マッスルデリ</Typography>
                     <Typography variant="body2">金額: {bento.price}円</Typography>

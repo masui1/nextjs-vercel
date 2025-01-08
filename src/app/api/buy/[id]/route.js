@@ -10,7 +10,7 @@ export async function GET(req, context) {
 
     try {
         const client = await pool.connect();
-        const query = 'SELECT * FROM bentos WHERE id = $1';
+        const query = 'SELECT * FROM "Bentos" WHERE id = $1';
         const result = await client.query(query, [id]);
 
         client.release();
@@ -40,7 +40,7 @@ export async function PUT(req, context) {
 
     const client = await pool.connect();
 
-    const checkQuery = 'SELECT * FROM bentos WHERE id = $1';
+    const checkQuery = 'SELECT * FROM "Bentos" WHERE id = $1';
     const checkResult = await client.query(checkQuery, [id]);
 
     if (checkResult.rows.length === 0) {
@@ -49,7 +49,7 @@ export async function PUT(req, context) {
     }
 
     const updateQuery = `
-      UPDATE bentos
+      UPDATE "Bentos"
       SET is_purchased = $1, buies_created = CURRENT_TIMESTAMP
       WHERE id = $2
       RETURNING *;

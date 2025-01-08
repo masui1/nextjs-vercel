@@ -15,7 +15,7 @@ export async function GET(req) {
   }
 
   try {
-    const query = 'SELECT id, username FROM users WHERE id = $1;';
+    const query = 'SELECT id, username FROM "Users" WHERE id = $1;';
     const values = [userId];
     const res = await pool.query(query, values);
 
@@ -50,8 +50,8 @@ export async function POST(req) {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const query = `
-      INSERT INTO users (username, password)
-      VALUES ($1, $2)
+      INSERT INTO "Users" (username, password, "createdAt", "updatedAt")
+      VALUES ($1, $2, NOW(), NOW())
       RETURNING *;
     `;
 

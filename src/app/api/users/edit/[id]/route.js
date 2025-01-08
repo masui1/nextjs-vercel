@@ -12,7 +12,7 @@ export async function GET(req, context) {
     try {
         const client = await pool.connect();
 
-        const query = 'SELECT * FROM bentos WHERE id = $1';
+        const query = 'SELECT * FROM "Bentos" WHERE id = $1';
         const result = await client.query(query, [id]);
 
         client.release();
@@ -34,17 +34,17 @@ export async function PUT(req, context) {
 
     try {
         const body = await req.json();
-        const { tradingCompany, lostProduct, price, row } = body;
+        const { tradingCompany, productName, price, row } = body;
 
         // 必須データの検証
-        if (!tradingCompany || !lostProduct || !price || !row) {
+        if (!tradingCompany || !productName || !price || !row) {
             return NextResponse.json({ error: '必要なデータが不足しています' }, { status: 400 });
         }
 
         const client = await pool.connect();
 
         // データが存在するか確認
-        const checkQuery = 'SELECT * FROM bentos WHERE id = $1';
+        const checkQuery = 'SELECT * FROM "Bentos" WHERE id = $1';
         const checkResult = await client.query(checkQuery, [id]);
 
         if (checkResult.rows.length === 0) {
@@ -54,12 +54,12 @@ export async function PUT(req, context) {
 
         // データを更新
         const updateQuery = `
-            UPDATE bentos
-            SET tradingcompany = $1, lostproduct = $2, price = $3, row = $4
+            UPDATE "Bentos"
+            SET tradingcompany = $1, product_name = $2, price = $3, row = $4
             WHERE id = $5
             RETURNING *;
         `;
-        const updateResult = await client.query(updateQuery, [tradingCompany, lostProduct, price, row, id]);
+        const updateResult = await client.query(updateQuery, [tradingCompany, productName, price, row, id]);
 
         client.release();
 

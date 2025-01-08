@@ -8,7 +8,7 @@ const EditTop = () => {
     const router = useRouter();
     const [id, setId] = useState(null);
     const [tradingCompany, setTradingCompany] = useState('');
-    const [lostProduct, setLostProduct] = useState('');
+    const [productName, setProductName] = useState('');
     const [price, setPrice] = useState('');
     const [row, setRow] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
@@ -28,7 +28,7 @@ const EditTop = () => {
     
                     if (response.ok) {
                         setTradingCompany(data.tradingcompany);
-                        setLostProduct(data.lostproduct);
+                        setProductName(data.productName);
                         setPrice(data.price);
                         setRow(data.row);
                     } else {
@@ -52,7 +52,7 @@ const EditTop = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ tradingCompany, lostProduct, price, row }),
+                body: JSON.stringify({ tradingCompany, productName, price, row }),
             });
     
             if (!response.ok) {
@@ -83,8 +83,8 @@ const EditTop = () => {
                 />
                 <TextField
                     label="無くなった品"
-                    value={lostProduct}
-                    onChange={(e) => setLostProduct(e.target.value)}
+                    value={productName}
+                    onChange={(e) => setProductName(e.target.value)}
                     fullWidth
                 />
                 <TextField

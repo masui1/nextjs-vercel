@@ -21,7 +21,7 @@ export async function GET(req) {
     }
 
     const query = `
-      SELECT * FROM bentos
+      SELECT * FROM "Bentos"
       WHERE company_id = $1 AND row = $2
       ORDER BY id;
     `;

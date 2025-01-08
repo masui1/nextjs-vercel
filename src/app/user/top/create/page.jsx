@@ -7,7 +7,7 @@ import BarcodeScanner from '@/app/components/BarcodeScanner';
 
 const Create = () => {
     const router = useRouter();
-    const [lostProduct, setLostProduct] = useState('');
+    const [productName, setProductName] = useState('');
     const [tradingCompany, setTradingCompany] = useState('');
     const [price, setPrice] = useState('');
     const [row, setRow] = useState('');
@@ -30,7 +30,7 @@ const Create = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ companyId, tradingCompany, lostProduct, price, row, barcode }),
+                body: JSON.stringify({ companyId, tradingCompany, productName, price, row, barcode }),
             });
 
             if (!response.ok) {
@@ -56,8 +56,8 @@ const Create = () => {
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '300px' }}>
                 <TextField
                     label="弁当名"
-                    value={lostProduct}
-                    onChange={(e) => setLostProduct(e.target.value)}
+                    value={productName}
+                    onChange={(e) => setProductName(e.target.value)}
                     fullWidth
                 />
                 <TextField

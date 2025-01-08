@@ -22,7 +22,7 @@ export async function GET(req) {
   try {
     await connectClient();
 
-    const query = `SELECT * FROM bentos WHERE lostProduct ILIKE $1`;
+    const query = `SELECT * FROM "Bentos" WHERE product_name ILIKE $1`;
     const values = [`%${q}%`];
 
     const res = await client.query(query, values);

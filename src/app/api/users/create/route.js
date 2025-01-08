@@ -9,19 +9,19 @@ export async function POST(req) {
 
   try {
     const body = await req.json();
-    const { tradingCompany, lostProduct, price, row, barcode, companyId } = body;
+    const { tradingCompany, productName, price, row, barcode, companyId } = body;
 
     await client.connect();
 
     // データ登録のクエリ
     const query = `
-      INSERT INTO bentos (tradingCompany, lostProduct, price, row, barcode, company_id)
+      INSERT INTO "Bentos" (tradingCompany, productNName, price, row, barcode, company_id)
       VALUES ($1, $2, $3, $4, $5, $6)
       RETURNING *;
     `;
     const values = [
       tradingCompany,
-      lostProduct,
+      productName,
       parseInt(price, 10),
       parseInt(row, 10),
       barcode, // バーコードを含める

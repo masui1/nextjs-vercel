@@ -11,7 +11,7 @@ export async function POST(req) {
   try {
     const { username, password } = await req.json();
 
-    const query = 'SELECT * FROM users WHERE username = $1;';
+    const query = 'SELECT * FROM "Users" WHERE username = $1;';
     const values = [username];
     const res = await pool.query(query, values);
 

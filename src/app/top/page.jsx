@@ -131,7 +131,7 @@ const Top = () => {
                   >
                     <CardContent>
                       <Typography variant="h6" gutterBottom>
-                        商品: {bento.lostproduct}
+                        商品: {bento.product_name}
                       </Typography>
                       <Link href="https://mitsuboshifarm.jp/subscription_menu_2.html?course_id=14&srsltid=AfmBOopz8xTCwKeA9lqy6IuNklKcWL28yZhSDocsDtNH7BL7LUzzHPfh">
                         詳細はこちら
@@ -183,7 +183,7 @@ const Top = () => {
                   >
                     <CardContent>
                       <Typography variant="h6" gutterBottom>
-                        商品: {bento.lostproduct}
+                        商品: {bento.product_name}
                       </Typography>
                       <Link href="https://mitsuboshifarm.jp/subscription_menu_2.html?course_id=14&srsltid=AfmBOopz8xTCwKeA9lqy6IuNklKcWL28yZhSDocsDtNH7BL7LUzzHPfh">
                         詳細はこちら
@@ -234,7 +234,7 @@ const Top = () => {
                   >
                     <CardContent>
                       <Typography variant="h6" gutterBottom>
-                        商品: {bento.lostproduct}
+                        商品: {bento.product_name}
                       </Typography>
                       <Link href="https://muscledeli.jp/shop/product_categories/md-lowfat">
                         詳細はこちら
@@ -285,7 +285,7 @@ const Top = () => {
                   >
                     <CardContent>
                       <Typography variant="h6" gutterBottom>
-                        商品: {bento.lostproduct}
+                        商品: {bento.product_name}
                       </Typography>
                       <Link href="https://muscledeli.jp/shop/product_categories/md-lowfat">
                         詳細はこちら
@@ -336,7 +336,7 @@ const Top = () => {
                   >
                     <CardContent>
                       <Typography variant="h6" gutterBottom>
-                        商品: {bento.lostproduct}
+                        商品: {bento.product_name}
                       </Typography>
                       <Link href="https://muscledeli.jp/shop/product_categories/md-lowfat">
                         詳細はこちら
