@@ -81,6 +81,10 @@ const Top = () => {
     router.push(`/top/buy/${bentoId}`);
   };
 
+  const filterAvailableBentos = (bentos) => {
+    return bentos.filter(bento => !(bento.is_purchased || bento.purchasedDate));
+  };
+
   return (
     <Box>
       <AppBar position="static">
@@ -115,8 +119,8 @@ const Top = () => {
           </Box>
         ) : (
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
-            {bentos.row1.length > 0 ? (
-              bentos.row1.map((bento) =>
+            {filterAvailableBentos(bentos.row1).length > 0 ? (
+              filterAvailableBentos(bentos.row1).map((bento) =>
                 !bento.buies_created ? (
                   <Card
                     key={bento.id}
@@ -167,8 +171,8 @@ const Top = () => {
           </Box>
         ) : (
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
-            {bentos.row2.length > 0 ? (
-              bentos.row2.map((bento) =>
+            {filterAvailableBentos(bentos.row2).length > 0 ? (
+              filterAvailableBentos(bentos.row2).map((bento) =>
                 !bento.buies_created ? (
                   <Card
                     key={bento.id}
@@ -218,8 +222,8 @@ const Top = () => {
           </Box>
         ) : (
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
-            {bentos.row3.length > 0 ? (
-              bentos.row3.map((bento) =>
+            {filterAvailableBentos(bentos.row3).length > 0 ? (
+              filterAvailableBentos(bentos.row3).map((bento) =>
                 !bento.buies_created ? (
                   <Card
                     key={bento.id}
@@ -269,8 +273,8 @@ const Top = () => {
           </Box>
         ) : (
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
-            {bentos.row4.length > 0 ? (
-              bentos.row4.map((bento) =>
+            {filterAvailableBentos(bentos.row4).length > 0 ? (
+              filterAvailableBentos(bentos.row4).map((bento) =>
                 !bento.buies_created ? (
                   <Card
                     key={bento.id}
@@ -320,8 +324,8 @@ const Top = () => {
           </Box>
         ) : (
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
-            {bentos.row5.length > 0 ? (
-              bentos.row5.map((bento) =>
+            {filterAvailableBentos(bentos.row5).length > 0 ? (
+              filterAvailableBentos(bentos.row5).map((bento) =>
                 !bento.buies_created ? (
                   <Card
                     key={bento.id}

@@ -28,7 +28,7 @@ export async function GET(req, context) {
 
 // PUT メソッド - 在庫を更新
 export async function PUT(req, context) {
-  const { id } = context.params;
+    const { id } = await context.params;
 
   try {
     const body = await req.json();
@@ -48,13 +48,14 @@ export async function PUT(req, context) {
       return new Response(JSON.stringify({ error: 'Bento not found' }), { status: 404 });
     }
 
-    const updateQuery = `
-      UPDATE "Bentos"
-      SET is_purchased = $1, buies_created = CURRENT_TIMESTAMP
-      WHERE id = $2
-      RETURNING *;
-    `;
-    const updateResult = await client.query(updateQuery, [is_purchased, id]);
+        // データを更新
+        const updateQuery = `
+            UPDATE "Bentos"
+            SET is_purchased = $1, "purchasedDate" = CURRENT_TIMESTAMP
+            WHERE id = $2
+            RETURNING *;
+        `;
+        const updateResult = await client.query(updateQuery, [is_purchased, id]);
 
     client.release();
 
