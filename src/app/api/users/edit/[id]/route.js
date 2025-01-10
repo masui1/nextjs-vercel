@@ -55,7 +55,7 @@ export async function PUT(req, context) {
         // データを更新
         const updateQuery = `
             UPDATE "Bentos"
-            SET tradingcompany = $1, product_name = $2, price = $3, row = $4
+            SET trading_company = $1, product_name = $2, price = $3, row = $4
             WHERE id = $5
             RETURNING *;
         `;

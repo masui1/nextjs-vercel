@@ -17,6 +17,17 @@ const Create = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
+        if (!productName || !tradingCompany || !price || !row || !barcode) {
+            setErrorMessage('全ての項目を入力してください。');
+            return;
+        }
+
+        // 価格が数値かチェック
+        if (isNaN(price) || price <= 0) {
+            setErrorMessage('金額は正の数値を入力してください。');
+            return;
+        }
+
         let companyId = null;
         if (tradingCompany === '三ツ星ファーム') {
             companyId = 1;
@@ -34,12 +45,11 @@ const Create = () => {
             });
 
             if (!response.ok) {
-                const errorData = await response.json().catch(() => ({
-                    error: '不明なサーバーエラーが発生しました。',
-                }));
+                const errorData = await response.json();
                 setErrorMessage(`弁当登録に失敗しました: ${errorData.error || '不明なエラー'}`);
                 return;
             }
+
             router.push('/user/top');
         } catch (error) {
             setErrorMessage('ネットワークエラーが発生しました。');
@@ -96,13 +106,13 @@ const Create = () => {
                     <Typography variant="h6" gutterBottom>
                         バーコードスキャン
                     </Typography>
-                    <BarcodeScanner onDetected={setBarcode} />
+                        <BarcodeScanner onDetected={setBarcode} />
                     <Typography variant="body1" gutterBottom>
                         バーコード: {barcode || 'スキャン待機中...'}
                     </Typography>
                 </Box>
 
-                <Button type="submit" variant="contained" color="primary" disabled={!barcode}>
+                <Button type="submit" variant="contained" color="primary">
                     登録
                 </Button>
             </form>

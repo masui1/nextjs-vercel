@@ -15,7 +15,7 @@ export async function POST(req) {
 
     // データ登録のクエリ
     const query = `
-      INSERT INTO "Bentos" (tradingCompany, productNName, price, row, barcode, company_id)
+      INSERT INTO "Bentos" (trading_company, product_name, price, row, barcode, company_id)
       VALUES ($1, $2, $3, $4, $5, $6)
       RETURNING *;
     `;
@@ -24,7 +24,7 @@ export async function POST(req) {
       productName,
       parseInt(price, 10),
       parseInt(row, 10),
-      barcode, // バーコードを含める
+      barcode,
       companyId,
     ];
 
