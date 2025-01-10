@@ -21,7 +21,12 @@ export async function GET(req, context) {
             return NextResponse.json({ error: '弁当データが見つかりません' }, { status: 404 });
         }
 
-        return NextResponse.json(result.rows[0], { status: 200 });
+        return NextResponse.json({
+            tradingCompany: result.rows[0].trading_company,
+            productName: result.rows[0].product_name,
+            price: result.rows[0].price,
+            row: result.rows[0].row
+          }, { status: 200 });
     } catch (error) {
         console.error('データ取得中にエラーが発生しました:', error);
         return NextResponse.json({ error: 'データ取得中にエラーが発生しました', details: error.message }, { status: 500 });

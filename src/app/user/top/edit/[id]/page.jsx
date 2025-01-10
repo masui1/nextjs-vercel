@@ -27,10 +27,10 @@ const EditTop = () => {
                     const data = await response.json();
     
                     if (response.ok) {
-                        setTradingCompany(data.tradingcompany);
-                        setProductName(data.productName);
-                        setPrice(data.price);
-                        setRow(data.row);
+                        setTradingCompany(data.tradingCompany || '');
+                        setProductName(data.productName || '');
+                        setPrice(data.price || '');
+                        setRow(data.row || '');
                     } else {
                         setErrorMessage(data.error || 'データ取得に失敗しました');
                     }
