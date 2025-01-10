@@ -17,7 +17,7 @@ const Create = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        if (!productName || !tradingCompany || !price || !row || !barcode) {
+        if (!productName || !tradingCompany || !price || !row) {
             setErrorMessage('全ての項目を入力してください。');
             return;
         }
