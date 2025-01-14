@@ -25,7 +25,8 @@ export async function GET(req, context) {
             tradingCompany: result.rows[0].trading_company,
             productName: result.rows[0].product_name,
             price: result.rows[0].price,
-            row: result.rows[0].row
+            row: result.rows[0].row,
+            barcode: result.rows[0].barcode,
           }, { status: 200 });
     } catch (error) {
         console.error('データ取得中にエラーが発生しました:', error);

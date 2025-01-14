@@ -11,6 +11,7 @@ const EditTop = () => {
     const [productName, setProductName] = useState('');
     const [price, setPrice] = useState('');
     const [row, setRow] = useState('');
+    const [barcode, setBarcode] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
 
     useEffect(() => {
@@ -31,6 +32,7 @@ const EditTop = () => {
                         setProductName(data.productName || '');
                         setPrice(data.price || '');
                         setRow(data.row || '');
+                        setBarcode(data.barcode || '');
                     } else {
                         setErrorMessage(data.error || 'データ取得に失敗しました');
                     }
@@ -105,6 +107,11 @@ const EditTop = () => {
                         endAdornment: <InputAdornment position="end">段目</InputAdornment>,
                     }}
                 />
+                <Box>
+                    <Typography variant="body1" >
+                        バーコード: {barcode}
+                    </Typography>
+                </Box>
                 <Button type="submit" variant="contained" color="primary">
                     登録
                 </Button>

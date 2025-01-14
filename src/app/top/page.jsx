@@ -34,44 +34,92 @@ const Top = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchAllData = async () => {
-      const dataForRow1 = await fetchData(1, 1); // company_id:1, row:1
-      const dataForRow2 = await fetchData(1, 2); // company_id:1, row:2
-      const dataForRow3 = await fetchData(2, 3); // company_id:2, row:3
-      const dataForRow4 = await fetchData(2, 4); // company_id:2, row:4
-      const dataForRow5 = await fetchData(2, 5); // company_id:2, row:5
+  const fetchUser = async () => {
+    try {
+      const response = await fetch('/api/users', { method: 'GET', credentials: 'include' });
+      const userData = await response.json();
+      if (!response.ok) {
+        throw new Error('ユーザー情報の取得に失敗しました');
+      }
+      setUsers(userData.user || userData);
+    } catch (error) {
+      setError(error.message);
+    }
+  };
 
-      setBentos({
-        row1: dataForRow1,
-        row2: dataForRow2,
-        row3: dataForRow3,
-        row4: dataForRow4,
-        row5: dataForRow5,
+  useEffect(() => {
+    fetchUser();
+  }, []);
+
+  const fetchAllData = async () => {
+    const allRows = await Promise.all([
+      fetchData(1, 1),
+      fetchData(1, 2),
+      fetchData(2, 3),
+      fetchData(2, 4),
+      fetchData(2, 5),
+    ]);
+    const filterExpired = (items) => {
+      const now = new Date();
+      return items.filter((item) => {
+        if (!item.is_purchased || !item.purchasedData) return true;
+        const purchasedDate = new Date(item.purchasedData);
+        const timeDiff = now - purchasedDate;
+        return timeDiff <= 24 * 60 * 60 * 1000;
       });
     };
 
+    setBentos({
+      row1: filterExpired(allRows[0]),
+      row2: filterExpired(allRows[1]),
+      row3: filterExpired(allRows[2]),
+      row4: filterExpired(allRows[3]),
+      row5: filterExpired(allRows[4]),
+    });
+  };
+
+  useEffect(() => {
     fetchAllData();
   }, []);
 
   const handleSearch = async () => {
     setError(null);
     setLoading(true);
-    const params = new URLSearchParams({ q: search });
-
     try {
-      const response = await fetch(`/api/search?${params.toString()}`);
-      if (!response.ok) throw new Error('検索結果の取得に失敗しました。');
+      let url = '/api/search';
+      if (search.trim() !== '') {
+        const params = new URLSearchParams({ q: search.trim() });
+        url += `?${params.toString()}`;
+      }
+      console.log('データを取得しています:', url);
+      const response = await fetch(url);
+      if (!response.ok) throw new Error('データの取得に失敗しました。');
       const data = await response.json();
-      setBentos({
-        row1: data.slice(0, 1), // row1
-        row2: data.slice(1, 2), // row2
-        row3: data.slice(2, 3), // row3
-        row4: data.slice(3, 4), // row4
-        row5: data.slice(4, 5), // row5
-      });
+  
+      if (search.trim() === '') {
+        fetchAllData();
+      } else {
+        const groupedData = data.reduce((acc, item) => {
+          const rowKey = `row${item.row}`;
+          if (!acc[rowKey]) {
+            acc[rowKey] = [];
+          }
+          acc[rowKey].push(item);
+          return acc;
+        }, {});
+
+        const updatedBentos = {
+          row1: groupedData.row1 || [],
+          row2: groupedData.row2 || [],
+          row3: groupedData.row3 || [],
+          row4: groupedData.row4 || [],
+          row5: groupedData.row5 || [],
+        };
+
+        setBentos(updatedBentos);
+      }
     } catch (error) {
-      setError(error.message);
+      setError(`データの取得に失敗しました: ${error.message}`);
     } finally {
       setLoading(false);
     }
@@ -126,11 +174,11 @@ const Top = () => {
                     key={bento.id}
                     sx={{
                       whiteSpace: 'nowrap',
-                      minWidth: 400,
-                      maxWidth: 400,
+                      width: 'auto',
                       borderRadius: '16px',
                       boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
                       background: 'linear-gradient(135deg, #f3f4f6, #e5e7eb)',
+                      padding: '16px',
                     }}
                   >
                     <CardContent>
@@ -178,11 +226,11 @@ const Top = () => {
                     key={bento.id}
                     sx={{
                       whiteSpace: 'nowrap',
-                      minWidth: 400,
-                      maxWidth: 400,
+                      width: 'auto',
                       borderRadius: '16px',
                       boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
                       background: 'linear-gradient(135deg, #f3f4f6, #e5e7eb)',
+                      padding: '16px',
                     }}
                   >
                     <CardContent>
@@ -229,11 +277,11 @@ const Top = () => {
                     key={bento.id}
                     sx={{
                       whiteSpace: 'nowrap',
-                      minWidth: 400,
-                      maxWidth: 400,
+                      width: 'auto',
                       borderRadius: '16px',
                       boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
                       background: 'linear-gradient(135deg, #f3f4f6, #e5e7eb)',
+                      padding: '16px',
                     }}
                   >
                     <CardContent>
@@ -280,11 +328,11 @@ const Top = () => {
                     key={bento.id}
                     sx={{
                       whiteSpace: 'nowrap',
-                      minWidth: 400,
-                      maxWidth: 400,
+                      width: 'auto',
                       borderRadius: '16px',
                       boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
                       background: 'linear-gradient(135deg, #f3f4f6, #e5e7eb)',
+                      padding: '16px',
                     }}
                   >
                     <CardContent>
@@ -331,11 +379,11 @@ const Top = () => {
                     key={bento.id}
                     sx={{
                       whiteSpace: 'nowrap',
-                      minWidth: 400,
-                      maxWidth: 400,
+                      width: 'auto',
                       borderRadius: '16px',
                       boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
                       background: 'linear-gradient(135deg, #f3f4f6, #e5e7eb)',
+                      padding: '16px',
                     }}
                   >
                     <CardContent>
