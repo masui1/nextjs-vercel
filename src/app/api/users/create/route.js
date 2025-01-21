@@ -9,14 +9,15 @@ export async function POST(req) {
 
   try {
     const body = await req.json();
-    const { tradingCompany, productName, price, row, barcode, companyId } = body;
+    const { tradingCompany, productName, price, row, barcode, companyId, img } = body;
 
     await client.connect();
 
+    console.log('img field:', img);
     // データ登録のクエリ
     const query = `
-      INSERT INTO "Bentos" (trading_company, product_name, price, row, barcode, company_id)
-      VALUES ($1, $2, $3, $4, $5, $6)
+      INSERT INTO "Bentos" (trading_company, product_name, price, row, barcode, company_id, img)
+      VALUES ($1, $2, $3, $4, $5, $6, $7)
       RETURNING *;
     `;
     const values = [
@@ -26,6 +27,7 @@ export async function POST(req) {
       parseInt(row, 10),
       barcode,
       companyId,
+      img,
     ];
 
     const res = await client.query(query, values);

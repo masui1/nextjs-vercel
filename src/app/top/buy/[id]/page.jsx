@@ -75,7 +75,7 @@ const BuyTop = () => {
             <Card key={bento.id} sx={{ minWidth: 400, maxWidth: 400 }}>
               <CardContent>
                 <Typography variant="h6" gutterBottom>商品: {bento.product_name}</Typography>
-                <Typography variant="body1">取引会社: {bento.tradingcompany}</Typography>
+                <Typography variant="body1">取引会社: {bento.trading_company}</Typography>
                 <Typography variant="body2">金額: {bento.price}円</Typography>
                 <Typography variant="body2">購入済み: {bento.is_purchased ? 'はい' : 'いいえ'}</Typography>
                 <Button

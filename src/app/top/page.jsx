@@ -3,7 +3,17 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { AppBar, Box, Button, Toolbar, Typography, TextField, CircularProgress, Card, CardContent } from '@mui/material';
+import {
+  AppBar,
+  Box,
+  Button,
+  Toolbar,
+  Typography,
+  TextField,
+  CircularProgress,
+  IconButton,
+} from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
 
 const Top = () => {
   const [loading, setLoading] = useState(false);
@@ -135,26 +145,32 @@ const Top = () => {
 
   return (
     <Box>
-      <AppBar position="static">
-        <Toolbar sx={{ justifyContent: 'space-between' }}>
-          <Typography variant="h6">弁当管理サイト</Typography>
-          <TextField
-            label="弁当名"
-            variant="outlined"
-            onChange={(e) => setSearch(e.target.value)}
-            onKeyPress={(e) => {
-              if (e.key === 'Enter') handleSearch();
-            }}
-            size="small"
-          />
-          <Button onClick={handleSearch} variant="contained" color="primary" disabled={loading}>
-            検索
-          </Button>
+     <AppBar position="static">
+      <Toolbar sx={{ justifyContent: 'space-between' }}>
+        <Typography variant="h6">弁当管理サイト</Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <TextField
+              variant="outlined"
+              size="small"
+              placeholder="商品名を検索"
+              onChange={(e) => setSearch(e.target.value)}
+              sx={{ width: 300 }}
+              InputProps={{
+                endAdornment: (
+                  <IconButton onClick={handleSearch}>
+                    <SearchIcon />
+                  </IconButton>
+                ),
+              }}
+            />
+          </Box>
           <Button onClick={() => router.push('/user/login')} variant="contained" color="primary">
             管理者の方はこちらへ
           </Button>
-        </Toolbar>
-      </AppBar>
+        </Box>
+      </Toolbar>
+    </AppBar>
 
       {/* 1段目 - 三ツ星ファーム */}
       <Box sx={{ p: 2 }}>
@@ -170,35 +186,19 @@ const Top = () => {
             {filterAvailableBentos(bentos.row1).length > 0 ? (
               filterAvailableBentos(bentos.row1).map((bento) =>
                 !bento.buies_created ? (
-                  <Card
-                    key={bento.id}
-                    sx={{
-                      whiteSpace: 'nowrap',
-                      width: 'auto',
-                      borderRadius: '16px',
-                      boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
-                      background: 'linear-gradient(135deg, #f3f4f6, #e5e7eb)',
-                      padding: '16px',
-                    }}
-                  >
-                    <CardContent>
-                      <Typography variant="h6" gutterBottom>
-                        商品: {bento.product_name}
-                      </Typography>
-                      <Link href="https://mitsuboshifarm.jp/subscription_menu_2.html?course_id=14&srsltid=AfmBOopz8xTCwKeA9lqy6IuNklKcWL28yZhSDocsDtNH7BL7LUzzHPfh">
-                        詳細はこちら
+                  <div
+                      key={bento.id}
+                      className="bg-slate-200 shadow-md rounded-lg p-4 w-full max-w-xs"
+                      onClick={() => handleBuyRedirect(bento.id)}
+                    >
+                      <h3 className="text-xl font-bold">{bento.product_name}</h3>
+                      <Link href="https://mitsuboshifarm.jp/subscription_menu_2.html?course_id=14&srsltid=AfmBOopz8xTCwKeA9lqy6IuNklKcWL28yZhSDocsDtNH7BL7LUzzHPfh" legacyBehavior>
+                        <a className="text-blue-500 text-base underline" onClick={(e) => e.stopPropagation()}>詳細はこちら</a>
                       </Link>
-                      <Typography variant="body1">取引会社: 三ツ星ファーム</Typography>
-                      <Typography variant="body2">金額: {bento.price}円</Typography>
-                      <Button
-                        onClick={() => handleBuyRedirect(bento.id)}
-                        variant="contained"
-                        color="primary"
-                      >
-                        購入
-                      </Button>
-                    </CardContent>
-                  </Card>
+                      <p className="text-base font-medium text-gray-700">取引会社: 三ツ星ファーム</p>
+                      <p className="text-base font-medium text-gray-700">金額: {bento.price}円</p>
+                      <img src={`${bento.img}`} className="w-full h-auto rounded-md" alt={bento.product_name} />
+                  </div>
                 ) : null
               )
             ) : (
@@ -222,35 +222,19 @@ const Top = () => {
             {filterAvailableBentos(bentos.row2).length > 0 ? (
               filterAvailableBentos(bentos.row2).map((bento) =>
                 !bento.buies_created ? (
-                  <Card
-                    key={bento.id}
-                    sx={{
-                      whiteSpace: 'nowrap',
-                      width: 'auto',
-                      borderRadius: '16px',
-                      boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
-                      background: 'linear-gradient(135deg, #f3f4f6, #e5e7eb)',
-                      padding: '16px',
-                    }}
-                  >
-                    <CardContent>
-                      <Typography variant="h6" gutterBottom>
-                        商品: {bento.product_name}
-                      </Typography>
-                      <Link href="https://mitsuboshifarm.jp/subscription_menu_2.html?course_id=14&srsltid=AfmBOopz8xTCwKeA9lqy6IuNklKcWL28yZhSDocsDtNH7BL7LUzzHPfh">
-                        詳細はこちら
+                  <div
+                      key={bento.id}
+                      className="bg-slate-200 shadow-md rounded-lg p-4 w-full max-w-xs"
+                      onClick={() => handleBuyRedirect(bento.id)}
+                    >
+                      <h3 className="text-xl font-bold">{bento.product_name}</h3>
+                      <Link href="https://mitsuboshifarm.jp/subscription_menu_2.html?course_id=14&srsltid=AfmBOopz8xTCwKeA9lqy6IuNklKcWL28yZhSDocsDtNH7BL7LUzzHPfh" legacyBehavior>
+                        <a className="text-blue-500 text-base underline" onClick={(e) => e.stopPropagation()}>詳細はこちら</a>
                       </Link>
-                      <Typography variant="body1">取引会社: 三ツ星ファーム</Typography>
-                      <Typography variant="body2">金額: {bento.price}円</Typography>
-                      <Button
-                        onClick={() => handleBuyRedirect(bento.id)}
-                        variant="contained"
-                        color="primary"
-                      >
-                        購入
-                      </Button>
-                    </CardContent>
-                  </Card>
+                      <p className="text-base font-medium text-gray-700">取引会社: 三ツ星ファーム</p>
+                      <p className="text-base font-medium text-gray-700">金額: {bento.price}円</p>
+                      <img src={`${bento.img}`} className="w-full h-auto rounded-md" alt={bento.product_name} />
+                  </div>
                 ) : null
               )
             ) : (
@@ -273,35 +257,19 @@ const Top = () => {
             {filterAvailableBentos(bentos.row3).length > 0 ? (
               filterAvailableBentos(bentos.row3).map((bento) =>
                 !bento.buies_created ? (
-                  <Card
-                    key={bento.id}
-                    sx={{
-                      whiteSpace: 'nowrap',
-                      width: 'auto',
-                      borderRadius: '16px',
-                      boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
-                      background: 'linear-gradient(135deg, #f3f4f6, #e5e7eb)',
-                      padding: '16px',
-                    }}
-                  >
-                    <CardContent>
-                      <Typography variant="h6" gutterBottom>
-                        商品: {bento.product_name}
-                      </Typography>
-                      <Link href="https://muscledeli.jp/shop/product_categories/md-lowfat">
-                        詳細はこちら
+                  <div
+                      key={bento.id}
+                      className="bg-slate-200 shadow-md rounded-lg p-4 w-full max-w-xs"
+                      onClick={() => handleBuyRedirect(bento.id)}
+                    >
+                      <h3 className="text-xl font-bold">{bento.product_name}</h3>
+                      <Link href="https://muscledeli.jp/shop/product_categories/md-lowfat" legacyBehavior>
+                        <a className="text-blue-500 text-base underline" onClick={(e) => e.stopPropagation()}>詳細はこちら</a>
                       </Link>
-                      <Typography variant="body1">取引会社: マッスルデリ</Typography>
-                      <Typography variant="body2">金額: {bento.price}円</Typography>
-                      <Button
-                        onClick={() => handleBuyRedirect(bento.id)}
-                        variant="contained"
-                        color="primary"
-                      >
-                        購入
-                      </Button>
-                    </CardContent>
-                  </Card>
+                      <p className="text-base font-medium text-gray-700">取引会社: マッスルデリ</p>
+                      <p className="text-base font-medium text-gray-700">金額: {bento.price}円</p>
+                      <img src={`${bento.img}`} className="w-full h-auto rounded-md" alt={bento.product_name} />
+                  </div>
                 ) : null
               )
             ) : (
@@ -324,35 +292,19 @@ const Top = () => {
             {filterAvailableBentos(bentos.row4).length > 0 ? (
               filterAvailableBentos(bentos.row4).map((bento) =>
                 !bento.buies_created ? (
-                  <Card
-                    key={bento.id}
-                    sx={{
-                      whiteSpace: 'nowrap',
-                      width: 'auto',
-                      borderRadius: '16px',
-                      boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
-                      background: 'linear-gradient(135deg, #f3f4f6, #e5e7eb)',
-                      padding: '16px',
-                    }}
-                  >
-                    <CardContent>
-                      <Typography variant="h6" gutterBottom>
-                        商品: {bento.product_name}
-                      </Typography>
-                      <Link href="https://muscledeli.jp/shop/product_categories/md-lowfat">
-                        詳細はこちら
+                  <div
+                      key={bento.id}
+                      className="bg-slate-200 shadow-md rounded-lg p-4 w-full max-w-xs"
+                      onClick={() => handleBuyRedirect(bento.id)}
+                    >
+                      <h3 className="text-xl font-bold">{bento.product_name}</h3>
+                      <Link href="https://muscledeli.jp/shop/product_categories/md-lowfat" legacyBehavior>
+                        <a className="text-blue-500 text-base underline" onClick={(e) => e.stopPropagation()}>詳細はこちら</a>
                       </Link>
-                      <Typography variant="body1">取引会社: マッスルデリ</Typography>
-                      <Typography variant="body2">金額: {bento.price}円</Typography>
-                      <Button
-                        onClick={() => handleBuyRedirect(bento.id)}
-                        variant="contained"
-                        color="primary"
-                      >
-                        購入
-                      </Button>
-                    </CardContent>
-                  </Card>
+                      <p className="text-base font-medium text-gray-700">取引会社: マッスルデリ</p>
+                      <p className="text-base font-medium text-gray-700">金額: {bento.price}円</p>
+                      <img src={`${bento.img}`} className="w-full h-auto rounded-md" alt={bento.product_name} />
+                  </div>
                 ) : null
               )
             ) : (
@@ -375,35 +327,27 @@ const Top = () => {
             {filterAvailableBentos(bentos.row5).length > 0 ? (
               filterAvailableBentos(bentos.row5).map((bento) =>
                 !bento.buies_created ? (
-                  <Card
-                    key={bento.id}
-                    sx={{
-                      whiteSpace: 'nowrap',
-                      width: 'auto',
-                      borderRadius: '16px',
-                      boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
-                      background: 'linear-gradient(135deg, #f3f4f6, #e5e7eb)',
-                      padding: '16px',
-                    }}
-                  >
-                    <CardContent>
-                      <Typography variant="h6" gutterBottom>
-                        商品: {bento.product_name}
-                      </Typography>
-                      <Link href="https://muscledeli.jp/shop/product_categories/md-lowfat">
-                        詳細はこちら
-                      </Link>
-                      <Typography variant="body1">取引会社: マッスルデリ</Typography>
-                      <Typography variant="body2">金額: {bento.price}円</Typography>
-                      <Button
-                        onClick={() => handleBuyRedirect(bento.id)}
-                        variant="contained"
-                        color="primary"
+                  <div
+                      key={bento.id}
+                      className="bg-slate-200 shadow-md rounded-lg p-4 w-full max-w-xs"
+                      onClick={() => handleBuyRedirect(bento.id)}
+                    >
+                      <h3 className="text-xl font-bold">{bento.product_name}</h3>
+                      <Link
+                        href="https://muscledeli.jp/shop/product_categories/md-lowfat"
+                        legacyBehavior
                       >
-                        購入
-                      </Button>
-                    </CardContent>
-                  </Card>
+                        <a
+                          className="text-blue-500 text-base underline"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          詳細はこちら
+                        </a>
+                      </Link>
+                      <p className="text-base font-medium text-gray-700">取引会社: マッスルデリ</p>
+                      <p className="text-base font-medium text-gray-700">金額: {bento.price}円</p>
+                      <img src={`${bento.img}`} className="w-full h-auto rounded-md" alt={bento.product_name} />
+                  </div>
                 ) : null
               )
             ) : (
