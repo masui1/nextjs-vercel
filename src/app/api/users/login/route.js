@@ -1,9 +1,7 @@
 import { Pool } from 'pg';
 import { NextResponse } from "next/server";
 import bcrypt from "bcrypt";
-import { PrismaClient } from "@prisma/client";
 
-const prisma = new PrismaClient();
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
 });
