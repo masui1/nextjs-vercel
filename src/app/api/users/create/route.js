@@ -5,6 +5,9 @@ import { NextResponse } from 'next/server';
 export async function POST(req) {
   const client = new Client({
     connectionString: process.env.DATABASE_URL,
+    ssl: {
+      rejectUnauthorized: false, // SupabaseでSSL接続を使用する場合
+  },
   });
 
   try {

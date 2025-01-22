@@ -2,6 +2,9 @@ import { Pool } from 'pg';
 
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
+    ssl: {
+      rejectUnauthorized: false, // SupabaseでSSL接続を使用する場合
+  },
 });
 
 // GET メソッド　- 弁当データを取得

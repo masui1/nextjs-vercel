@@ -4,6 +4,9 @@ import bcrypt from 'bcrypt';
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false, // SupabaseでSSL接続を使用する場合
+},
 });
 
 // **GET**: ユーザー情報取得
