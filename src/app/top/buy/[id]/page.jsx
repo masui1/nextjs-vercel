@@ -66,8 +66,7 @@ const BuyTop = () => {
                     `購入に失敗しました: ${data.error || "不明なエラー"}`
                 );
                 return;
-            }
-
+            }            
             setBentos((prevState) => ({
                 row1: prevState.row1.map((bento) =>
                     bento.id === bentoId
@@ -82,71 +81,50 @@ const BuyTop = () => {
         }
     };
 
-    return (
-        <Box
-            sx={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                mt: 4,
-            }}
-        >
-            <Typography variant="h4" gutterBottom>
-                購入画面
-            </Typography>
-            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
-                {loading ? (
-                    <CircularProgress />
-                ) : bentos.row1.length > 0 ? (
-                    bentos.row1.map((bento) => (
-                        <Card
-                            key={bento.id}
-                            sx={{ minWidth: 400, maxWidth: 400 }}
-                        >
-                            <CardContent>
-                                <Typography variant="h6" gutterBottom>
-                                    商品: {bento.product_name}
-                                </Typography>
-                                <Typography variant="body1">
-                                    取引会社: {bento.trading_company}
-                                </Typography>
-                                <Typography variant="body2">
-                                    金額: {bento.price}円
-                                </Typography>
-                                <Typography variant="body2">
-                                    購入済み:{" "}
-                                    {bento.is_purchased ? "はい" : "いいえ"}
-                                </Typography>
-                                <Button
-                                    onClick={() => handleSubmit(bento.id)}
-                                    variant="contained"
-                                    color="primary"
-                                    disabled={bento.is_purchased}
-                                >
-                                    {bento.is_purchased ? "購入済み" : "購入"}
-                                </Button>
-                            </CardContent>
-                        </Card>
-                    ))
-                ) : (
-                    <Typography variant="body1">データがありません</Typography>
-                )}
-            </Box>
-            {errorMessage && (
-                <Typography color="error" sx={{ mt: 2 }}>
-                    {errorMessage}
-                </Typography>
-            )}
-            <Button
-                variant="contained"
-                color="secondary"
-                sx={{ mt: 2 }}
-                onClick={() => router.push("/top")}
-            >
-                戻る
-            </Button>
-        </Box>
-    );
+  return (
+    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 4 }}>
+      <Typography variant="h4" gutterBottom>購入画面</Typography>
+      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+        {loading ? (
+          <CircularProgress />
+        ) : bentos.row1.length > 0 ? (
+          bentos.row1.map((bento) => (
+            <Card key={bento.id} sx={{ minWidth: 400, maxWidth: 400 }}>
+              <CardContent>
+                <Typography variant="h6" gutterBottom>商品: {bento.product_name}</Typography>
+                <Typography variant="body1">取引会社: {bento.trading_company}</Typography>
+                <Typography variant="body2">金額: {bento.price}円</Typography>
+                <Typography variant="body2">購入済み: {bento.is_purchased ? 'はい' : 'いいえ'}</Typography>
+                <Button
+                  onClick={() => handleSubmit(bento.id)}
+                  variant="contained"
+                  color="primary"
+                  disabled={bento.is_purchased}
+                >
+                  {bento.is_purchased ? '購入済み' : '購入'}
+                </Button>
+              </CardContent>
+            </Card>
+          ))
+        ) : (
+          <Typography variant="body1">データがありません</Typography>
+        )}
+      </Box>
+      {errorMessage && (
+        <Typography color="error" sx={{ mt: 2 }}>
+          {errorMessage}
+        </Typography>
+      )}
+      <Button
+        variant="contained"
+        color="secondary"
+        sx={{ mt: 2 }}
+        onClick={() => router.push('/top')}
+      >
+        戻る
+      </Button>
+    </Box>
+  );
 };
 
 export default BuyTop;

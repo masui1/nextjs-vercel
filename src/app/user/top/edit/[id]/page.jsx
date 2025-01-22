@@ -12,13 +12,13 @@ import {
 
 const EditTop = () => {
     const router = useRouter();
-    const [tradingCompany, setTradingCompany] = useState("");
-    const [productName, setProductName] = useState("");
-    const [price, setPrice] = useState("");
-    const [row, setRow] = useState("");
-    const [errorMessage, setErrorMessage] = useState("");
-
-    const { id } = useParams();
+    const [id, setId] = useState(null);
+    const [tradingCompany, setTradingCompany] = useState('');
+    const [productName, setProductName] = useState('');
+    const [price, setPrice] = useState('');
+    const [row, setRow] = useState('');
+    const [barcode, setBarcode] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
 
     useEffect(() => {
         if (id) {
@@ -31,10 +31,11 @@ const EditTop = () => {
                     console.log(data);
 
                     if (response.ok) {
-                        setTradingCompany(data.trading_company);
-                        setProductName(data.product_name);
-                        setPrice(data.price);
-                        setRow(data.row);
+                        setTradingCompany(data.tradingCompany || '');
+                        setProductName(data.productName || '');
+                        setPrice(data.price || '');
+                        setRow(data.row || '');
+                        setBarcode(data.barcode || '');
                     } else {
                         setErrorMessage(
                             data.error || "データ取得に失敗しました"
@@ -58,12 +59,7 @@ const EditTop = () => {
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({
-                    trading_company: tradingCompany,
-                    product_name: productName,
-                    price,
-                    row,
-                }),
+                body: JSON.stringify({ tradingCompany, productName, price, row }),
             });
 
             if (!response.ok) {
@@ -139,6 +135,11 @@ const EditTop = () => {
                         ),
                     }}
                 />
+                <Box>
+                    <Typography variant="body1" >
+                        バーコード: {barcode}
+                    </Typography>
+                </Box>
                 <Button type="submit" variant="contained" color="primary">
                     登録
                 </Button>

@@ -39,4 +39,14 @@ export async function GET(req) {
     } finally {
         await prisma.$disconnect();
     }
+
+    const query = `
+      SELECT * FROM "Bentos"
+      WHERE company_id = $1 AND row = $2
+      ORDER BY id;
+    `;
+
+    const result = await client.query(query, [companyId, parseInt(row, 10)]);
+
+    return NextResponse.json(result.rows, { status: 200 });
 }

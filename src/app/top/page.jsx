@@ -1,19 +1,19 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import {
-    AppBar,
-    Box,
-    Button,
-    Toolbar,
-    Typography,
-    TextField,
-    CircularProgress,
-    Card,
-    CardContent,
-} from "@mui/material";
+  AppBar,
+  Box,
+  Button,
+  Toolbar,
+  Typography,
+  TextField,
+  CircularProgress,
+  IconButton,
+} from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
 
 const Top = () => {
     const [loading, setLoading] = useState(false);
@@ -28,468 +28,332 @@ const Top = () => {
     const [error, setError] = useState(null);
     const router = useRouter();
 
-    const fetchData = async (companyId, row) => {
-        setLoading(true);
-        try {
-            const response = await fetch(
-                `/api/bentos?companyId=${companyId}&row=${row}`
-            );
-            if (!response.ok) {
-                throw new Error(`Failed to fetch data: ${response.statusText}`);
-            }
-            const data = await response.json();
-            return data;
-        } catch (error) {
-            setError(`データの取得に失敗しました: ${error.message}`);
-        } finally {
-            setLoading(false);
-        }
+  const fetchData = async (companyId, row) => {
+    setLoading(true);
+    try {
+      const response = await fetch(`/api/bentos?companyId=${companyId}&row=${row}`);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch data: ${response.statusText}`);
+      }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      setError(`データの取得に失敗しました: ${error.message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchUser = async () => {
+    try {
+      const response = await fetch('/api/users', { method: 'GET', credentials: 'include' });
+      const userData = await response.json();
+      if (!response.ok) {
+        throw new Error('ユーザー情報の取得に失敗しました');
+      }
+      setUsers(userData.user || userData);
+    } catch (error) {
+      setError(error.message);
+    }
+  };
+
+  useEffect(() => {
+    fetchUser();
+  }, []);
+
+  const fetchAllData = async () => {
+    const allRows = await Promise.all([
+      fetchData(1, 1),
+      fetchData(1, 2),
+      fetchData(2, 3),
+      fetchData(2, 4),
+      fetchData(2, 5),
+    ]);
+    const filterExpired = (items) => {
+      const now = new Date();
+      return items.filter((item) => {
+        if (!item.is_purchased || !item.purchasedData) return true;
+        const purchasedDate = new Date(item.purchasedData);
+        const timeDiff = now - purchasedDate;
+        return timeDiff <= 24 * 60 * 60 * 1000;
+      });
     };
 
-    useEffect(() => {
-        const fetchAllData = async () => {
-            const dataForRow1 = await fetchData(1, 1); // company_id:1, row:1
-            const dataForRow2 = await fetchData(1, 2); // company_id:1, row:2
-            const dataForRow3 = await fetchData(2, 3); // company_id:2, row:3
-            const dataForRow4 = await fetchData(2, 4); // company_id:2, row:4
-            const dataForRow5 = await fetchData(2, 5); // company_id:2, row:5
-            console.log(
-                dataForRow1,
-                dataForRow2,
-                dataForRow3,
-                dataForRow4,
-                dataForRow5
-            );
+    setBentos({
+      row1: filterExpired(allRows[0]),
+      row2: filterExpired(allRows[1]),
+      row3: filterExpired(allRows[2]),
+      row4: filterExpired(allRows[3]),
+      row5: filterExpired(allRows[4]),
+    });
+  };
 
-            setBentos({
-                row1: dataForRow1,
-                row2: dataForRow2,
-                row3: dataForRow3,
-                row4: dataForRow4,
-                row5: dataForRow5,
-            });
+  useEffect(() => {
+    fetchAllData();
+  }, []);
+
+  const handleSearch = async () => {
+    setError(null);
+    setLoading(true);
+    try {
+      let url = '/api/search';
+      if (search.trim() !== '') {
+        const params = new URLSearchParams({ q: search.trim() });
+        url += `?${params.toString()}`;
+      }
+      console.log('データを取得しています:', url);
+      const response = await fetch(url);
+      if (!response.ok) throw new Error('データの取得に失敗しました。');
+      const data = await response.json();
+  
+      if (search.trim() === '') {
+        fetchAllData();
+      } else {
+        const groupedData = data.reduce((acc, item) => {
+          const rowKey = `row${item.row}`;
+          if (!acc[rowKey]) {
+            acc[rowKey] = [];
+          }
+          acc[rowKey].push(item);
+          return acc;
+        }, {});
+
+        const updatedBentos = {
+          row1: groupedData.row1 || [],
+          row2: groupedData.row2 || [],
+          row3: groupedData.row3 || [],
+          row4: groupedData.row4 || [],
+          row5: groupedData.row5 || [],
         };
 
-        fetchAllData();
-    }, []);
+        setBentos(updatedBentos);
+      }
+    } catch (error) {
+      setError(`データの取得に失敗しました: ${error.message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    const handleSearch = async () => {
-        setError(null);
-        setLoading(true);
-        const params = new URLSearchParams({ q: search });
+  const filterAvailableBentos = (bentos) => {
+    return bentos.filter(bento => !(bento.is_purchased || bento.purchasedDate));
+  };
 
-        try {
-            const response = await fetch(`/api/search?${params.toString()}`);
-            if (!response.ok) throw new Error("検索結果の取得に失敗しました。");
-            const data = await response.json();
-            setBentos({
-                row1: data.slice(0, 1), // row1
-                row2: data.slice(1, 2), // row2
-                row3: data.slice(2, 3), // row3
-                row4: data.slice(3, 4), // row4
-                row5: data.slice(4, 5), // row5
-            });
-        } catch (error) {
-            setError(error.message);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const handleBuyRedirect = (bentoId) => {
-        router.push(`/top/buy/${bentoId}`);
-    };
-
-    return (
-        <Box>
-            <AppBar position="static">
-                <Toolbar sx={{ justifyContent: "space-between" }}>
-                    <Typography variant="h6">弁当管理サイト</Typography>
-                    <TextField
-                        label="弁当名"
-                        variant="outlined"
-                        onChange={(e) => setSearch(e.target.value)}
-                        onKeyPress={(e) => {
-                            if (e.key === "Enter") handleSearch();
-                        }}
-                        size="small"
-                    />
-                    <Button
-                        onClick={handleSearch}
-                        variant="contained"
-                        color="primary"
-                        disabled={loading}
-                    >
-                        検索
-                    </Button>
-                    <Button
-                        onClick={() => router.push("/user/login")}
-                        variant="contained"
-                        color="primary"
-                    >
-                        管理者の方はこちらへ
-                    </Button>
-                </Toolbar>
-            </AppBar>
-
-            {/* 1段目 - 三ツ星ファーム */}
-            <Box sx={{ p: 2 }}>
-                <Typography variant="h5" gutterBottom>
-                    1段目 (三ツ星ファーム)
-                </Typography>
-                {loading ? (
-                    <Box
-                        sx={{
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            height: "100%",
-                        }}
-                    >
-                        <CircularProgress />
-                    </Box>
-                ) : (
-                    <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
-                        {bentos.row1.length > 0 ? (
-                            bentos.row1.map((bento) =>
-                                !bento.purchasedDate ? (
-                                    <Card
-                                        key={bento.id}
-                                        sx={{
-                                            whiteSpace: "nowrap",
-                                            minWidth: 400,
-                                            maxWidth: 400,
-                                            borderRadius: "16px",
-                                            boxShadow:
-                                                "0px 4px 12px rgba(0, 0, 0, 0.1)",
-                                            background:
-                                                "linear-gradient(135deg, #f3f4f6, #e5e7eb)",
-                                        }}
-                                    >
-                                        <CardContent>
-                                            <Typography
-                                                variant="h6"
-                                                gutterBottom
-                                            >
-                                                商品: {bento.product_name}
-                                            </Typography>
-                                            <Link href="https://mitsuboshifarm.jp/subscription_menu_2.html?course_id=14&srsltid=AfmBOopz8xTCwKeA9lqy6IuNklKcWL28yZhSDocsDtNH7BL7LUzzHPfh">
-                                                詳細はこちら
-                                            </Link>
-                                            <Typography variant="body1">
-                                                取引会社: 三ツ星ファーム
-                                            </Typography>
-                                            <Typography variant="body2">
-                                                金額: {bento.price}円
-                                            </Typography>
-                                            <Button
-                                                onClick={() =>
-                                                    handleBuyRedirect(bento.id)
-                                                }
-                                                variant="contained"
-                                                color="primary"
-                                            >
-                                                購入
-                                            </Button>
-                                        </CardContent>
-                                    </Card>
-                                ) : null
-                            )
-                        ) : (
-                            <Typography variant="body1">
-                                データがありません
-                            </Typography>
-                        )}
-                    </Box>
-                )}
-            </Box>
-
-            {/* 2段目 - 三ツ星ファーム */}
-            <Box sx={{ p: 2 }}>
-                <Typography variant="h5" gutterBottom>
-                    2段目 (三ツ星ファーム)
-                </Typography>
-                {loading ? (
-                    <Box
-                        sx={{
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            height: "100%",
-                        }}
-                    >
-                        <CircularProgress />
-                    </Box>
-                ) : (
-                    <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
-                        {bentos.row2.length > 0 ? (
-                            bentos.row2.map((bento) =>
-                                !bento.purchasedDate ? (
-                                    <Card
-                                        key={bento.id}
-                                        sx={{
-                                            whiteSpace: "nowrap",
-                                            minWidth: 400,
-                                            maxWidth: 400,
-                                            borderRadius: "16px",
-                                            boxShadow:
-                                                "0px 4px 12px rgba(0, 0, 0, 0.1)",
-                                            background:
-                                                "linear-gradient(135deg, #f3f4f6, #e5e7eb)",
-                                        }}
-                                    >
-                                        <CardContent>
-                                            <Typography
-                                                variant="h6"
-                                                gutterBottom
-                                            >
-                                                商品: {bento.product_name}
-                                            </Typography>
-                                            <Link href="https://mitsuboshifarm.jp/subscription_menu_2.html?course_id=14&srsltid=AfmBOopz8xTCwKeA9lqy6IuNklKcWL28yZhSDocsDtNH7BL7LUzzHPfh">
-                                                詳細はこちら
-                                            </Link>
-                                            <Typography variant="body1">
-                                                取引会社: 三ツ星ファーム
-                                            </Typography>
-                                            <Typography variant="body2">
-                                                金額: {bento.price}円
-                                            </Typography>
-                                            <Button
-                                                onClick={() =>
-                                                    handleBuyRedirect(bento.id)
-                                                }
-                                                variant="contained"
-                                                color="primary"
-                                            >
-                                                購入
-                                            </Button>
-                                        </CardContent>
-                                    </Card>
-                                ) : null
-                            )
-                        ) : (
-                            <Typography variant="body1">
-                                データがありません
-                            </Typography>
-                        )}
-                    </Box>
-                )}
-            </Box>
-
-            <Box sx={{ p: 2 }}>
-                <Typography variant="h5" gutterBottom>
-                    3段目 (マッスルデリ)
-                </Typography>
-                {loading ? (
-                    <Box
-                        sx={{
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            height: "100%",
-                        }}
-                    >
-                        <CircularProgress />
-                    </Box>
-                ) : (
-                    <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
-                        {bentos.row3.length > 0 ? (
-                            bentos.row3.map((bento) =>
-                                !bento.purchasedDate ? (
-                                    <Card
-                                        key={bento.id}
-                                        sx={{
-                                            whiteSpace: "nowrap",
-                                            minWidth: 400,
-                                            maxWidth: 400,
-                                            borderRadius: "16px",
-                                            boxShadow:
-                                                "0px 4px 12px rgba(0, 0, 0, 0.1)",
-                                            background:
-                                                "linear-gradient(135deg, #f3f4f6, #e5e7eb)",
-                                        }}
-                                    >
-                                        <CardContent>
-                                            <Typography
-                                                variant="h6"
-                                                gutterBottom
-                                            >
-                                                商品: {bento.product_name}
-                                            </Typography>
-                                            <Link href="https://muscledeli.jp/shop/product_categories/md-lowfat">
-                                                詳細はこちら
-                                            </Link>
-                                            <Typography variant="body1">
-                                                取引会社: マッスルデリ
-                                            </Typography>
-                                            <Typography variant="body2">
-                                                金額: {bento.price}円
-                                            </Typography>
-                                            <Button
-                                                onClick={() =>
-                                                    handleBuyRedirect(bento.id)
-                                                }
-                                                variant="contained"
-                                                color="primary"
-                                            >
-                                                購入
-                                            </Button>
-                                        </CardContent>
-                                    </Card>
-                                ) : null
-                            )
-                        ) : (
-                            <Typography variant="body1">
-                                データがありません
-                            </Typography>
-                        )}
-                    </Box>
-                )}
-            </Box>
-
-            <Box sx={{ p: 2 }}>
-                <Typography variant="h5" gutterBottom>
-                    4段目 (マッスルデリ)
-                </Typography>
-                {loading ? (
-                    <Box
-                        sx={{
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            height: "100%",
-                        }}
-                    >
-                        <CircularProgress />
-                    </Box>
-                ) : (
-                    <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
-                        {bentos.row4.length > 0 ? (
-                            bentos.row4.map((bento) =>
-                                !bento.purchasedDate ? (
-                                    <Card
-                                        key={bento.id}
-                                        sx={{
-                                            whiteSpace: "nowrap",
-                                            minWidth: 400,
-                                            maxWidth: 400,
-                                            borderRadius: "16px",
-                                            boxShadow:
-                                                "0px 4px 12px rgba(0, 0, 0, 0.1)",
-                                            background:
-                                                "linear-gradient(135deg, #f3f4f6, #e5e7eb)",
-                                        }}
-                                    >
-                                        <CardContent>
-                                            <Typography
-                                                variant="h6"
-                                                gutterBottom
-                                            >
-                                                商品: {bento.product_name}
-                                            </Typography>
-                                            <Link href="https://muscledeli.jp/shop/product_categories/md-lowfat">
-                                                詳細はこちら
-                                            </Link>
-                                            <Typography variant="body1">
-                                                取引会社: マッスルデリ
-                                            </Typography>
-                                            <Typography variant="body2">
-                                                金額: {bento.price}円
-                                            </Typography>
-                                            <Button
-                                                onClick={() =>
-                                                    handleBuyRedirect(bento.id)
-                                                }
-                                                variant="contained"
-                                                color="primary"
-                                            >
-                                                購入
-                                            </Button>
-                                        </CardContent>
-                                    </Card>
-                                ) : null
-                            )
-                        ) : (
-                            <Typography variant="body1">
-                                データがありません
-                            </Typography>
-                        )}
-                    </Box>
-                )}
-            </Box>
-
-            <Box sx={{ p: 2 }}>
-                <Typography variant="h5" gutterBottom>
-                    5段目 (マッスルデリ)
-                </Typography>
-                {loading ? (
-                    <Box
-                        sx={{
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            height: "100%",
-                        }}
-                    >
-                        <CircularProgress />
-                    </Box>
-                ) : (
-                    <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
-                        {bentos.row5.length > 0 ? (
-                            bentos.row5.map((bento) =>
-                                !bento.purchasedDate ? (
-                                    <Card
-                                        key={bento.id}
-                                        sx={{
-                                            whiteSpace: "nowrap",
-                                            minWidth: 400,
-                                            maxWidth: 400,
-                                            borderRadius: "16px",
-                                            boxShadow:
-                                                "0px 4px 12px rgba(0, 0, 0, 0.1)",
-                                            background:
-                                                "linear-gradient(135deg, #f3f4f6, #e5e7eb)",
-                                        }}
-                                    >
-                                        <CardContent>
-                                            <Typography
-                                                variant="h6"
-                                                gutterBottom
-                                            >
-                                                商品: {bento.product_name}
-                                            </Typography>
-                                            <Link href="https://muscledeli.jp/shop/product_categories/md-lowfat">
-                                                詳細はこちら
-                                            </Link>
-                                            <Typography variant="body1">
-                                                取引会社: マッスルデリ
-                                            </Typography>
-                                            <Typography variant="body2">
-                                                金額: {bento.price}円
-                                            </Typography>
-                                            <Button
-                                                onClick={() =>
-                                                    handleBuyRedirect(bento.id)
-                                                }
-                                                variant="contained"
-                                                color="primary"
-                                            >
-                                                購入
-                                            </Button>
-                                        </CardContent>
-                                    </Card>
-                                ) : null
-                            )
-                        ) : (
-                            <Typography variant="body1">
-                                データがありません
-                            </Typography>
-                        )}
-                    </Box>
-                )}
-            </Box>
+  return (
+    <Box>
+     <AppBar position="static">
+      <Toolbar sx={{ justifyContent: 'space-between' }}>
+        <Typography variant="h6">弁当管理サイト</Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <TextField
+              variant="outlined"
+              size="small"
+              placeholder="商品名を検索"
+              onChange={(e) => setSearch(e.target.value)}
+              sx={{ width: 300 }}
+              InputProps={{
+                endAdornment: (
+                  <IconButton onClick={handleSearch}>
+                    <SearchIcon />
+                  </IconButton>
+                ),
+              }}
+            />
+          </Box>
+          <Button onClick={() => router.push('/user/login')} variant="contained" color="primary">
+            管理者の方はこちらへ
+          </Button>
         </Box>
-    );
+      </Toolbar>
+    </AppBar>
+
+      {/* 1段目 - 三ツ星ファーム */}
+      <Box sx={{ p: 2 }}>
+        <Typography variant="h5" gutterBottom>
+          1段目 (三ツ星ファーム)
+        </Typography>
+        {loading ? (
+          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+            <CircularProgress />
+          </Box>
+        ) : (
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+            {filterAvailableBentos(bentos.row1).length > 0 ? (
+              filterAvailableBentos(bentos.row1).map((bento) =>
+                !bento.buies_created ? (
+                  <div
+                      key={bento.id}
+                      className="bg-slate-200 shadow-md rounded-lg p-4 w-full max-w-xs"
+                      onClick={() => handleBuyRedirect(bento.id)}
+                    >
+                      <h3 className="text-xl font-bold">{bento.product_name}</h3>
+                      <Link href="https://mitsuboshifarm.jp/subscription_menu_2.html?course_id=14&srsltid=AfmBOopz8xTCwKeA9lqy6IuNklKcWL28yZhSDocsDtNH7BL7LUzzHPfh" legacyBehavior>
+                        <a className="text-blue-500 text-base underline" onClick={(e) => e.stopPropagation()}>詳細はこちら</a>
+                      </Link>
+                      <p className="text-base font-medium text-gray-700">取引会社: 三ツ星ファーム</p>
+                      <p className="text-base font-medium text-gray-700">金額: {bento.price}円</p>
+                      <img src={`${bento.img}`} className="w-full h-auto rounded-md" alt={bento.product_name} />
+                  </div>
+                ) : null
+              )
+            ) : (
+              <Typography variant="body1">データがありません</Typography>
+            )}
+          </Box>
+        )}
+      </Box>
+
+      {/* 2段目 - 三ツ星ファーム */}
+      <Box sx={{ p: 2 }}>
+        <Typography variant="h5" gutterBottom>
+          2段目 (三ツ星ファーム)
+        </Typography>
+        {loading ? (
+          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+            <CircularProgress />
+          </Box>
+        ) : (
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+            {filterAvailableBentos(bentos.row2).length > 0 ? (
+              filterAvailableBentos(bentos.row2).map((bento) =>
+                !bento.buies_created ? (
+                  <div
+                      key={bento.id}
+                      className="bg-slate-200 shadow-md rounded-lg p-4 w-full max-w-xs"
+                      onClick={() => handleBuyRedirect(bento.id)}
+                    >
+                      <h3 className="text-xl font-bold">{bento.product_name}</h3>
+                      <Link href="https://mitsuboshifarm.jp/subscription_menu_2.html?course_id=14&srsltid=AfmBOopz8xTCwKeA9lqy6IuNklKcWL28yZhSDocsDtNH7BL7LUzzHPfh" legacyBehavior>
+                        <a className="text-blue-500 text-base underline" onClick={(e) => e.stopPropagation()}>詳細はこちら</a>
+                      </Link>
+                      <p className="text-base font-medium text-gray-700">取引会社: 三ツ星ファーム</p>
+                      <p className="text-base font-medium text-gray-700">金額: {bento.price}円</p>
+                      <img src={`${bento.img}`} className="w-full h-auto rounded-md" alt={bento.product_name} />
+                  </div>
+                ) : null
+              )
+            ) : (
+              <Typography variant="body1">データがありません</Typography>
+            )}
+          </Box>
+        )}
+      </Box>
+
+      <Box sx={{ p: 2 }}>
+        <Typography variant="h5" gutterBottom>
+          3段目 (マッスルデリ)
+        </Typography>
+        {loading ? (
+          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+            <CircularProgress />
+          </Box>
+        ) : (
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+            {filterAvailableBentos(bentos.row3).length > 0 ? (
+              filterAvailableBentos(bentos.row3).map((bento) =>
+                !bento.buies_created ? (
+                  <div
+                      key={bento.id}
+                      className="bg-slate-200 shadow-md rounded-lg p-4 w-full max-w-xs"
+                      onClick={() => handleBuyRedirect(bento.id)}
+                    >
+                      <h3 className="text-xl font-bold">{bento.product_name}</h3>
+                      <Link href="https://muscledeli.jp/shop/product_categories/md-lowfat" legacyBehavior>
+                        <a className="text-blue-500 text-base underline" onClick={(e) => e.stopPropagation()}>詳細はこちら</a>
+                      </Link>
+                      <p className="text-base font-medium text-gray-700">取引会社: マッスルデリ</p>
+                      <p className="text-base font-medium text-gray-700">金額: {bento.price}円</p>
+                      <img src={`${bento.img}`} className="w-full h-auto rounded-md" alt={bento.product_name} />
+                  </div>
+                ) : null
+              )
+            ) : (
+              <Typography variant="body1">データがありません</Typography>
+            )}
+          </Box>
+        )}
+      </Box>
+
+      <Box sx={{ p: 2 }}>
+        <Typography variant="h5" gutterBottom>
+          4段目 (マッスルデリ)
+        </Typography>
+        {loading ? (
+          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+            <CircularProgress />
+          </Box>
+        ) : (
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+            {filterAvailableBentos(bentos.row4).length > 0 ? (
+              filterAvailableBentos(bentos.row4).map((bento) =>
+                !bento.buies_created ? (
+                  <div
+                      key={bento.id}
+                      className="bg-slate-200 shadow-md rounded-lg p-4 w-full max-w-xs"
+                      onClick={() => handleBuyRedirect(bento.id)}
+                    >
+                      <h3 className="text-xl font-bold">{bento.product_name}</h3>
+                      <Link href="https://muscledeli.jp/shop/product_categories/md-lowfat" legacyBehavior>
+                        <a className="text-blue-500 text-base underline" onClick={(e) => e.stopPropagation()}>詳細はこちら</a>
+                      </Link>
+                      <p className="text-base font-medium text-gray-700">取引会社: マッスルデリ</p>
+                      <p className="text-base font-medium text-gray-700">金額: {bento.price}円</p>
+                      <img src={`${bento.img}`} className="w-full h-auto rounded-md" alt={bento.product_name} />
+                  </div>
+                ) : null
+              )
+            ) : (
+              <Typography variant="body1">データがありません</Typography>
+            )}
+          </Box>
+        )}
+      </Box>
+
+      <Box sx={{ p: 2 }}>
+        <Typography variant="h5" gutterBottom>
+          5段目 (マッスルデリ)
+        </Typography>
+        {loading ? (
+          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+            <CircularProgress />
+          </Box>
+        ) : (
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+            {filterAvailableBentos(bentos.row5).length > 0 ? (
+              filterAvailableBentos(bentos.row5).map((bento) =>
+                !bento.buies_created ? (
+                  <div
+                      key={bento.id}
+                      className="bg-slate-200 shadow-md rounded-lg p-4 w-full max-w-xs"
+                      onClick={() => handleBuyRedirect(bento.id)}
+                    >
+                      <h3 className="text-xl font-bold">{bento.product_name}</h3>
+                      <Link
+                        href="https://muscledeli.jp/shop/product_categories/md-lowfat"
+                        legacyBehavior
+                      >
+                        <a
+                          className="text-blue-500 text-base underline"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          詳細はこちら
+                        </a>
+                      </Link>
+                      <p className="text-base font-medium text-gray-700">取引会社: マッスルデリ</p>
+                      <p className="text-base font-medium text-gray-700">金額: {bento.price}円</p>
+                      <img src={`${bento.img}`} className="w-full h-auto rounded-md" alt={bento.product_name} />
+                  </div>
+                ) : null
+              )
+            ) : (
+              <Typography variant="body1">データがありません</Typography>
+            )}
+          </Box>
+        )}
+      </Box>
+    </Box>
+  );
 };
 
 export default Top;

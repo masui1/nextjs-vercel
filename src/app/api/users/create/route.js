@@ -5,18 +5,28 @@ import { PrismaClient } from "@prisma/client";
 export async function POST(req) {
     const prisma = new PrismaClient();
 
-    try {
-        const body = await req.json();
-        const { trading_company, product_name, price, row, company_id } = body;
+  try {
+    const body = await req.json();
+    const { tradingCompany, productName, price, row, barcode, companyId, img } = body;
 
         console.log("Received data:", body);
 
-        if (!trading_company || !product_name || !price || !row || !company_id) {
-            return NextResponse.json(
-                { error: '必要なデータが不足しています' },
-                { status: 400 }
-            );
-        }
+    console.log('img field:', img);
+    // データ登録のクエリ
+    const query = `
+      INSERT INTO "Bentos" (trading_company, product_name, price, row, barcode, company_id, img)
+      VALUES ($1, $2, $3, $4, $5, $6, $7)
+      RETURNING *;
+    `;
+    const values = [
+      tradingCompany,
+      productName,
+      parseInt(price, 10),
+      parseInt(row, 10),
+      barcode,
+      companyId,
+      img,
+    ];
 
         if (isNaN(price) || isNaN(row)) {
             return NextResponse.json(

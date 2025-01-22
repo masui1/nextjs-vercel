@@ -9,9 +9,9 @@ export async function POST(req) {
     try {
         const { username, password } = await req.json();
 
-        const user = await prisma.users.findUnique({
-            where: { username },
-        });
+    const query = 'SELECT * FROM "Users" WHERE username = $1;';
+    const values = [username];
+    const res = await pool.query(query, values);
 
         if (!user) {
             console.error("User not found", username);
