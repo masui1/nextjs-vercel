@@ -1,6 +1,8 @@
-import { PrismaClient } from "@prisma/client";
+import { Pool } from 'pg';
 
-const prisma = new PrismaClient();
+const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+});
 
 // GET メソッド　- 弁当データを取得
 export async function GET(req, context) {
@@ -17,13 +19,10 @@ export async function GET(req, context) {
             return new Response(JSON.stringify({ error: '弁当データが見つかりません' }), { status: 404 });
         }
 
-        return new Response(JSON.stringify(result), { status: 200 });
+        return new Response(JSON.stringify(result.rows[0]), { status: 200 });
     } catch (error) {
-        console.error("Error fetching data:", error);
-        return new Response(
-            JSON.stringify({ error: "データ取得中にエラーが発生しました" }),
-            { status: 500 }
-        );
+        console.error('Error fetching data:', error);
+        return new Response(JSON.stringify({ error: 'データ取得中にエラーが発生しました' }), { status: 500 });
     }
 }
 
@@ -31,48 +30,12 @@ export async function GET(req, context) {
 export async function PUT(req, context) {
     const { id } = await context.params;
 
-    try {
-        const body = await req.json();
-        const { is_purchased } = body;
+  try {
+    const body = await req.json();
+    const { is_purchased } = body;
 
-        if (typeof is_purchased !== "boolean") {
-            return new Response(
-                JSON.stringify({
-                    error: "is_purchased is required and must be a boolean",
-                }),
-                { status: 400 }
-            );
-        }
-
-        const bento = await prisma.bentos.findUnique({
-            where: { id: parseInt(id, 10) },
-        });
-
-        if (!bento) {
-            return new Response(
-                JSON.stringify({ error: "更新対象の弁当が見つかりません" }),
-                { status: 404 }
-            );
-        }
-
-        const updatedBento = await prisma.bentos.update({
-            where: { id: parseInt(id, 10) },
-            data: {
-                is_purchased,
-                purchasedDate: is_purchased ? new Date() : null,
-            },
-        });
-
-        return new Response(JSON.stringify(updatedBento), { status: 200 });
-    } catch (error) {
-        console.error("Error while updating data:", error);
-        return new Response(
-            JSON.stringify({
-                error: "Internal server error",
-                details: error.message || "No additional details available",
-            }),
-            { status: 500 }
-        );
+    if (typeof is_purchased !== 'boolean') {
+      return new Response(JSON.stringify({ error: 'is_purchased is required and must be a boolean' }), { status: 400 });
     }
 
     const client = await pool.connect();
@@ -97,4 +60,7 @@ export async function PUT(req, context) {
     client.release();
 
     return new Response(JSON.stringify(updateResult.rows[0]), { status: 200 });
+  } catch (error) {
+    return new Response(JSON.stringify({ error: 'Internal server error', details: error.message }), { status: 500 });
+  }
 }

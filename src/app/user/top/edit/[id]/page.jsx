@@ -1,14 +1,8 @@
-"use client";
+'use client';
 
-import React, { useState, useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
-import {
-    Box,
-    Button,
-    Typography,
-    TextField,
-    InputAdornment,
-} from "@mui/material";
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { Box, Button, Typography, TextField, InputAdornment } from '@mui/material';
 
 const EditTop = () => {
     const router = useRouter();
@@ -21,14 +15,17 @@ const EditTop = () => {
     const [errorMessage, setErrorMessage] = useState('');
 
     useEffect(() => {
+        const pathParts = window.location.pathname.split('/');
+        const bentoId = pathParts[pathParts.length - 1];
+        setId(bentoId);
+    }, []);
+
+    useEffect(() => {
         if (id) {
             const fetchData = async () => {
                 try {
-                    const response = await fetch(`/api/users/edit/${id}`, {
-                        method: "GET",
-                    });
+                    const response = await fetch(`/api/users/edit/${id}`, { method: 'GET' });
                     const data = await response.json();
-                    console.log(data);
 
                     if (response.ok) {
                         setTradingCompany(data.tradingCompany || '');
@@ -37,12 +34,10 @@ const EditTop = () => {
                         setRow(data.row || '');
                         setBarcode(data.barcode || '');
                     } else {
-                        setErrorMessage(
-                            data.error || "データ取得に失敗しました"
-                        );
+                        setErrorMessage(data.error || 'データ取得に失敗しました');
                     }
                 } catch (error) {
-                    setErrorMessage("ネットワークエラーが発生しました");
+                    setErrorMessage('ネットワークエラーが発生しました');
                 }
             };
 
@@ -55,52 +50,33 @@ const EditTop = () => {
 
         try {
             const response = await fetch(`/api/users/edit/${id}`, {
-                method: "PUT",
+                method: 'PUT',
                 headers: {
-                    "Content-Type": "application/json",
+                    'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ tradingCompany, productName, price, row }),
             });
 
             if (!response.ok) {
                 const errorData = await response.json().catch(() => ({
-                    error: "不明なサーバーエラーが発生しました。",
+                    error: '不明なサーバーエラーが発生しました。',
                 }));
-                setErrorMessage(
-                    `弁当更新に失敗しました: ${
-                        errorData.error || "不明なエラー"
-                    }`
-                );
+                setErrorMessage(`弁当更新に失敗しました: ${errorData.error || '不明なエラー'}`);
                 return;
             }
 
-            router.push("/user/top");
+            router.push('/user/top');
         } catch (error) {
-            setErrorMessage("ネットワークエラーが発生しました。");
+            setErrorMessage('ネットワークエラーが発生しました。');
         }
     };
 
     return (
-        <Box
-            sx={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                mt: 4,
-            }}
-        >
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 4 }}>
             <Typography variant="h4" gutterBottom>
                 届いた弁当の編集画面
             </Typography>
-            <form
-                onSubmit={handleSubmit}
-                style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "16px",
-                    width: "300px",
-                }}
-            >
+            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '300px' }}>
                 <TextField
                     label="取引会社"
                     value={tradingCompany}
@@ -119,9 +95,7 @@ const EditTop = () => {
                     onChange={(e) => setPrice(e.target.value)}
                     fullWidth
                     InputProps={{
-                        endAdornment: (
-                            <InputAdornment position="end">円</InputAdornment>
-                        ),
+                        endAdornment: <InputAdornment position="end">円</InputAdornment>,
                     }}
                 />
                 <TextField
@@ -130,9 +104,7 @@ const EditTop = () => {
                     onChange={(e) => setRow(e.target.value)}
                     fullWidth
                     InputProps={{
-                        endAdornment: (
-                            <InputAdornment position="end">段目</InputAdornment>
-                        ),
+                        endAdornment: <InputAdornment position="end">段目</InputAdornment>,
                     }}
                 />
                 <Box>

@@ -1,17 +1,24 @@
+import { Pool } from 'pg';
 import { NextResponse } from "next/server";
 import bcrypt from "bcrypt";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
+const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+});
 
 // **POST**: ログイン認証
 export async function POST(req) {
     try {
         const { username, password } = await req.json();
 
-    const query = 'SELECT * FROM "Users" WHERE username = $1;';
-    const values = [username];
-    const res = await pool.query(query, values);
+        const query = 'SELECT * FROM "Users" WHERE username = $1;';
+        const values = [username];
+        const res = await pool.query(query, values);
+
+        // Extract the user from the query result
+        const user = res.rows[0]; // Assuming "rows" contains the results
 
         if (!user) {
             console.error("User not found", username);

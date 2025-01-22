@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -193,11 +193,28 @@ const UserTop = () => {
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
             {bentos.row1.length > 0 ? (
               bentos.row1.map((bento) => (
-                <div key={bento.id} className="bg-slate-200 shadow-md rounded-lg p-4 w-full max-w-96">
-                  <h3 className="text-xl font-bold">{bento.product_name}</h3>
-                  <p className="text-base font-medium text-gray-700">取引会社: 三ツ星ファーム</p>
-                  <p className="text-base font-medium text-gray-700">金額: {bento.price}円</p>
-                  <img src={`${bento.img}`} className="w-full h-auto rounded-md" alt={bento.product_name} />
+                <div
+                  key={bento.id}
+                  className="relative bg-cover bg-center shadow-md rounded-lg w-full max-w-96"
+                  style={{
+                    backgroundImage: `url(${bento.img})`,
+                    height: '300px',
+                  }}
+                  onClick={() => router.push(`/user/top/edit/${bento.id}`)}
+                >
+                  <div className="absolute inset-0 rounded-lg flex flex-col justify-end">
+                    <div className="w-full bg-black bg-opacity-40 p-4 rounded-b-lg">
+                      <h3 className="text-xl font-bold text-white">
+                        {bento.product_name}
+                      </h3>
+                      <p className="text-base font-medium text-gray-200 mt-2">
+                        取引会社: 三ツ星ファーム
+                      </p>
+                      <p className="text-base font-medium text-gray-200 mt-2">
+                        金額: {bento.price}円
+                      </p>
+                    </div>
+                  </div>
                 </div>
               ))
             ) : (
@@ -221,15 +238,28 @@ const UserTop = () => {
             {bentos.row2.length > 0 ? (
               bentos.row2.map((bento) => (
                 <div
-                  key={bento.id}
-                  className="bg-slate-200 shadow-md rounded-lg p-4 w-full max-w-96"
-                  onClick={() => router.push(`/user/top/edit/${bento.id}`)}
-                >
-                  <h3 className="text-xl font-bold">{bento.product_name}</h3>
-                  <p className="text-base font-medium text-gray-700">取引会社: 三ツ星ファーム</p>
-                  <p className="text-base font-medium text-gray-700">金額: {bento.price}円</p>
-                  <img src={`${bento.img}`} className="w-full h-auto rounded-md" alt={bento.product_name} />
+                key={bento.id}
+                className="relative bg-cover bg-center shadow-md rounded-lg w-full max-w-96"
+                style={{
+                  backgroundImage: `url(${bento.img})`,
+                  height: '300px',
+                }}
+                onClick={() => router.push(`/user/top/edit/${bento.id}`)}
+              >
+                <div className="absolute inset-0 rounded-lg flex flex-col justify-end">
+                  <div className="w-full bg-black bg-opacity-40 p-4 rounded-b-lg">
+                    <h3 className="text-xl font-bold text-white">
+                      {bento.product_name}
+                    </h3>
+                    <p className="text-base font-medium text-gray-200 mt-2">
+                      取引会社: 三ツ星ファーム
+                    </p>
+                    <p className="text-base font-medium text-gray-200 mt-2">
+                      金額: {bento.price}円
+                    </p>
+                  </div>
                 </div>
+              </div>
               ))
             ) : (
               <Typography variant="body1">データがありません</Typography>
@@ -251,15 +281,28 @@ const UserTop = () => {
             {bentos.row3.length > 0 ? (
               bentos.row3.map((bento) => (
                 <div
-                  key={bento.id}
-                  className="bg-slate-200 shadow-md rounded-lg p-4 w-full max-w-96"
-                  onClick={() => router.push(`/user/top/edit/${bento.id}`)}
-                >
-                  <h3 className="text-xl font-bold">{bento.product_name}</h3>
-                  <p className="text-base font-medium text-gray-700">取引会社: マッスルデリ</p>
-                  <p className="text-base font-medium text-gray-700">金額: {bento.price}円</p>
-                  <img src={`${bento.img}`} className="w-full h-auto rounded-md" alt={bento.product_name} />
+                key={bento.id}
+                className="relative bg-cover bg-center shadow-md rounded-lg w-full max-w-96"
+                style={{
+                  backgroundImage: `url(${bento.img})`,
+                  height: '300px',
+                }}
+                onClick={() => router.push(`/user/top/edit/${bento.id}`)}
+              >
+                <div className="absolute inset-0 rounded-lg flex flex-col justify-end">
+                  <div className="w-full bg-black bg-opacity-40 p-4 rounded-b-lg">
+                    <h3 className="text-xl font-bold text-white">
+                      {bento.product_name}
+                    </h3>
+                    <p className="text-base font-medium text-gray-200 mt-2">
+                      取引会社: マッスルデリ
+                    </p>
+                    <p className="text-base font-medium text-gray-200 mt-2">
+                      金額: {bento.price}円
+                    </p>
+                  </div>
                 </div>
+              </div>
               ))
             ) : (
               <Typography variant="body1">データがありません</Typography>
@@ -281,15 +324,28 @@ const UserTop = () => {
             {bentos.row4.length > 0 ? (
               bentos.row4.map((bento) => (
                 <div
-                  key={bento.id}
-                  className="bg-slate-200 shadow-md rounded-lg p-4 w-full max-w-96"
-                  onClick={() => router.push(`/user/top/edit/${bento.id}`)}
-                >
-                  <h3 className="text-xl font-bold">{bento.product_name}</h3>
-                  <p className="text-base font-medium text-gray-700">取引会社: マッスルデリ</p>
-                  <p className="text-base font-medium text-gray-700">金額: {bento.price}円</p>
-                  <img src={`${bento.img}`} className="w-full h-auto rounded-md" alt={bento.product_name} />
+                key={bento.id}
+                className="relative bg-cover bg-center shadow-md rounded-lg w-full max-w-96"
+                style={{
+                  backgroundImage: `url(${bento.img})`,
+                  height: '300px',
+                }}
+                onClick={() => router.push(`/user/top/edit/${bento.id}`)}
+              >
+                <div className="absolute inset-0 rounded-lg flex flex-col justify-end">
+                  <div className="w-full bg-black bg-opacity-40 p-4 rounded-b-lg">
+                    <h3 className="text-xl font-bold text-white">
+                      {bento.product_name}
+                    </h3>
+                    <p className="text-base font-medium text-gray-200 mt-2">
+                      取引会社: マッスルデリ
+                    </p>
+                    <p className="text-base font-medium text-gray-200 mt-2">
+                      金額: {bento.price}円
+                    </p>
+                  </div>
                 </div>
+              </div>
               ))
             ) : (
               <Typography variant="body1">データがありません</Typography>
@@ -311,15 +367,28 @@ const UserTop = () => {
             {bentos.row5.length > 0 ? (
               bentos.row5.map((bento) => (
                 <div
-                  key={bento.id}
-                  className="bg-slate-200 shadow-md rounded-lg p-4 w-full max-w-96"
-                  onClick={() => router.push(`/user/top/edit/${bento.id}`)}
-                >
-                  <h3 className="text-xl font-bold">{bento.product_name}</h3>
-                  <p className="text-base font-medium text-gray-700">取引会社: マッスルデリ</p>
-                  <p className="text-base font-medium text-gray-700">金額: {bento.price}円</p>
-                  <img src={`${bento.img}`} className="w-full h-auto rounded-md" alt={bento.product_name} />
+                key={bento.id}
+                className="relative bg-cover bg-center shadow-md rounded-lg w-full max-w-96"
+                style={{
+                  backgroundImage: `url(${bento.img})`,
+                  height: '300px',
+                }}
+                onClick={() => router.push(`/user/top/edit/${bento.id}`)}
+              >
+                <div className="absolute inset-0 rounded-lg flex flex-col justify-end">
+                  <div className="w-full bg-black bg-opacity-40 p-4 rounded-b-lg">
+                    <h3 className="text-xl font-bold text-white">
+                      {bento.product_name}
+                    </h3>
+                    <p className="text-base font-medium text-gray-200 mt-2">
+                      取引会社: マッスルデリ
+                    </p>
+                    <p className="text-base font-medium text-gray-200 mt-2">
+                      金額: {bento.price}円
+                    </p>
+                  </div>
                 </div>
+              </div>
               ))
             ) : (
               <Typography variant="body1">データがありません</Typography>

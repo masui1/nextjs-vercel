@@ -1,21 +1,26 @@
-import { PrismaClient } from "@prisma/client";
+import { Client } from 'pg';
 
-const prisma = new PrismaClient();
+const client = new Client({
+  connectionString: process.env.DATABASE_URL,
+});
+
+
+let isConnected = false;
+
+async function connectClient() {
+  if (!isConnected) {
+    await client.connect();
+    isConnected = true;
+    console.log('Connected to the database');
+  }
+}
 
 export async function GET(req) {
-    const { searchParams } = new URL(req.url);
-    const q = searchParams.get("q") || "";
-    console.log(q);
+  const { searchParams } = new URL(req.url);
+  const q = searchParams.get('q') || '';
 
-    try {
-        const bentos = await prisma.bentos.findMany({
-            where: {
-                product_name: {
-                    contains: q,
-                    mode: "insensitive",
-                },
-            },
-        });
+  try {
+    await connectClient();
 
     const query = `SELECT * FROM "Bentos" WHERE product_name ILIKE $1`;
     const values = [`%${q}%`];

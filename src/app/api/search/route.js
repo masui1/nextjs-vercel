@@ -17,15 +17,8 @@ export async function GET(req) {
   const { searchParams } = new URL(req.url);
   const q = searchParams.get('q')?.trim() || '';
 
-    try {
-        const bentos = await prisma.bentos.findMany({
-            where: {
-                product_name: {
-                    contains: q,
-                    mode: "insensitive",
-                },
-            },
-        });
+  try {
+    await connectClient();
 
     let query = 'SELECT * FROM "Bentos"';
     let values = [];

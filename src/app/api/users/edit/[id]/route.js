@@ -1,19 +1,16 @@
-import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { Pool } from 'pg';
+import { NextResponse } from 'next/server';
 
-const prisma = new PrismaClient();
+const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+});
 
 // GET メソッド - 弁当データを取得
 export async function GET(req, context) {
     const { id } = await context.params;
 
     try {
-        const result = await prisma.bentos.findUnique({
-            where: {
-                id: parseInt(id, 10),
-            },
-        });
-        console.log(result);
+        const client = await pool.connect();
 
         const query = 'SELECT * FROM "Bentos" WHERE id = $1';
         const result = await client.query(query, [id]);
@@ -32,14 +29,8 @@ export async function GET(req, context) {
             barcode: result.rows[0].barcode,
           }, { status: 200 });
     } catch (error) {
-        console.error("データ取得中にエラーが発生しました:", error);
-        return NextResponse.json(
-            {
-                error: "データ取得中にエラーが発生しました",
-                details: error.message,
-            },
-            { status: 500 }
-        );
+        console.error('データ取得中にエラーが発生しました:', error);
+        return NextResponse.json({ error: 'データ取得中にエラーが発生しました', details: error.message }, { status: 500 });
     }
 }
 
@@ -49,37 +40,15 @@ export async function PUT(req, context) {
 
     try {
         const body = await req.json();
-<<<<<<< HEAD
-        const { trading_company, product_name, price, row } = body;
-
-        // 必須データの検証
-        if (!trading_company || !product_name || !price || !row) {
-            return NextResponse.json(
-                { error: "必要なデータが不足しています" },
-                { status: 400 }
-            );
-=======
         const { tradingCompany, productName, price, row } = body;
 
         // 必須データの検証
         if (!tradingCompany || !productName || !price || !row) {
             return NextResponse.json({ error: '必要なデータが不足しています' }, { status: 400 });
->>>>>>> 2e401ce1dcb7416d2a7acf8ee39f2ef6167745b5
         }
 
-        const updatedResult = await prisma.bentos.update({
-            where: { id: parseInt(id) },
-            data: {
-                trading_company,
-                product_name,
-                price: parseInt(price),
-                row: parseInt(row),
-            },
-        });
+        const client = await pool.connect();
 
-<<<<<<< HEAD
-        return NextResponse.json(updatedResult, { status: 200 });
-=======
         // データが存在するか確認
         const checkQuery = 'SELECT * FROM "Bentos" WHERE id = $1';
         const checkResult = await client.query(checkQuery, [id]);
@@ -101,15 +70,8 @@ export async function PUT(req, context) {
         client.release();
 
         return NextResponse.json(updateResult.rows[0], { status: 200 });
->>>>>>> 2e401ce1dcb7416d2a7acf8ee39f2ef6167745b5
     } catch (error) {
-        console.error("データ更新中にエラーが発生しました:", error.stack);
-        return NextResponse.json(
-            {
-                error: "データ更新中にエラーが発生しました",
-                details: error.message,
-            },
-            { status: 500 }
-        );
+        console.error('データ更新中にエラーが発生しました:', error.stack);
+        return NextResponse.json({ error: 'データ更新中にエラーが発生しました', details: error.message }, { status: 500 });
     }
 }
