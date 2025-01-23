@@ -1,49 +1,53 @@
-import { Client } from 'pg'; 
+import { createClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
+
+// Supabaseクライアントの作成
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+);
 
 // **POST**: データ登録
 export async function POST(req) {
-  const client = new Client({
-    connectionString: process.env.DATABASE_URL,
-    ssl: {
-      rejectUnauthorized: false, // SupabaseでSSL接続を使用する場合
-  },
-  });
-
   try {
+    // リクエストボディを取得
     const body = await req.json();
     const { tradingCompany, productName, price, row, barcode, companyId, img } = body;
 
-    await client.connect();
-
     console.log('img field:', img);
-    // データ登録のクエリ
-    const query = `
-      INSERT INTO "Bentos" (trading_company, product_name, price, row, barcode, company_id, img)
-      VALUES ($1, $2, $3, $4, $5, $6, $7)
-      RETURNING *;
-    `;
-    const values = [
-      tradingCompany,
-      productName,
-      parseInt(price, 10),
-      parseInt(row, 10),
-      barcode,
-      companyId,
-      img,
-    ];
 
-    const res = await client.query(query, values);
+    // データ登録
+    const { data, error } = await supabase
+      .from('Bentos') // テーブル名
+      .insert([
+        {
+          trading_company: tradingCompany,
+          product_name: productName,
+          price: parseInt(price, 10),
+          row: parseInt(row, 10),
+          barcode: barcode,
+          company_id: companyId,
+          img: img,
+        },
+      ])
+      .select(); // 挿入されたデータを取得
 
-    return NextResponse.json(res.rows[0], { status: 201 });
+    // エラーハンドリング
+    if (error) {
+      console.error('データ登録中にエラーが発生しました:', error);
+      return NextResponse.json(
+        { error: 'データ登録中にエラーが発生しました', details: error.message },
+        { status: 500 }
+      );
+    }
+
+    // 成功レスポンスを返す
+    return NextResponse.json(data[0], { status: 201 });
   } catch (error) {
-    console.error('データ登録中にエラーが発生しました:', error);
-
+    console.error('サーバーエラーが発生しました:', error);
     return NextResponse.json(
-      { error: 'データ登録中にエラーが発生しました', details: error.message },
+      { error: 'サーバーエラーが発生しました', details: error.message },
       { status: 500 }
     );
-  } finally {
-    await client.end();
   }
 }
