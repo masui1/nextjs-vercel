@@ -11,9 +11,9 @@ export async function GET(req) {
   try {
     const url = new URL(req.url, `http://${req.headers.host}`);
     const companyId = url.searchParams.get('companyId');
-    const row = url.searchParams.get('row');
+    const row = parseInt(url.searchParams.get('row'), 10);
 
-    if (!companyId || !row) {
+    if (!companyId || isNaN(row)) { // rowが数値でない場合をチェック
       return NextResponse.json(
         { error: 'companyId and row are required' },
         { status: 400 }
@@ -29,10 +29,7 @@ export async function GET(req) {
       .order('id');  // idでソート
 
     if (error) {
-      return NextResponse.json(
-        { error: 'データ取得中にエラーが発生しました', details: error.message },
-        { status: 500 }
-      );
+      throw error; // errorが発生した場合にスロー
     }
 
     return NextResponse.json(data, { status: 200 });
