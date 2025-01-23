@@ -8,25 +8,24 @@ const supabase = createClient(
 );
 
 export async function GET(req) {
-  try {
     const url = new URL(req.url, `http://${req.headers.host}`);
     const companyId = url.searchParams.get('companyId');
     const row = parseInt(url.searchParams.get('row'), 10);
 
-    if (!companyId || isNaN(row)) { // rowが数値でない場合をチェック
+    if (!companyId || !row) {
       return NextResponse.json(
         { error: 'companyId and row are required' },
         { status: 400 }
       );
     }
-
+    try {
     // SupabaseクエリでBentosテーブルからデータを取得
     const { data, error } = await supabase
       .from('Bentos')
       .select('*')
       .eq('company_id', companyId)
       .eq('row', row)
-      .order('id');  // idでソート
+      .order('id');
 
     if (error) {
       throw error; // errorが発生した場合にスロー
