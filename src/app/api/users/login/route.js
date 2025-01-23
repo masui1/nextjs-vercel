@@ -2,6 +2,10 @@ import supabase from '@/lib/supabase';
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcrypt';
 
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+);
 // **POST**: ログイン認証
 export async function POST(req) {
   try {

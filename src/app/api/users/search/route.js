@@ -1,5 +1,9 @@
 import supabase from '@/lib/supabase';
 
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+);
 export async function GET(req) {
   const { searchParams } = new URL(req.url);
   const q = searchParams.get('q') || ''; // クエリ文字列を取得

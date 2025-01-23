@@ -1,6 +1,10 @@
 import supabase from '@/lib/supabase';  // Supabaseクライアントをインポート
 import { NextResponse } from 'next/server';
 
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+);
 export async function GET(req) {
   try {
     const url = new URL(req.url, `http://${req.headers.host}`);

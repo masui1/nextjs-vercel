@@ -1,6 +1,11 @@
 import supabase from '@/lib/supabase';
 import { NextResponse } from 'next/server';
 
+const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  );
+
 export async function PUT(req, context) {
     const { id } = context.params; // context.paramsからIDを取得
 
