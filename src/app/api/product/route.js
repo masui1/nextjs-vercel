@@ -61,7 +61,7 @@ export async function GET() {
         {
             id: 8,
             trading_company: "三ツ星ファーム",
-            product_name: "トリュフ香る　デミグラスのハンバーグ",
+            product_name: "トリュフ香る デミグラスのハンバーグ",
             price: 200,
             company_id: 1,
             img: "/product_imag/product_08.jpg",
@@ -93,7 +93,7 @@ export async function GET() {
         {
             id: 12,
             trading_company: "三ツ星ファーム",
-            product_name: "丹波の西京味噌の 銀鮭焼き弁当",
+            product_name: "丹波の西京味噌の銀鮭焼き弁当",
             price: 200,
             company_id: 1,
             img: "/product_imag/product_012.jpg",
@@ -149,7 +149,7 @@ export async function GET() {
         {
             id: 19,
             trading_company: "三ツ星ファーム",
-            product_name: "旨々ホイコーローと　定番中華の味セット",
+            product_name: "旨々ホイコーローと定番中華の味セット",
             price: 200,
             company_id: 1,
             img: "/product_imag/product_019.jpg",
@@ -157,7 +157,7 @@ export async function GET() {
         {
             id: 20,
             trading_company: "三ツ星ファーム",
-            product_name: "香ばし醤油の 特製豚肉の生姜焼き",
+            product_name: "香ばし醤油の特製豚肉の生姜焼き",
             price: 200,
             company_id: 1,
             img: "/product_imag/product_020.jpg",
@@ -197,7 +197,7 @@ export async function GET() {
         {
             id: 25,
             trading_company: "三ツ星ファーム",
-            product_name: "三ツ星 名店のナポリ風ピッツァ（マルゲリータ）",
+            product_name: "三ツ星名店のナポリ風ピッツァ（マルゲリータ）",
             price: 200,
             company_id: 1,
             img: "/product_imag/product_025.jpg",
@@ -213,7 +213,7 @@ export async function GET() {
         {
             id: 27,
             trading_company: "三ツ星ファーム",
-            product_name: "定番の味しみしみ ぶり大根",
+            product_name: "定番の味しみしみぶり大根",
             price: 200,
             company_id: 1,
             img: "/product_imag/product_027.jpg",
@@ -253,7 +253,7 @@ export async function GET() {
         {
             id: 32,
             trading_company: "三ツ星ファーム",
-            product_name: "赤ワインと黒胡椒の 大人のデミハンバーグ",
+            product_name: "赤ワインと黒胡椒の大人のデミハンバーグ",
             price: 200,
             company_id: 1,
             img: "/product_imag/product_032.jpg",
@@ -261,7 +261,7 @@ export async function GET() {
         {
             id: 33,
             trading_company: "三ツ星ファーム",
-            product_name: "牛肉の胡麻ポン蒸し 焦がし葱を添えて",
+            product_name: "牛肉の胡麻ポン蒸し焦がし葱を添えて",
             price: 200,
             company_id: 1,
             img: "/product_imag/product_033.jpg",
@@ -285,7 +285,7 @@ export async function GET() {
         {
             id: 36,
             trading_company: "三ツ星ファーム",
-            product_name: "満腹ソーセージと鱈フライ　特製タルタル乗せ",
+            product_name: "満腹ソーセージと鱈フライ 特製タルタル乗せ",
             price: 200,
             company_id: 1,
             img: "/product_imag/product_036.jpg",
@@ -301,7 +301,7 @@ export async function GET() {
         {
             id: 38,
             trading_company: "三ツ星ファーム",
-            product_name: "鶏と味染みナスの さっぱりみぞれあん",
+            product_name: "鶏と味染みナスのさっぱりみぞれあん",
             price: 200,
             company_id: 1,
             img: "/product_imag/product_038.jpg",
@@ -325,7 +325,7 @@ export async function GET() {
         {
             id: 41,
             trading_company: "三ツ星ファーム",
-            product_name: "濃厚ゴマだれの 担々風ハンバーグ",
+            product_name: "濃厚ゴマだれの担々風ハンバーグ",
             price: 200,
             company_id: 1,
             img: "/product_imag/product_041.jpg",
@@ -349,7 +349,7 @@ export async function GET() {
         {
             id: 44,
             trading_company: "三ツ星ファーム",
-            product_name: "じっくり香ばしく焼き上げた　牛カルビライスバーガー",
+            product_name: "じっくり香ばしく焼き上げた牛カルビライスバーガー",
             price: 200,
             company_id: 1,
             img: "/product_imag/product_044.jpg",
@@ -365,7 +365,7 @@ export async function GET() {
         {
             id: 46,
             trading_company: "三ツ星ファーム",
-            product_name: "天津風卵の 贅沢紅ズワイガニの白雲あん",
+            product_name: "天津風卵の贅沢紅ズワイガニの白雲あん",
             price: 200,
             company_id: 1,
             img: "/product_imag/product_046.jpg",
@@ -373,7 +373,7 @@ export async function GET() {
         {
             id: 47,
             trading_company: "三ツ星ファーム",
-            product_name: "ごはんがすすむド定番 甘辛鶏照り焼き",
+            product_name: "ごはんがすすむド定番甘辛鶏照り焼き",
             price: 200,
             company_id: 1,
             img: "/product_imag/product_047.jpg",
@@ -413,7 +413,7 @@ export async function GET() {
         {
             id: 52,
             trading_company: "三ツ星ファーム",
-            product_name: "鶏つくね あおさ香るとろ～りチーズクリーム",
+            product_name: "鶏つくねあおさ香るとろ～りチーズクリーム",
             price: 200,
             company_id: 1,
             img: "/product_imag/product_052.jpg",
@@ -429,7 +429,7 @@ export async function GET() {
         {
             id: 54,
             trading_company: "三ツ星ファーム",
-            product_name: "三ツ星 名店のナポリ風ピッツァ（クワトロフォルマッジ）",
+            product_name: "三ツ星名店のナポリ風ピッツァ（クワトロフォルマッジ）",
             price: 200,
             company_id: 1,
             img: "/product_imag/product_054.jpg",
@@ -437,7 +437,7 @@ export async function GET() {
         {
             id: 55,
             trading_company: "三ツ星ファーム",
-            product_name: "ヒレカツ 濃厚Wチーズソース",
+            product_name: "ヒレカツ濃厚Wチーズソース",
             price: 200,
             company_id: 1,
             img: "/product_imag/product_055.jpg",
@@ -517,7 +517,7 @@ export async function GET() {
         {
             id: 65,
             trading_company: "三ツ星ファーム",
-            product_name: "プリプリ赤魚の 和風みぞれあんかけ",
+            product_name: "プリプリ赤魚の和風みぞれあんかけ",
             price: 200,
             company_id: 1,
             img: "/product_imag/product_065.jpg",
@@ -541,7 +541,7 @@ export async function GET() {
         {
             id: 68,
             trading_company: "三ツ星ファーム",
-            product_name: "魚介のコクと旨みの 海鮮チゲ風",
+            product_name: "魚介のコクと旨みの海鮮チゲ風",
             price: 200,
             company_id: 1,
             img: "/product_imag/product_068.jpg",
@@ -573,7 +573,7 @@ export async function GET() {
         {
             id: 72,
             trading_company: "三ツ星ファーム",
-            product_name: "海老カツと 濃厚エビトマトクリームのW仕立て",
+            product_name: "海老カツと濃厚エビトマトクリームのW仕立て",
             price: 200,
             company_id: 1,
             img: "/product_imag/product_072.jpg",
@@ -597,7 +597,7 @@ export async function GET() {
         {
             id: 75,
             trading_company: "三ツ星ファーム",
-            product_name: "さっぱり豚もも肉 胡麻豆乳だれ",
+            product_name: "さっぱり豚もも肉胡麻豆乳だれ",
             price: 200,
             company_id: 1,
             img: "/product_imag/product_075.jpg",
@@ -661,7 +661,7 @@ export async function GET() {
         {
             id: 83,
             trading_company: "三ツ星ファーム",
-            product_name: "しにせの京なま麩 湯葉あんかけ仕立て",
+            product_name: "しにせの京なま麩湯葉あんかけ仕立て",
             price: 200,
             company_id: 1,
             img: "/product_imag/product_083.jpg",
@@ -701,7 +701,7 @@ export async function GET() {
         {
             id: 88,
             trading_company: "三ツ星ファーム",
-            product_name: "台湾夜市の味わい ルーローハン弁当",
+            product_name: "台湾夜市の味わいルーローハン弁当",
             price: 200,
             company_id: 1,
             img: "/product_imag/product_088.jpg",
@@ -709,7 +709,7 @@ export async function GET() {
         {
             id: 89,
             trading_company: "三ツ星ファーム",
-            product_name: "しっとり蒸し鶏の 洋風チーズソース",
+            product_name: "しっとり蒸し鶏の洋風チーズソース",
             price: 200,
             company_id: 1,
             img: "/product_imag/product_089.jpg",
@@ -765,7 +765,7 @@ export async function GET() {
         {
             id: 96,
             trading_company: "三ツ星ファーム",
-            product_name: "蟹とふわふわ卵の プーパッポンカレー",
+            product_name: "蟹とふわふわ卵のプーパッポンカレー",
             price: 200,
             company_id: 1,
             img: "/product_imag/product_096.jpg",
@@ -773,7 +773,7 @@ export async function GET() {
         {
             id: 97,
             trading_company: "三ツ星ファーム",
-            product_name: "ベトナム屋台のお好み焼き　バインセオ風",
+            product_name: "ベトナム屋台のお好み焼き バインセオ風",
             price: 200,
             company_id: 1,
             img: "/product_imag/product_097.jpg",
@@ -845,7 +845,7 @@ export async function GET() {
         {
             id: 106,
             trading_company: "マッスルデリ",
-            product_name: "長崎風ちゃんぽんセット",
+            product_name: "長崎ちゃんぽんセット",
             price: 300,
             company_id: 2,
             img: "/product_imag/product_0106.jpg",
@@ -933,7 +933,7 @@ export async function GET() {
         {
             id: 117,
             trading_company: "マッスルデリ",
-            product_name: "チーズキーマカレー",
+            product_name: "チーズキーマカレーセット",
             price: 300,
             company_id: 2,
             img: "/product_imag/product_0117.jpg",
@@ -1061,7 +1061,7 @@ export async function GET() {
         {
             id: 133,
             trading_company: "マッスルデリ",
-            product_name: "鶏肉のロースト　クリームソースセット",
+            product_name: "鶏肉のローストクリームソースセット",
             price: 300,
             company_id: 2,
             img: "/product_imag/product_0133.jpg",
