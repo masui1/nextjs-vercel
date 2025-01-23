@@ -7,15 +7,17 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 );
 
-export async function GET(req, context) {
-  const { id } = await context.params;
+// GET メソッド - 弁当データを取得
+export async function GET(req, { params }) {
+  // await params before using it
+  const { id } = await params;  // Await the params
 
   try {
     const { data, error } = await supabase
       .from('Bentos')
       .select('*')
       .eq('id', id)
-      .single();  // 1件だけ取得
+      .single();  // Retrieve a single item based on the `id`
 
     if (error) {
       return new NextResponse(
@@ -25,19 +27,26 @@ export async function GET(req, context) {
     }
 
     if (!data) {
-      return new NextResponse(JSON.stringify({ error: '弁当データが見つかりません' }), { status: 404 });
+      return new NextResponse(
+        JSON.stringify({ error: '弁当データが見つかりません' }),
+        { status: 404 }
+      );
     }
 
     return new NextResponse(JSON.stringify(data), { status: 200 });
   } catch (error) {
     console.error('Error fetching data:', error);
-    return new NextResponse(JSON.stringify({ error: 'データ取得中にエラーが発生しました' }), { status: 500 });
+    return new NextResponse(
+      JSON.stringify({ error: 'データ取得中にエラーが発生しました' }),
+      { status: 500 }
+    );
   }
 }
 
 // PUT メソッド - 在庫を更新
-export async function PUT(req, context) {
-  const { id } = await context.params;
+export async function PUT(req, { params }) {
+  // await params before using it
+  const { id } = await params;  // Await the params
 
   try {
     const body = await req.json();
@@ -64,7 +73,7 @@ export async function PUT(req, context) {
       );
     }
 
-    // 在庫情報の更新
+    // Update the item
     const { data: updatedData, error: updateError } = await supabase
       .from('Bentos')
       .update({
@@ -72,9 +81,9 @@ export async function PUT(req, context) {
         purchasedDate: new Date(),
       })
       .eq('id', id)
-      .returning('*');  // 更新されたデータを返す
+      .select();  // Fetch updated data using .select() instead of .returning('*')
 
-    if (updateError) {
+    if (updateError || !updatedData) {
       return new NextResponse(
         JSON.stringify({ error: 'Internal server error', details: updateError.message }),
         { status: 500 }
