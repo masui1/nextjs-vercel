@@ -8,16 +8,14 @@ const supabase = createClient(
 
 export async function GET(req) {
   const { searchParams } = new URL(req.url);
-  const q = searchParams.get('q') || ''; // クエリ文字列を取得
+  const q = searchParams.get('q') || '';
 
   try {
-    // Supabaseクエリで検索
     const { data, error } = await supabase
-      .from('Bentos') // Supabaseのテーブル名
-      .select('*')    // 全てのカラムを選択
-      .ilike('product_name', `%${q}%`); // ILIKEクエリで部分一致検索
+      .from('Bentos')
+      .select('*')
+      .ilike('product_name', `%${q}%`);
 
-    // エラー処理
     if (error) {
       console.error('検索中にエラーが発生しました:', error);
       return new Response(
@@ -26,7 +24,6 @@ export async function GET(req) {
       );
     }
 
-    // 成功時のレスポンス
     return new Response(JSON.stringify(data), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },

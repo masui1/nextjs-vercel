@@ -28,7 +28,7 @@ export async function GET(req) {
       .order('id');
 
     if (error) {
-      throw error; // errorが発生した場合にスロー
+      throw error;
     }
 
     return NextResponse.json(data, { status: 200 });

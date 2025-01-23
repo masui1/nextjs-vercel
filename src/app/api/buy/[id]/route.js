@@ -9,15 +9,14 @@ const supabase = createClient(
 
 // GET メソッド - 弁当データを取得
 export async function GET(req, { params }) {
-  // await params before using it
-  const { id } = await params;  // Await the params
+  const { id } = await params;
 
   try {
     const { data, error } = await supabase
       .from('Bentos')
       .select('*')
       .eq('id', id)
-      .single();  // Retrieve a single item based on the `id`
+      .single();
 
     if (error) {
       return new NextResponse(
@@ -45,8 +44,7 @@ export async function GET(req, { params }) {
 
 // PUT メソッド - 在庫を更新
 export async function PUT(req, { params }) {
-  // await params before using it
-  const { id } = await params;  // Await the params
+  const { id } = await params;
 
   try {
     const body = await req.json();
@@ -64,7 +62,7 @@ export async function PUT(req, { params }) {
       .from('Bentos')
       .select('*')
       .eq('id', id)
-      .single();  // 1件だけ取得
+      .single();
 
     if (checkError || !checkData) {
       return new NextResponse(
@@ -73,7 +71,6 @@ export async function PUT(req, { params }) {
       );
     }
 
-    // Update the item
     const { data: updatedData, error: updateError } = await supabase
       .from('Bentos')
       .update({
@@ -81,8 +78,7 @@ export async function PUT(req, { params }) {
         purchasedDate: new Date(),
       })
       .eq('id', id)
-      .select();  // Fetch updated data using .select() instead of .returning('*')
-
+      .select();
     if (updateError || !updatedData) {
       return new NextResponse(
         JSON.stringify({ error: 'Internal server error', details: updateError.message }),

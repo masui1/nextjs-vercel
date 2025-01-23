@@ -11,10 +11,10 @@ export async function GET(req) {
   const q = searchParams.get('q')?.trim() || '';
 
   try {
-    let query = supabase.from('Bentos').select('*'); // 'Bentos'テーブルを選択
+    let query = supabase.from('Bentos').select('*');
 
     if (q) {
-      query = query.ilike('product_name', `%${q}%`); // product_nameで部分一致検索
+      query = query.ilike('product_name', `%${q}%`);
     }
 
     // クエリを実行
