@@ -7,8 +7,41 @@ const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 );
 
-export async function PUT(req, context) {
-    const { id } = context.params; // context.paramsからIDを取得
+// GET メソッド - 弁当データを取得
+export async function GET(req, { params }) {
+    // Await params before using its properties
+    const { id } = await params; // IDはURLパラメータから取得
+
+    try {
+        // Supabaseでデータを取得
+        const { data, error } = await supabase
+            .from('Bentos')
+            .select('*')
+            .eq('id', id)
+            .single(); // 結果が1件のみの場合はsingle()を使用
+
+        if (error || !data) {
+            return NextResponse.json({ error: '弁当データが見つかりません' }, { status: 404 });
+        }
+
+        // データが存在する場合
+        return NextResponse.json({
+            tradingCompany: data.trading_company,
+            productName: data.product_name,
+            price: data.price,
+            row: data.row,
+            barcode: data.barcode,
+        }, { status: 200 });
+
+    } catch (error) {
+        console.error('データ取得中にエラーが発生しました:', error);
+        return NextResponse.json({ error: 'データ取得中にエラーが発生しました', details: error.message }, { status: 500 });
+    }
+}
+
+export async function PUT(req, { params }) {
+    // Await params before using its properties
+    const { id } = await params; // IDはURLパラメータから取得
 
     try {
         const { tradingCompany, productName, price, row } = await req.json();
