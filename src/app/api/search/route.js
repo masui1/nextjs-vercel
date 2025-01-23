@@ -1,5 +1,4 @@
 import { createClient } from '@supabase/supabase-js';
-import { NextResponse } from 'next/server';
 
 // Supabaseクライアントのインスタンス化
 const supabase = createClient(
