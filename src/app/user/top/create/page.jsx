@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import {
     Typography,
@@ -12,110 +12,122 @@ import {
     InputLabel,
     Select,
 } from "@mui/material";
-import BarcodeScanner from '@/app/components/BarcodeScanner';
+import BarcodeScanner from "@/app/components/BarcodeScanner";
 
 const Create = () => {
     const router = useRouter();
     const [productList, setProductList] = useState([]);
-    const [selectedProduct, setSelectedProduct] = useState('');
-    const [productName, setProductName] = useState('');
-    const [tradingCompany, setTradingCompany] = useState('');
-    const [price, setPrice] = useState('');
-    const [row, setRow] = useState('');
-    const [barcode, setBarcode] = useState('');
-    const [img, setImg] = useState('');
-    const [errorMessage, setErrorMessage] = useState('');
+    const [formState, setFormState] = useState({
+        selectedProduct: "",
+        productName: "",
+        tradingCompany: "",
+        price: "",
+        row: "",
+        barcode: "",
+        img: "",
+    });
+    const [errorMessage, setErrorMessage] = useState("");
     const [isManualInput, setIsManualInput] = useState(false);
 
-    useEffect(() => {
-        async function fetchProductList() {
-            try {
-                const response = await fetch('/api/product');
-                if (response.ok) {
-                    const data = await response.json();
-                    setProductList(data);
-                } else {
-                    setErrorMessage('製品データの取得に失敗しました。');
-                }
-            } catch (error) {
-                setErrorMessage('API 呼び出しに失敗しました。');
+    const fetchProductList = useCallback(async () => {
+        try {
+            const response = await fetch("/api/product");
+            if (response.ok) {
+                const data = await response.json();
+                setProductList(data);
+            } else {
+                throw new Error("製品データの取得に失敗しました。");
             }
+        } catch (error) {
+            setErrorMessage(error.message || "API 呼び出しに失敗しました。");
         }
-        fetchProductList();
     }, []);
 
-    const handleProductChange = (event) => {
-        const selected = event.target.value;
-        setSelectedProduct(selected);
+    useEffect(() => {
+        fetchProductList();
+    }, [fetchProductList]);
 
-        const product = productList.find((item) => item.product_name === selected);
-        if (product) {
-            setProductName(product.product_name);
-            setTradingCompany(product.trading_company);
-            setPrice(product.price);
-            setRow(product.row || '');
-            setBarcode(product.barcode || '');
-            setImg(product.img);
+    const handleChange = (field) => (event) => {
+        const value = event.target.value;
+        setFormState((prevState) => ({
+            ...prevState,
+            [field]: value,
+        }));
+
+        if (field === "selectedProduct") {
+            const product = productList.find((item) => item.product_name === value);
+            if (product) {
+                setFormState({
+                    selectedProduct: product.product_name,
+                    productName: product.product_name,
+                    tradingCompany: product.trading_company,
+                    price: product.price,
+                    row: product.row || "",
+                    barcode: product.barcode || "",
+                    img: product.img,
+                });
+            }
         }
     };
 
-    const handleProductInputChange = (event) => {
-        setProductName(event.target.value);
+    const validateForm = () => {
+        const { productName, tradingCompany, price, row } = formState;
+
+        if (!productName || !tradingCompany || !price || !row) {
+            setErrorMessage("全ての項目を入力してください。");
+            return false;
+        }
+
+        if (isNaN(price) || price <= 0) {
+            setErrorMessage("金額は正の数値を入力してください。");
+            return false;
+        }
+
+        return true;
     };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        if (!productName || !tradingCompany || !price || !row) {
-            setErrorMessage('全ての項目を入力してください。');
-            return;
-        }
+        if (!validateForm()) return;
 
-        // 価格が数値かチェック
-        if (isNaN(price) || price <= 0) {
-            setErrorMessage('金額は正の数値を入力してください。');
-            return;
-        }
+        const { tradingCompany, productName, price, row, barcode, img } = formState;
 
-        let companyId = null;
-        if (tradingCompany === '三ツ星ファーム') {
-            companyId = 1;
-        } else if (tradingCompany === 'マッスルデリ') {
-            companyId = 2;
-        }
+        const companyId = tradingCompany === "三ツ星ファーム" ? 1 : tradingCompany === "マッスルデリ" ? 2 : null;
 
         try {
             const response = await fetch("/api/users/create", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ companyId, tradingCompany, productName, price, row, barcode, img }),
             });
 
             if (!response.ok) {
                 const errorData = await response.json();
-                setErrorMessage(`弁当登録に失敗しました: ${errorData.error || '不明なエラー'}`);
-                return;
+                throw new Error(errorData.error || "不明なエラー");
             }
 
-            router.push('/user/top');
+            router.push("/user/top");
         } catch (error) {
-            setErrorMessage("ネットワークエラーが発生しました。");
+            setErrorMessage(`弁当登録に失敗しました: ${error.message}`);
         }
     };
 
-    const availableRows = tradingCompany === '三ツ星ファーム' ? [1, 2] : tradingCompany === 'マッスルデリ' ? [3, 4, 5] : [];
-    useEffect(() => {
-        if (availableRows.length === 0) {
-            setRow('');
-        }
-    }, [availableRows]);
+    const toggleManualInput = () => {
+        setIsManualInput(!isManualInput);
+        setFormState((prevState) => ({
+            ...prevState,
+            selectedProduct: "",
+            productName: "",
+        }));
+    };
 
-    // productList を手入力の検索に合わせてフィルタリング
-    const filteredProductList = productList.filter((item) =>
-        item.product_name.toLowerCase().includes(productName.toLowerCase())
-    );
+    const availableRows =
+        formState.tradingCompany === "三ツ星ファーム"
+            ? [1, 2]
+            : formState.tradingCompany === "マッスルデリ"
+            ? [3, 4, 5]
+            : [];
 
     return (
         <Box
@@ -141,46 +153,39 @@ const Create = () => {
                 <TextField
                     label="弁当名"
                     select={!isManualInput}
-                    value={selectedProduct}
-                    onChange={handleProductChange}
-                    fullWidth
-                >
-                    {!isManualInput && filteredProductList.map((item) => (
-                        <MenuItem key={item.product_name} value={item.product_name}>
-                            {item.product_name}
-                        </MenuItem>
-                    ))}
-                </TextField>
-                
-                <TextField
-                    label="手動入力"
-                    value={productName}
-                    onChange={handleProductInputChange}
+                    value={isManualInput ? "" : formState.selectedProduct}
+                    onChange={handleChange("selectedProduct")}
                     fullWidth
                     disabled={isManualInput}
+                >
+                    {!isManualInput &&
+                        productList.map((item) => (
+                            <MenuItem key={item.product_name} value={item.product_name}>
+                                {item.product_name}
+                            </MenuItem>
+                        ))}
+                </TextField>
+
+                <TextField
+                    label="手動入力"
+                    value={formState.productName}
+                    onChange={handleChange("productName")}
+                    fullWidth
+                    disabled={!isManualInput}
                 />
 
-                <Button onClick={() => setIsManualInput(!isManualInput)} sx={{ mb: 2 }}>
-                    {isManualInput ? 'セレクトで選ぶ' : '手動入力で選ぶ'}
+                <Button onClick={toggleManualInput} sx={{ mb: 2 }}>
+                    {isManualInput ? "セレクトで選ぶ" : "手動入力で選ぶ"}
                 </Button>
 
-                <TextField
-                    label="取引会社"
-                    value={tradingCompany}
-                    fullWidth
-                    disabled
-                />
-                <TextField
-                    label="金額"
-                    value={price}
-                    fullWidth
-                    disabled
-                />
+                <TextField label="取引会社" value={formState.tradingCompany} fullWidth disabled />
+                <TextField label="金額" value={formState.price} fullWidth disabled />
+
                 <FormControl fullWidth>
                     <InputLabel>段数</InputLabel>
                     <Select
-                        value={row || ''}
-                        onChange={(e) => setRow(e.target.value)}
+                        value={formState.row || ""}
+                        onChange={handleChange("row")}
                         label="段目"
                     >
                         {availableRows.map((value) => (
@@ -195,9 +200,9 @@ const Create = () => {
                     <Typography variant="h6" gutterBottom>
                         バーコードスキャン
                     </Typography>
-                    <BarcodeScanner onDetected={setBarcode} />
+                    <BarcodeScanner onDetected={(barcode) => setFormState((prevState) => ({ ...prevState, barcode }))} />
                     <Typography variant="body1" gutterBottom>
-                        バーコード: {barcode || 'スキャン待機中...'}
+                        バーコード: {formState.barcode || "スキャン待機中..."}
                     </Typography>
                 </Box>
 
@@ -214,9 +219,7 @@ const Create = () => {
                 variant="contained"
                 color="secondary"
                 sx={{ mt: 2 }}
-                onClick={() => {
-                    router.back();
-                }}
+                onClick={() => router.back()}
             >
                 戻る
             </Button>

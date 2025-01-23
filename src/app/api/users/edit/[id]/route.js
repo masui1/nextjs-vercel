@@ -9,22 +9,18 @@ const supabase = createClient(
 
 // GET メソッド - 弁当データを取得
 export async function GET(req, { params }) {
-    // Await params before using its properties
-    const { id } = await params; // IDはURLパラメータから取得
+    const { id } = await params;
 
     try {
-        // Supabaseでデータを取得
         const { data, error } = await supabase
             .from('Bentos')
             .select('*')
             .eq('id', id)
-            .single(); // 結果が1件のみの場合はsingle()を使用
-
+            .single();
         if (error || !data) {
             return NextResponse.json({ error: '弁当データが見つかりません' }, { status: 404 });
         }
 
-        // データが存在する場合
         return NextResponse.json({
             tradingCompany: data.trading_company,
             productName: data.product_name,
@@ -40,30 +36,32 @@ export async function GET(req, { params }) {
 }
 
 export async function PUT(req, { params }) {
-    // Await params before using its properties
-    const { id } = await params; // IDはURLパラメータから取得
+    const { id } = await params;
 
     try {
-        const { tradingCompany, productName, price, row } = await req.json();
+        const requestBody = await req.json();
 
-        // 必須データの検証
+        const { tradingCompany, productName, price, row } = requestBody;
+
         if (!tradingCompany || !productName || !price || !row) {
-            return NextResponse.json({ error: '必要なデータが不足しています' }, { status: 400 });
+            console.error('Missing data:', { tradingCompany, productName, price, row });
+            return NextResponse.json(
+                { error: '必要なデータが不足しています', missing: { tradingCompany, productName, price, row } },
+                { status: 400 }
+            );
         }
 
-        // Supabaseでデータを更新
         const { data, error } = await supabase
-            .from('Bentos') // テーブル名
+            .from('Bentos')
             .update({
                 trading_company: tradingCompany,
                 product_name: productName,
-                price: price,
-                row: row,
-                updated_at: new Date(), // 必要に応じて更新日時を追跡
+                price: parseFloat(price),
+                row: parseInt(row, 10),
             })
-            .eq('id', id) // 条件を指定
-            .select() // 更新後のデータを取得
-            .single(); // 結果が1件のみの場合はsingle()を使用
+            .eq('id', id)
+            .select()
+            .single();
 
         if (error || !data) {
             return NextResponse.json(

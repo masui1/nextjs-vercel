@@ -13,14 +13,12 @@ export async function POST(req) {
   try {
     const { username, password } = await req.json();
 
-    // ユーザーをSupabaseから取得
     const { data: user, error } = await supabase
-      .from('Users') // テーブル名を指定
-      .select('*')   // 全ての列を選択
-      .eq('username', username) // usernameでフィルタリング
-      .single();     // 結果が1件のみと想定
+      .from('Users')
+      .select('*')
+      .eq('username', username)
+      .single();
 
-    // ユーザーが見つからない場合のエラーハンドリング
     if (error || !user) {
       return NextResponse.json(
         { error: 'ユーザーが見つかりません' },
@@ -28,7 +26,6 @@ export async function POST(req) {
       );
     }
 
-    // パスワードの検証
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
@@ -38,13 +35,11 @@ export async function POST(req) {
       );
     }
 
-    // ログイン成功時のレスポンス
     const response = NextResponse.json(
       { message: 'ログイン成功', user },
       { status: 200 }
     );
 
-    // ユーザーIDをクッキーに設定
     response.cookies.set('user_id', user.id.toString(), { httpOnly: true });
 
     return response;

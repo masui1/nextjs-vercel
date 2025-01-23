@@ -10,15 +10,13 @@ const supabase = createClient(
 // **POST**: データ登録
 export async function POST(req) {
   try {
-    // リクエストボディを取得
     const body = await req.json();
     const { tradingCompany, productName, price, row, barcode, companyId, img } = body;
 
     console.log('img field:', img);
 
-    // データ登録
     const { data, error } = await supabase
-      .from('Bentos') // テーブル名
+      .from('Bentos')
       .insert([
         {
           trading_company: tradingCompany,
@@ -30,9 +28,8 @@ export async function POST(req) {
           img: img,
         },
       ])
-      .select(); // 挿入されたデータを取得
+      .select();
 
-    // エラーハンドリング
     if (error) {
       console.error('データ登録中にエラーが発生しました:', error);
       return NextResponse.json(
@@ -41,7 +38,6 @@ export async function POST(req) {
       );
     }
 
-    // 成功レスポンスを返す
     return NextResponse.json(data[0], { status: 201 });
   } catch (error) {
     console.error('サーバーエラーが発生しました:', error);

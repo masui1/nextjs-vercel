@@ -17,10 +17,10 @@ export async function GET(req) {
 
   try {
     const { data, error } = await supabase
-      .from('Users') // Usersテーブルを指定
-      .select('id, username') // 必要なカラムだけ取得
-      .eq('id', userId) // 条件: idが一致する
-      .single(); // 結果が1件だけの場合はsingle()を使用
+      .from('Users')
+      .select('id, username')
+      .eq('id', userId)
+      .single();
 
     if (error || !data) {
       return NextResponse.json({ error: 'ユーザーが見つかりません' }, { status: 404 });
@@ -47,20 +47,18 @@ export async function POST(req) {
       );
     }
 
-    // パスワードのハッシュ化
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // SupabaseのINSERTクエリ
     const { data, error } = await supabase
-      .from('Users') // Usersテーブルを指定
+      .from('Users')
       .insert({
         username,
         password: hashedPassword,
-        createdAt: new Date(), // タイムスタンプの追加
+        createdAt: new Date(),
         updatedAt: new Date(),
       })
-      .select() // 挿入したデータを取得
-      .single(); // 結果が1件だけの場合はsingle()を使用
+      .select()
+      .single();
 
     if (error) {
       console.error('ユーザー登録中にエラーが発生しました:', error);
