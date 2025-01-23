@@ -1,44 +1,31 @@
-import { Client } from 'pg';
-const client = new Client({
-  connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false, // SupabaseでSSL接続を使用する場合
-},
-});
-
-let isConnected = false;
-
-async function connectClient() {
-  if (!isConnected) {
-    await client.connect();
-    isConnected = true;
-    console.log('データベースに接続しました');
-  }
-}
+import supabase from '@/lib/supabase';
+import { NextResponse } from 'next/server';
 
 export async function GET(req) {
   const { searchParams } = new URL(req.url);
   const q = searchParams.get('q')?.trim() || '';
 
   try {
-    await connectClient();
-
-    let query = 'SELECT * FROM "Bentos"';
-    let values = [];
+    let query = supabase.from('Bentos').select('*'); // 'Bentos'テーブルを選択
 
     if (q) {
-      query += ' WHERE product_name ILIKE $1';
-      values = [`%${q}%`];
+      query = query.ilike('product_name', `%${q}%`); // product_nameで部分一致検索
     }
 
-    console.log('クエリを実行しています:', query, '値付き:', values);
-    const res = await client.query(query, values);
+    // クエリを実行
+    const { data, error } = await query;
 
-    return new Response(JSON.stringify(res.rows), {
+    if (error) {
+      console.error('検索中にエラーが発生しました:', error);
+      return new Response(
+        JSON.stringify({ error: '検索中にエラーが発生しました', details: error.message }),
+        { status: 500, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    return new Response(JSON.stringify(data), {
       status: 200,
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
     });
   } catch (error) {
     console.error('検索中にエラーが発生しました:', error);

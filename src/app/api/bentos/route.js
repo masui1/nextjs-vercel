@@ -1,17 +1,8 @@
-import { Client } from 'pg';
+import supabase from '@/lib/supabase';  // Supabaseクライアントをインポート
 import { NextResponse } from 'next/server';
 
 export async function GET(req) {
-  const client = new Client({
-    connectionString: process.env.DATABASE_URL,
-    ssl: {
-      rejectUnauthorized: false, // SupabaseでSSL接続を使用する場合
-    },
-  });
-
   try {
-    await client.connect();
-
     const url = new URL(req.url, `http://${req.headers.host}`);
     const companyId = url.searchParams.get('companyId');
     const row = url.searchParams.get('row');
@@ -23,22 +14,28 @@ export async function GET(req) {
       );
     }
 
-    const query = `
-      SELECT * FROM "Bentos"
-      WHERE company_id = $1 AND row = $2
-      ORDER BY id;
-    `;
+    // SupabaseクエリでBentosテーブルからデータを取得
+    const { data, error } = await supabase
+      .from('Bentos')
+      .select('*')
+      .eq('company_id', companyId)
+      .eq('row', row)
+      .order('id');  // idでソート
 
-    const result = await client.query(query, [companyId, parseInt(row, 10)]);
+    if (error) {
+      return NextResponse.json(
+        { error: 'データ取得中にエラーが発生しました', details: error.message },
+        { status: 500 }
+      );
+    }
 
-    return NextResponse.json(result.rows, { status: 200 });
+    return NextResponse.json(data, { status: 200 });
+
   } catch (error) {
     console.error('データ取得中にエラーが発生しました:', error);
     return NextResponse.json(
       { error: 'データ取得中にエラーが発生しました', details: error.message },
       { status: 500 }
     );
-  } finally {
-    await client.end();
   }
 }

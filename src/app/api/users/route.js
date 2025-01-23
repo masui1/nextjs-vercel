@@ -1,32 +1,25 @@
-import { Pool } from 'pg';
+import supabase from '@/lib/supabase';
 import { NextResponse } from 'next/server';
-import bcrypt from 'bcrypt';
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false, // SupabaseでSSL接続を使用する場合
-},
-});
-
-// **GET**: ユーザー情報取得
 export async function GET(req) {
-  const userId = req.cookies.get('user_id').value;
+  const userId = req.cookies.get('user_id')?.value;
 
   if (!userId) {
     return NextResponse.json({ error: '未ログイン' }, { status: 401 });
   }
 
   try {
-    const query = 'SELECT id, username FROM "Users" WHERE id = $1;';
-    const values = [userId];
-    const res = await pool.query(query, values);
+    const { data, error } = await supabase
+      .from('Users') // Usersテーブルを指定
+      .select('id, username') // 必要なカラムだけ取得
+      .eq('id', userId) // 条件: idが一致する
+      .single(); // 結果が1件だけの場合はsingle()を使用
 
-    if (res.rows.length === 0) {
+    if (error || !data) {
       return NextResponse.json({ error: 'ユーザーが見つかりません' }, { status: 404 });
     }
 
-    return NextResponse.json({ user: res.rows[0] }, { status: 200 });
+    return NextResponse.json({ user: data }, { status: 200 });
   } catch (error) {
     console.error('ユーザー情報の取得中にエラーが発生しました:', error);
     return NextResponse.json(
@@ -36,11 +29,9 @@ export async function GET(req) {
   }
 }
 
-
 export async function POST(req) {
   try {
-    const body = await req.json();
-    const { username, password } = body;
+    const { username, password } = await req.json();
 
     if (!username || !password) {
       return NextResponse.json(
@@ -52,20 +43,31 @@ export async function POST(req) {
     // パスワードのハッシュ化
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const query = `
-      INSERT INTO "Users" (username, password, "createdAt", "updatedAt")
-      VALUES ($1, $2, NOW(), NOW())
-      RETURNING *;
-    `;
+    // SupabaseのINSERTクエリ
+    const { data, error } = await supabase
+      .from('Users') // Usersテーブルを指定
+      .insert({
+        username,
+        password: hashedPassword,
+        createdAt: new Date(), // タイムスタンプの追加
+        updatedAt: new Date(),
+      })
+      .select() // 挿入したデータを取得
+      .single(); // 結果が1件だけの場合はsingle()を使用
 
-    const values = [username, hashedPassword];
-    const res = await pool.query(query, values);
+    if (error) {
+      console.error('ユーザー登録中にエラーが発生しました:', error);
+      return NextResponse.json(
+        { error: '登録処理中にエラーが発生しました', details: error.message },
+        { status: 500 }
+      );
+    }
 
-    return NextResponse.json(res.rows[0], { status: 201 });
+    return NextResponse.json(data, { status: 201 });
   } catch (error) {
-    console.error('データ登録中にエラーが発生しました:', error);
+    console.error('ユーザー登録中にエラーが発生しました:', error);
     return NextResponse.json(
-      { error: '登録処理中にエラーが発生しました' },
+      { error: '登録処理中にエラーが発生しました', details: error.message },
       { status: 500 }
     );
   }

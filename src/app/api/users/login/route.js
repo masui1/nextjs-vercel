@@ -1,58 +1,55 @@
-import { Pool } from 'pg';
-import { NextResponse } from "next/server";
-import bcrypt from "bcrypt";
-
-const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: {
-        rejectUnauthorized: false,
-    },
-});
+import supabase from '@/lib/supabase';
+import { NextResponse } from 'next/server';
+import bcrypt from 'bcrypt';
 
 // **POST**: ログイン認証
 export async function POST(req) {
-    try {
-        const { username, password } = await req.json();
+  try {
+    const { username, password } = await req.json();
 
-        const query = 'SELECT * FROM "Users" WHERE username = $1;';
-        const values = [username];
-        const res = await pool.query(query, values);
+    // ユーザーをSupabaseから取得
+    const { data: user, error } = await supabase
+      .from('Users') // テーブル名を指定
+      .select('*')   // 全ての列を選択
+      .eq('username', username) // usernameでフィルタリング
+      .single();     // 結果が1件のみと想定
 
-        // Extract the user from the query result
-        const user = res.rows[0]; // Assuming "rows" contains the results
-
-        if (!user) {
-            console.error("User not found", username);
-            return NextResponse.json(
-                { error: "ユーザーが見つかりません" },
-                { status: 404 }
-            );
-        }
-
-        const isPasswordValid = await bcrypt.compare(password, user.password);
-
-        if (!isPasswordValid) {
-            console.error("Invalid password for user:", username);
-            return NextResponse.json(
-                { error: "パスワードが正しくありません。" },
-                { status: 401 }
-            );
-        }
-
-        const response = NextResponse.json(
-            { message: "ログイン成功", user },
-            { status: 200 }
-        );
-        response.cookies.set("user_id", user.id.toString(), { httpOnly: true });
-        return response;
-    } catch (error) {
-        console.error("ログイン中にエラーが発生しました:", error);
-        return NextResponse.json(
-            {
-                error: "ログイン中にエラーが発生しました",
-                details: error.message,
-            },
-            { status: 500 }
-        );
+    // ユーザーが見つからない場合のエラーハンドリング
+    if (error || !user) {
+      return NextResponse.json(
+        { error: 'ユーザーが見つかりません' },
+        { status: 404 }
+      );
     }
+
+    // パスワードの検証
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
+      return NextResponse.json(
+        { error: 'パスワードが正しくありません。' },
+        { status: 401 }
+      );
+    }
+
+    // ログイン成功時のレスポンス
+    const response = NextResponse.json(
+      { message: 'ログイン成功', user },
+      { status: 200 }
+    );
+
+    // ユーザーIDをクッキーに設定
+    response.cookies.set('user_id', user.id.toString(), { httpOnly: true });
+
+    return response;
+  } catch (error) {
+    console.error('ログイン中にエラーが発生しました:', error);
+    return NextResponse.json(
+      {
+        error: 'ログイン中にエラーが発生しました',
+        details: error.message,
+      },
+      { status: 500 }
+    );
+  }
 }
