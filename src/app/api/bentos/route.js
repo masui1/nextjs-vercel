@@ -1,10 +1,12 @@
-import supabase from '@/lib/supabase';  // Supabaseクライアントをインポート
+import { createClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
 
+// Supabaseクライアントのインスタンス化
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 );
+
 export async function GET(req) {
   try {
     const url = new URL(req.url, `http://${req.headers.host}`);
