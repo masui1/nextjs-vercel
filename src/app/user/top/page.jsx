@@ -338,7 +338,7 @@ const UserTop = () => {
                 transition: 'background-color 0.3s ease',
               }}
             >
-              ヘッダーに戻る
+              ↑
             </Button>
           </Box>
         )}
@@ -402,7 +402,7 @@ const UserTop = () => {
                 transition: 'background-color 0.3s ease',
               }}
             >
-              ヘッダーに戻る
+              ↑
             </Button>
           </Box>
         )}
@@ -466,7 +466,7 @@ const UserTop = () => {
                 transition: 'background-color 0.3s ease',
               }}
             >
-              ヘッダーに戻る
+              ↑
             </Button>
           </Box>
         )}
@@ -530,7 +530,7 @@ const UserTop = () => {
                 transition: 'background-color 0.3s ease',
               }}
             >
-              ヘッダーに戻る
+              ↑
             </Button>
           </Box>
         )}
