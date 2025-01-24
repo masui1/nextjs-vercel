@@ -18,6 +18,8 @@ const UserTop = () => {
     row5: [],
   });
   const [selectedRow, setSelectedRow] = useState('row1');
+  const [showButton, setShowButton] = useState(false); 
+  const [buttonColor, setButtonColor] = useState('secondary');
   const [error, setError] = useState(null);
   const router = useRouter();
 
@@ -157,9 +159,42 @@ const UserTop = () => {
     }
   };
 
+  useEffect(() => {
+      const handleScroll = () => {
+        const rowIds = ['row2', 'row3', 'row4', 'row5'];
+        
+        let isAnyRowInViewport = false;
+    
+        rowIds.forEach((rowId) => {
+          const rowElement = document.getElementById(rowId);
+          if (rowElement) {
+            const rect = rowElement.getBoundingClientRect();
+            const isInViewport = rect.top <= window.innerHeight && rect.bottom >= 0;
+    
+            if (isInViewport) {
+              isAnyRowInViewport = true;
+              setButtonColor('primary');
+            }
+          }
+        });
+  
+        setShowButton(isAnyRowInViewport);
+      };
+    
+      window.addEventListener('scroll', handleScroll);
+    
+      return () => {
+        window.removeEventListener('scroll', handleScroll);
+      };
+    }, []);
+  
+    const handleScrollToTop = () => {
+      document.getElementById('header').scrollIntoView({ behavior: 'smooth' });
+    };
+
   return (
     <Box>
-      <AppBar position="static" sx={{ backgroundColor: '#9acd32' }}>
+      <AppBar id="header" position="static" sx={{ backgroundColor: '#9acd32' }}>
         <Toolbar sx={{ justifyContent: 'space-between' }}>
           <Typography variant="h6" color="inherit">弁当一覧</Typography>
           <Typography variant="body1">
@@ -286,6 +321,27 @@ const UserTop = () => {
             )}
           </Box>
         )}
+        {showButton && (
+          <Box
+            sx={{
+              position: 'fixed',
+              bottom: 16,
+              right: 16,
+              zIndex: 1000,
+            }}
+          >
+            <Button
+              variant="contained"
+              color={buttonColor}
+              onClick={handleScrollToTop}
+              sx={{
+                transition: 'background-color 0.3s ease',
+              }}
+            >
+              ヘッダーに戻る
+            </Button>
+          </Box>
+        )}
       </Box>
 
       <Box id="row3" sx={{ p: 2 }}>
@@ -327,6 +383,27 @@ const UserTop = () => {
             ) : (
               <Typography variant="body1">データがありません</Typography>
             )}
+          </Box>
+        )}
+        {showButton && (
+          <Box
+            sx={{
+              position: 'fixed',
+              bottom: 16,
+              right: 16,
+              zIndex: 1000,
+            }}
+          >
+            <Button
+              variant="contained"
+              color={buttonColor}
+              onClick={handleScrollToTop}
+              sx={{
+                transition: 'background-color 0.3s ease',
+              }}
+            >
+              ヘッダーに戻る
+            </Button>
           </Box>
         )}
       </Box>
@@ -372,6 +449,27 @@ const UserTop = () => {
             )}
           </Box>
         )}
+        {showButton && (
+          <Box
+            sx={{
+              position: 'fixed',
+              bottom: 16,
+              right: 16,
+              zIndex: 1000,
+            }}
+          >
+            <Button
+              variant="contained"
+              color={buttonColor}
+              onClick={handleScrollToTop}
+              sx={{
+                transition: 'background-color 0.3s ease',
+              }}
+            >
+              ヘッダーに戻る
+            </Button>
+          </Box>
+        )}
       </Box>
 
       <Box id="row5" sx={{ p: 2 }}>
@@ -413,6 +511,27 @@ const UserTop = () => {
             ) : (
               <Typography variant="body1">データがありません</Typography>
             )}
+          </Box>
+        )}
+        {showButton && (
+          <Box
+            sx={{
+              position: 'fixed',
+              bottom: 16,
+              right: 16,
+              zIndex: 1000,
+            }}
+          >
+            <Button
+              variant="contained"
+              color={buttonColor}
+              onClick={handleScrollToTop}
+              sx={{
+                transition: 'background-color 0.3s ease',
+              }}
+            >
+              ヘッダーに戻る
+            </Button>
           </Box>
         )}
       </Box>
