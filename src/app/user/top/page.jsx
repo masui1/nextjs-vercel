@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { AppBar, Box, Button, Toolbar, Typography, TextField, CircularProgress, IconButton } from '@mui/material';
+import { AppBar, Box, Button, Toolbar, Typography, TextField, CircularProgress, IconButton, Select, MenuItem } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 
 const UserTop = () => {
@@ -17,6 +17,7 @@ const UserTop = () => {
     row4: [],
     row5: [],
   });
+  const [selectedRow, setSelectedRow] = useState('row1');
   const [error, setError] = useState(null);
   const router = useRouter();
 
@@ -148,6 +149,14 @@ const UserTop = () => {
     }
   };
 
+  const handleRowChange = (event) => {
+    setSelectedRow(event.target.value);
+    const targetElement = document.getElementById(event.target.value);
+    if (targetElement) {
+      targetElement.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <Box>
       <AppBar position="static" sx={{ backgroundColor: '#9acd32' }}>
@@ -156,6 +165,17 @@ const UserTop = () => {
           <Typography variant="body1">
             ユーザー: {users && users.username ? users.username : '未ログイン'}
           </Typography>
+          <Select
+            value={selectedRow}
+            onChange={handleRowChange}
+            sx={{ backgroundColor: 'white', borderRadius: 1 }}
+          >
+            <MenuItem value="row1">1段目 (三ツ星ファーム)</MenuItem>
+            <MenuItem value="row2">2段目 (三ツ星ファーム)</MenuItem>
+            <MenuItem value="row3">3段目 (マッスルデリ)</MenuItem>
+            <MenuItem value="row4">4段目 (マッスルデリ)</MenuItem>
+            <MenuItem value="row5">5段目 (マッスルデリ)</MenuItem>
+          </Select>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <TextField
@@ -181,7 +201,7 @@ const UserTop = () => {
       </AppBar>
 
       {/* 1段目 - 三ツ星ファーム */}
-      <Box sx={{ p: 2 }}>
+      <Box id="row1" sx={{ p: 2 }}>
         <Typography variant="h5" gutterBottom>
           1段目 (三ツ星ファーム)
         </Typography>
@@ -225,7 +245,7 @@ const UserTop = () => {
       </Box>
 
       {/* 2段目 - 三ツ星ファーム */}
-      <Box sx={{ p: 2 }}>
+      <Box id="row2" sx={{ p: 2 }}>
         <Typography variant="h5" gutterBottom>
           2段目 (三ツ星ファーム)
         </Typography>
@@ -268,7 +288,7 @@ const UserTop = () => {
         )}
       </Box>
 
-      <Box sx={{ p: 2 }}>
+      <Box id="row3" sx={{ p: 2 }}>
         <Typography variant="h5" gutterBottom>
           3段目 (マッスルデリ)
         </Typography>
@@ -311,7 +331,7 @@ const UserTop = () => {
         )}
       </Box>
 
-      <Box sx={{ p: 2 }}>
+      <Box id="row4" sx={{ p: 2 }}>
         <Typography variant="h5" gutterBottom>
           4段目 (マッスルデリ)
         </Typography>
@@ -354,7 +374,7 @@ const UserTop = () => {
         )}
       </Box>
 
-      <Box sx={{ p: 2 }}>
+      <Box id="row5" sx={{ p: 2 }}>
         <Typography variant="h5" gutterBottom>
           5段目 (マッスルデリ)
         </Typography>

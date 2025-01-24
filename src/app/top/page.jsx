@@ -12,6 +12,8 @@ import {
   TextField,
   CircularProgress,
   IconButton,
+  Select,
+  MenuItem
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 
@@ -25,6 +27,7 @@ const Top = () => {
     row4: [],
     row5: [],
   });
+    const [selectedRow, setSelectedRow] = useState('row1');
   const [error, setError] = useState(null);
   const router = useRouter();
 
@@ -143,11 +146,30 @@ const Top = () => {
     return bentos.filter(bento => !(bento.is_purchased || bento.purchasedDate));
   };
 
+  const handleRowChange = (event) => {
+    setSelectedRow(event.target.value);
+    const targetElement = document.getElementById(event.target.value);
+    if (targetElement) {
+      targetElement.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <Box>
      <AppBar position="static">
       <Toolbar sx={{ justifyContent: 'space-between' }}>
-        <Typography variant="h6">弁当管理サイト</Typography>
+        <Typography variant="h6">弁当管理サイト</Typography> 
+        <Select
+          value={selectedRow}
+          onChange={handleRowChange}
+          sx={{ backgroundColor: 'white', borderRadius: 1 }}
+        >
+          <MenuItem value="row1">1段目 (三ツ星ファーム)</MenuItem>
+          <MenuItem value="row2">2段目 (三ツ星ファーム)</MenuItem>
+          <MenuItem value="row3">3段目 (マッスルデリ)</MenuItem>
+          <MenuItem value="row4">4段目 (マッスルデリ)</MenuItem>
+          <MenuItem value="row5">5段目 (マッスルデリ)</MenuItem>
+        </Select>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <TextField
@@ -173,7 +195,7 @@ const Top = () => {
     </AppBar>
 
       {/* 1段目 - 三ツ星ファーム */}
-      <Box sx={{ p: 2 }}>
+      <Box id="row1" sx={{ p: 2 }}>
         <Typography variant="h5" gutterBottom>
           1段目 (三ツ星ファーム)
         </Typography>
@@ -222,7 +244,7 @@ const Top = () => {
       </Box>
 
       {/* 2段目 - 三ツ星ファーム */}
-      <Box sx={{ p: 2 }}>
+      <Box id="row2" sx={{ p: 2 }}>
         <Typography variant="h5" gutterBottom>
           2段目 (三ツ星ファーム)
         </Typography>
@@ -270,7 +292,7 @@ const Top = () => {
         )}
       </Box>
 
-      <Box sx={{ p: 2 }}>
+      <Box id="row3" sx={{ p: 2 }}>
         <Typography variant="h5" gutterBottom>
           3段目 (マッスルデリ)
         </Typography>
@@ -318,7 +340,7 @@ const Top = () => {
         )}
       </Box>
 
-      <Box sx={{ p: 2 }}>
+      <Box id="row4" sx={{ p: 2 }}>
         <Typography variant="h5" gutterBottom>
           4段目 (マッスルデリ)
         </Typography>
@@ -366,7 +388,7 @@ const Top = () => {
         )}
       </Box>
 
-      <Box sx={{ p: 2 }}>
+      <Box id="row5" sx={{ p: 2 }}>
         <Typography variant="h5" gutterBottom>
           5段目 (マッスルデリ)
         </Typography>
