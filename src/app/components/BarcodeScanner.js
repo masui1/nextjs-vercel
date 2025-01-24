@@ -13,11 +13,11 @@ const BarcodeScanner = ({ onDetected }) => {
                     constraints: {
                         width: 640,
                         height: 480,
-                        facingMode: 'environment', // リアカメラを使用
+                        facingMode: 'environment',
                     },
                 },
                 decoder: {
-                    readers: ['ean_reader'], // 対応するバーコードフォーマット
+                    readers: ['ean_reader'],
                 },
             },
             (err) => {
@@ -30,7 +30,7 @@ const BarcodeScanner = ({ onDetected }) => {
         );
 
         Quagga.onDetected((data) => {
-            onDetected(data.codeResult.code); // 読み取ったバーコードを親に渡す
+            onDetected(data.codeResult.code);
         });
 
         return () => {
@@ -38,7 +38,16 @@ const BarcodeScanner = ({ onDetected }) => {
         };
     }, [onDetected]);
 
-    return <div ref={videoRef} style={{ width: '100%', height: '100%' }} />;
+    return (
+        <div
+            ref={videoRef}
+            style={{
+                width: '100vw',
+                height: '68vh',
+                overflow: 'hidden',
+            }}
+        />
+    );
 };
 
 export default BarcodeScanner;
