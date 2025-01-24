@@ -196,8 +196,10 @@ const Top = () => {
         <Typography variant="h6">弁当管理サイト</Typography> 
         <Select
           value={selectedRow}
+          size="small"
+          color="primary"
           onChange={handleRowChange}
-          sx={{ backgroundColor: 'white', borderRadius: 1 }}
+          sx={{ width: 250 }}
         >
           <MenuItem value="row1">1段目 (三ツ星ファーム)</MenuItem>
           <MenuItem value="row2">2段目 (三ツ星ファーム)</MenuItem>
@@ -342,7 +344,7 @@ const Top = () => {
                 transition: 'background-color 0.3s ease',
               }}
             >
-              ヘッダーに戻る
+              ↑
             </Button>
           </Box>
         )}
@@ -411,7 +413,7 @@ const Top = () => {
                 transition: 'background-color 0.3s ease',
               }}
             >
-              ヘッダーに戻る
+              ↑
             </Button>
           </Box>
         )}
@@ -480,7 +482,7 @@ const Top = () => {
                 transition: 'background-color 0.3s ease',
               }}
             >
-              ヘッダーに戻る
+              ↑
             </Button>
           </Box>
         )}
@@ -549,7 +551,7 @@ const Top = () => {
                 transition: 'background-color 0.3s ease',
               }}
             >
-              ヘッダーに戻る
+              ↑
             </Button>
           </Box>
         )}
