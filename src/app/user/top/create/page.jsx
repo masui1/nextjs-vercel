@@ -16,7 +16,8 @@ import BarcodeScanner from "@/app/components/BarcodeScanner";
 
 const Create = () => {
     const router = useRouter();
-    const [productList, setProductList] = useState([]);
+    const [productList, setProductList] = useState([]); // 全製品リスト
+    const [filteredProducts, setFilteredProducts] = useState([]); // フィルタリングされたリスト
     const [formState, setFormState] = useState({
         selectedProduct: "",
         productName: "",
@@ -35,6 +36,7 @@ const Create = () => {
             if (response.ok) {
                 const data = await response.json();
                 setProductList(data);
+                setFilteredProducts(data); // 初期値として全リストを設定
             } else {
                 throw new Error("製品データの取得に失敗しました。");
             }
@@ -115,6 +117,7 @@ const Create = () => {
 
     const toggleManualInput = () => {
         setIsManualInput(!isManualInput);
+        setFilteredProducts(productList); // リストをリセット
         setFormState((prevState) => ({
             ...prevState,
             selectedProduct: "",
@@ -128,6 +131,20 @@ const Create = () => {
             : formState.tradingCompany === "マッスルデリ"
             ? [3, 4, 5]
             : [];
+
+    const handleManualInput = (e) => {
+        const value = e.target.value;
+        setFormState((prevState) => ({
+            ...prevState,
+            productName: value,
+        }));
+
+        // 入力値でフィルタリング
+        const filtered = productList.filter((item) =>
+            item.product_name.includes(value)
+        );
+        setFilteredProducts(filtered);
+    };
 
     return (
         <Box
@@ -169,10 +186,26 @@ const Create = () => {
                 <TextField
                     label="手動入力"
                     value={formState.productName}
-                    onChange={handleChange("productName")}
+                    onChange={handleManualInput}
                     fullWidth
                     disabled={!isManualInput}
                 />
+
+                {isManualInput && (
+                    <FormControl fullWidth>
+                        <InputLabel>該当する弁当名</InputLabel>
+                        <Select
+                            value={formState.selectedProduct}
+                            onChange={(e) => handleChange("selectedProduct")(e)}
+                        >
+                            {filteredProducts.map((item) => (
+                                <MenuItem key={item.product_name} value={item.product_name}>
+                                    {item.product_name}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                )}
 
                 <Button onClick={toggleManualInput} sx={{ mb: 2 }}>
                     {isManualInput ? "セレクトで選ぶ" : "手動入力で選ぶ"}
