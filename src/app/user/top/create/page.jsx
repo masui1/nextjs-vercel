@@ -16,8 +16,9 @@ import BarcodeScanner from "@/app/components/BarcodeScanner";
 
 const Create = () => {
     const router = useRouter();
-    const [productList, setProductList] = useState([]); // 全製品リスト
-    const [filteredProducts, setFilteredProducts] = useState([]); // フィルタリングされたリスト
+    const [productList, setProductList] = useState([]);
+    const [tradingCompany, setTradingCompany] = useState('');
+    const [filteredProducts, setFilteredProducts] = useState([]);
     const [formState, setFormState] = useState({
         selectedProduct: "",
         productName: "",
@@ -211,8 +212,17 @@ const Create = () => {
                     {isManualInput ? "セレクトで選ぶ" : "手動入力で選ぶ"}
                 </Button>
 
-                <TextField label="取引会社" value={formState.tradingCompany} fullWidth disabled />
-                <TextField label="金額" value={formState.price} fullWidth disabled />
+                <TextField
+                    label="取引会社"
+                    select
+                    value={tradingCompany}
+                    onChange={(e) => setTradingCompany(e.target.value)}
+                    fullWidth
+                >
+                    <MenuItem value="三ツ星ファーム">三ツ星ファーム</MenuItem>
+                    <MenuItem value="マッスルデリ">マッスルデリ</MenuItem>
+                </TextField>
+                <TextField label="金額" value={formState.price} fullWidth />
 
                 <FormControl fullWidth>
                     <InputLabel>段数</InputLabel>
