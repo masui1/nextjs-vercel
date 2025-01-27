@@ -31,6 +31,23 @@ export async function GET(req) {
       throw error;
     }
 
+    const itemsToDelete = data.filter(
+      (item) => item.is_purchased && item.purchasedDate
+    );
+
+    if (itemsToDelete.length > 0) {
+      const { error: deleteError } = await supabase
+        .from('Bentos')
+        .delete()
+        .in('id', itemsToDelete.map((item) => item.id));
+
+      if (deleteError) {
+        throw deleteError;
+      }
+
+      console.log(`Deleted ${itemsToDelete.length} items.`);
+    }
+
     return NextResponse.json(data, { status: 200 });
   } catch (error) {
     console.error('データ取得中にエラーが発生しました:', error);

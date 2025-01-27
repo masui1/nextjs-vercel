@@ -17,7 +17,7 @@ import BarcodeScanner from "@/app/components/BarcodeScanner";
 const Create = () => {
     const router = useRouter();
     const [productList, setProductList] = useState([]);
-    const [tradingCompany, setTradingCompany] = useState('');
+    const [tradingCompany, setTradingCompany] = useState("");
     const [filteredProducts, setFilteredProducts] = useState([]);
     const [formState, setFormState] = useState({
         selectedProduct: "",
@@ -29,7 +29,6 @@ const Create = () => {
         img: "",
     });
     const [errorMessage, setErrorMessage] = useState("");
-    const [isManualInput, setIsManualInput] = useState(false);
 
     const fetchProductList = useCallback(async () => {
         try {
@@ -37,7 +36,7 @@ const Create = () => {
             if (response.ok) {
                 const data = await response.json();
                 setProductList(data);
-                setFilteredProducts(data); // 初期値として全リストを設定
+                setFilteredProducts(data);
             } else {
                 throw new Error("製品データの取得に失敗しました。");
             }
@@ -69,23 +68,40 @@ const Create = () => {
                     barcode: product.barcode || "",
                     img: product.img,
                 });
+                setTradingCompany(product.trading_company);
             }
         }
     };
 
     const validateForm = () => {
         const { productName, tradingCompany, price, row } = formState;
-
-        if (!productName || !tradingCompany || !price || !row) {
-            setErrorMessage("全ての項目を入力してください。");
+    
+        // 弁当名は入力が必須（手動入力または選択）
+        if (!productName) {
+            setErrorMessage("弁当名を入力または選択してください。");
             return false;
         }
-
-        if (isNaN(price) || price <= 0) {
+    
+        // 取引会社が選択されているか
+        if (!tradingCompany || (tradingCompany !== "三ツ星ファーム" && tradingCompany !== "マッスルデリ")) {
+            setErrorMessage("取引会社を選択してください。");
+            return false;
+        }
+    
+        // 金額が正の数値であること
+        if (!price || isNaN(price) || price <= 0) {
             setErrorMessage("金額は正の数値を入力してください。");
             return false;
         }
-
+    
+        // 段数が選択されているか
+        if (!row) {
+            setErrorMessage("段数を選択してください。");
+            return false;
+        }
+    
+        // エラーメッセージをリセット
+        setErrorMessage("");
         return true;
     };
 
@@ -102,7 +118,15 @@ const Create = () => {
             const response = await fetch("/api/users/create", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ companyId, tradingCompany, productName, price, row, barcode, img }),
+                body: JSON.stringify({
+                    companyId,
+                    tradingCompany,
+                    productName,
+                    price,
+                    row,
+                    barcode,
+                    img,
+                }),
             });
 
             if (!response.ok) {
@@ -114,16 +138,6 @@ const Create = () => {
         } catch (error) {
             setErrorMessage(`弁当登録に失敗しました: ${error.message}`);
         }
-    };
-
-    const toggleManualInput = () => {
-        setIsManualInput(!isManualInput);
-        setFilteredProducts(productList); // リストをリセット
-        setFormState((prevState) => ({
-            ...prevState,
-            selectedProduct: "",
-            productName: "",
-        }));
     };
 
     const availableRows =
@@ -140,7 +154,6 @@ const Create = () => {
             productName: value,
         }));
 
-        // 入力値でフィルタリング
         const filtered = productList.filter((item) =>
             item.product_name.includes(value)
         );
@@ -170,59 +183,35 @@ const Create = () => {
             >
                 <TextField
                     label="弁当名"
-                    select={!isManualInput}
-                    value={isManualInput ? "" : formState.selectedProduct}
-                    onChange={handleChange("selectedProduct")}
+                    value={formState.productName}
+                    onChange={handleManualInput}
                     fullWidth
-                    disabled={isManualInput}
-                >
-                    {!isManualInput &&
-                        productList.map((item) => (
+                />
+                <FormControl>
+                    <InputLabel>該当する弁当名</InputLabel>
+                    <Select
+                        value={formState.selectedProduct}
+                        onChange={(e) => handleChange("selectedProduct")(e)}
+                    >
+                        {filteredProducts.map((item) => (
                             <MenuItem key={item.product_name} value={item.product_name}>
                                 {item.product_name}
                             </MenuItem>
                         ))}
-                </TextField>
-
-                <TextField
-                    label="手動入力"
-                    value={formState.productName}
-                    onChange={handleManualInput}
-                    fullWidth
-                    disabled={!isManualInput}
-                />
-
-                {isManualInput && (
-                    <FormControl fullWidth>
-                        <InputLabel>該当する弁当名</InputLabel>
-                        <Select
-                            value={formState.selectedProduct}
-                            onChange={(e) => handleChange("selectedProduct")(e)}
-                        >
-                            {filteredProducts.map((item) => (
-                                <MenuItem key={item.product_name} value={item.product_name}>
-                                    {item.product_name}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-                )}
-
-                <Button onClick={toggleManualInput} sx={{ mb: 2 }}>
-                    {isManualInput ? "セレクトで選ぶ" : "手動入力で選ぶ"}
-                </Button>
+                    </Select>
+                </FormControl>
 
                 <TextField
                     label="取引会社"
                     select
-                    value={tradingCompany}
-                    onChange={(e) => setTradingCompany(e.target.value)}
+                    value={formState.tradingCompany}
+                    onChange={handleChange("tradingCompany")}
                     fullWidth
                 >
                     <MenuItem value="三ツ星ファーム">三ツ星ファーム</MenuItem>
                     <MenuItem value="マッスルデリ">マッスルデリ</MenuItem>
                 </TextField>
-                <TextField label="金額" value={formState.price} fullWidth />
+                <TextField label="金額" value={formState.price} onChange={handleChange("price")} fullWidth />
 
                 <FormControl fullWidth>
                     <InputLabel>段数</InputLabel>
