@@ -13,8 +13,7 @@ export async function POST(req) {
     const body = await req.json();
     const { tradingCompany, productName, price, row, barcode, companyId, img } = body;
 
-    console.log('img field:', img);
-
+    // Supabaseへの挿入クエリ
     const { data, error } = await supabase
       .from('Bentos')
       .insert([
