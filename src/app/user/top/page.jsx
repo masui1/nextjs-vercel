@@ -197,6 +197,13 @@ const UserTop = () => {
       <AppBar id="header" position="static" sx={{ backgroundColor: '#9acd32' }}>
         <Toolbar sx={{ justifyContent: 'space-between' }}>
           <Typography variant="h6" color="inherit">弁当一覧</Typography>
+          <Button
+                variant="contained"
+                color="primary"
+                onClick={() => router.push('/top')}
+            >
+                購入画面はこちら
+          </Button>
           <Typography variant="body1">
             ユーザー: {users && users.username ? users.username : '未ログイン'}
           </Typography>

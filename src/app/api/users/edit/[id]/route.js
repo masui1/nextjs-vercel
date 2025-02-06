@@ -16,6 +16,7 @@ export async function GET(req, { params }) {
             .from('Bentos')
             .select('*')
             .eq('id', id)
+            .is('deleted_at', null)
             .single();
         if (error || !data) {
             return NextResponse.json({ error: '弁当データが見つかりません' }, { status: 404 });
@@ -77,5 +78,51 @@ export async function PUT(req, { params }) {
             { error: 'データ更新中にエラーが発生しました', details: error.message },
             { status: 500 }
         );
+    }
+}
+
+export async function DELETE(req, context) {
+    const { params } = context;
+    const id = params.id
+
+    try {
+        // Bentoデータの取得（カラム名を確認）
+        const { data, error } = await supabase
+            .from('Bentos')
+            .select('img')
+            .eq('id', id)
+            .single();
+
+        if (error || !data) {
+            console.error('Bento not found or already deleted:', error);
+            return NextResponse.json({ message: '指定された弁当データは既に削除されています。' }, { status: 404 });
+        }
+
+        // 画像が存在する場合、Supabaseのストレージから削除
+        if (data.img) {
+            const imagePath = data.img;
+            const { error: imageError } = await supabase.storage.from('bento-images').remove([imagePath]);
+
+            if (imageError) {
+                console.error('画像削除中にエラーが発生しました:', imageError);
+                return NextResponse.json({ error: '画像削除中にエラーが発生しました' }, { status: 500 });
+            }
+        }
+
+        // 完全削除
+        const { error: deleteError } = await supabase
+            .from('Bentos')
+            .delete()
+            .eq('id', id);
+
+        if (deleteError) {
+            console.error('データ削除中にエラーが発生しました:', deleteError);
+            return NextResponse.json({ error: 'データ削除中にエラーが発生しました' }, { status: 500 });
+        }
+
+        return NextResponse.json({ message: '弁当データが完全に削除されました' }, { status: 200 });
+    } catch (error) {
+        console.error('Server error during deletion:', error);
+        return NextResponse.json({ error: 'データ削除中にエラーが発生しました', details: error.message }, { status: 500 });
     }
 }

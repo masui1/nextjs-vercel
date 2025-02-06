@@ -1024,6 +1024,13 @@ export async function GET() {
             company_id: 2,
             img: "/product_imag/product_0146.jpg",
         },
+        {
+            trading_company: "三ツ星ファーム",
+            product_name: "とろふわ卵のフレンチ風照り焼きチキン",
+            price: 200,
+            company_id: 1,
+            img: "/product_imag/product_0147.jpg",
+        },
     ];
 
     return NextResponse.json(productList);
