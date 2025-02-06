@@ -45,6 +45,64 @@ const EditTop = () => {
         }
     }, [id]);
 
+    const handleDelete = async () => {
+        try {
+            const response = await fetch(`/api/users/edit/${id}`, {
+                method: 'DELETE',
+            });
+    
+            if (!response.ok) {
+                const errorData = await response.json();
+                if (errorData.message && errorData.message === '指定された弁当データは既に削除されています。') {
+                    setErrorMessage('この弁当はすでに削除されています。');
+                } else {
+                    setErrorMessage(`弁当削除に失敗しました: ${errorData.error || '不明なエラー'}`);
+                }
+                return;
+            }
+    
+            setTradingCompany('');
+            setProductName('');
+            setPrice('');
+            setRow('');
+            setBarcode('');
+            
+            router.push('/user/top');
+        } catch (error) {
+            setErrorMessage('ネットワークエラーが発生しました。');
+        }
+    };
+
+    useEffect(() => {
+        if (id) {
+            const fetchData = async () => {
+                try {
+                    const response = await fetch(`/api/users/edit/${id}`, { method: 'GET' });
+                    const data = await response.json();
+    
+                    if (response.ok) {
+                        setTradingCompany(data.tradingCompany || '');
+                        setProductName(data.productName || '');
+                        setPrice(data.price || '');
+                        setRow(data.row || '');
+                        setBarcode(data.barcode || '');
+                    } else {
+                        if (data.error === '弁当データが見つかりません') {
+                            setErrorMessage('この弁当はすでに削除されています。');
+                        } else {
+                            setErrorMessage(data.error || 'データ取得に失敗しました');
+                        }
+                    }
+                } catch (error) {
+                    setErrorMessage('ネットワークエラーが発生しました');
+                }
+            };
+    
+            fetchData();
+        }
+    }, [id]);
+    
+
     const handleSubmit = async (event) => {
         event.preventDefault();
 
@@ -113,7 +171,15 @@ const EditTop = () => {
                     </Typography>
                 </Box>
                 <Button type="submit" variant="contained" color="primary">
-                    登録
+                    編集
+                </Button>
+                <Button
+                    variant='contained'
+                    color='error'
+                    sx={{ mt: 2 }}
+                    onClick={handleDelete}
+                >
+                    削除
                 </Button>
             </form>
             {errorMessage && (
