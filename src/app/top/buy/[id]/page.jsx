@@ -14,6 +14,7 @@ const BuyTop = () => {
   const [bentos, setBentos] = useState({ row1: [] });
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   useEffect(() => {
     const pathParts = window.location.pathname.split("/");
@@ -71,7 +72,12 @@ const BuyTop = () => {
         ),
       }));
       setErrorMessage("");
-      router.push("/top");
+      setSuccessMessage("購入ありがとうございました！"); // 成功メッセージをセット
+
+      // 2秒後にトップページへ遷移
+      setTimeout(() => {
+        router.push("/top");
+      }, 5000);
     } catch (error) {
       setErrorMessage("ネットワークエラーが発生しました");
     }
@@ -80,7 +86,7 @@ const BuyTop = () => {
   return (
     <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", mt: 4 }}>
       <Typography variant="h4" gutterBottom>
-        購入画面
+        購入
       </Typography>
       <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
         {loading ? (
@@ -125,11 +131,19 @@ const BuyTop = () => {
           <Typography variant="body1">データがありません</Typography>
         )}
       </Box>
+
+      {successMessage && (
+        <Typography color="primary" sx={{ mt: 2 }}>
+          {successMessage}
+        </Typography>
+      )}
+
       {errorMessage && (
         <Typography color="error" sx={{ mt: 2 }}>
           {errorMessage}
         </Typography>
       )}
+
       <Button
         variant="contained"
         color="secondary"

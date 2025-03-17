@@ -193,7 +193,7 @@ const Top = () => {
     <Box>
      <AppBar id="header" position="static">
       <Toolbar sx={{ justifyContent: 'space-between' }}>
-        <Typography variant="h6">弁当管理サイト</Typography> 
+        <Typography variant="h6">弁当一覧</Typography>
         <Select
           value={selectedRow}
           size="small"
