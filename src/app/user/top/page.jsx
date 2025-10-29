@@ -58,7 +58,7 @@ const UserTop = () => {
 
   const fetchProductList = async () => {
     try {
-      const response = await fetch('/api/product');
+      const response = await fetch('/api/master-bentos');
       if (!response.ok) {
         throw new Error('Failed to fetch product list');
       }

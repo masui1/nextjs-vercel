@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 
 // サーバー専用キーでクライアント作成（RLS 無効）
 const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
@@ -29,7 +29,13 @@ export async function POST(req) {
       }
       const { error: insertMasterError } = await supabase
         .from('MasterBentos')
-        .insert([{ trading_company: tradingCompany, product_name: productName, img }]);
+        .insert([{
+          trading_company: tradingCompany,
+          product_name: productName,
+          price: parseInt(price, 10),
+          row: parseInt(row, 10),
+          img
+        }]);
       if (insertMasterError) {
         return NextResponse.json({ error: 'MasterBentos 登録失敗', details: insertMasterError.message }, { status: 500 });
       }
