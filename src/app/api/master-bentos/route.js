@@ -1,6 +1,33 @@
+import { createClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
 
+// service_role key を使用（RLSをバイパス）
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE_KEY
+);
+
 export async function GET() {
+  try {
+    const { data, error } = await supabase
+        .from("MasterBentos")
+        .select("id, trading_company, product_name, img, createdAt")
+        .order("createdAt", { ascending: false });
+
+    if (error) {
+      console.error("❌ Supabase 取得エラー:", error.message);
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    // ✅ データが存在するならそのまま返す
+    if (data && data.length > 0) {
+      console.log(`✅ Supabaseから ${data.length} 件を取得`);
+      return NextResponse.json(data);
+    }
+
+    // ✅ データがない場合はローカル初期データを返す
+    console.warn("⚠️ Supabaseデータなし、初期データを返します");
+
     const productList = [
         {
             trading_company: "三ツ星ファーム",
@@ -1034,5 +1061,10 @@ export async function GET() {
     ];
 
     return NextResponse.json(productList);
+
+  } catch (err) {
+    console.error("💥 サーバーエラー:", err.message);
+    return NextResponse.json({ error: err.message }, { status: 500 });
+  }
 }
 
