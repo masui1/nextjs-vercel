@@ -252,7 +252,23 @@ const Create = () => {
           </Select>
         </FormControl>
 
-        {isNewProduct && <input type="file" accept="image/*" onChange={handleFileUpload} />}
+        {isNewProduct && (
+          <label htmlFor="fileInput" style={{ cursor: "pointer", color: "#1976d2" }}>
+            📷 画像を選択
+            <input
+              id="fileInput"
+              type="file"
+              accept="image/*,.png,.jpg,.jpeg,.heic"
+              style={{
+                opacity: 0,
+                position: "absolute",
+                width: "1px",
+                height: "1px",
+              }}
+              onChange={handleFileUpload}
+            />
+          </label>
+        )}
 
         <Box>
           <Typography variant="h6">バーコードスキャン</Typography>
