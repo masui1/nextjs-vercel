@@ -30,6 +30,7 @@ const Create = () => {
     img: "",
   });
   const [errorMessage, setErrorMessage] = useState("");
+  const showImageUpload = isNewProduct || (!isNewProduct && !formState.img);
 
   // 製品リスト取得
   const fetchProductList = useCallback(async () => {
@@ -252,7 +253,7 @@ const Create = () => {
           </Select>
         </FormControl>
 
-        {isNewProduct && (
+        {showImageUpload && (
           <label htmlFor="fileInput" style={{ cursor: "pointer", color: "#1976d2" }}>
             📷 画像を選択
             <input
