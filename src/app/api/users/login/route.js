@@ -4,8 +4,8 @@ import bcrypt from 'bcrypt';
 
 // Supabaseクライアントのインスタンス化
 const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
 // **POST**: ログイン認証
