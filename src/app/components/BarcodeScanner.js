@@ -59,7 +59,7 @@ const BarcodeScanner = ({ onDetected }) => {
             if (Quagga && started) {
                 try {
                     Quagga.stop();
-                } catch (e) {
+                } catch {
                     // ignore cleanup errors
                 }
             }
