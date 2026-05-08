@@ -1,10 +1,15 @@
-import { useEffect, useRef } from 'react';
-import Quagga from 'quagga';
+'use client';
+
+import { useEffect, useRef, useState } from 'react';
+import Quagga from '@ericblade/quagga2';
 
 const BarcodeScanner = ({ onDetected }) => {
     const videoRef = useRef();
+    const [error, setError] = useState(null);
 
     useEffect(() => {
+        let started = false;
+
         Quagga.init(
             {
                 inputStream: {
@@ -22,9 +27,11 @@ const BarcodeScanner = ({ onDetected }) => {
             },
             (err) => {
                 if (err) {
-                    console.error(err);
+                    console.error('Quagga init error:', err);
+                    setError('カメラの起動に失敗しました。カメラへのアクセスを許可してください。');
                     return;
                 }
+                started = true;
                 Quagga.start();
             }
         );
@@ -34,16 +41,23 @@ const BarcodeScanner = ({ onDetected }) => {
         });
 
         return () => {
-            Quagga.stop();
+            if (started) {
+                Quagga.stop();
+            }
         };
     }, [onDetected]);
+
+    if (error) {
+        return <p style={{ color: 'red' }}>{error}</p>;
+    }
 
     return (
         <div
             ref={videoRef}
             style={{
-                width: '100vw',
-                height: '68vh',
+                width: '100%',
+                maxWidth: '640px',
+                height: '320px',
                 overflow: 'hidden',
             }}
         />

@@ -12,8 +12,10 @@ import {
   InputLabel,
   Select,
 } from "@mui/material";
+import dynamic from "next/dynamic";
 import { supabaseClient } from "@/lib/supabaseClient";
-import BarcodeScanner from "@/app/components/BarcodeScanner";
+
+const BarcodeScanner = dynamic(() => import("@/app/components/BarcodeScanner"), { ssr: false });
 
 const Create = () => {
   const router = useRouter();
