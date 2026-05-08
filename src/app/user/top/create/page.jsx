@@ -13,7 +13,6 @@ import {
   Select,
 } from "@mui/material";
 import dynamic from "next/dynamic";
-import { supabaseClient } from "@/lib/supabaseClient";
 
 const BarcodeScanner = dynamic(() => import("@/app/components/BarcodeScanner"), { ssr: false });
 
@@ -118,18 +117,18 @@ const Create = () => {
     const file = e.target.files[0];
     if (!file) return;
 
-    const fileName = `${Date.now()}_${file.name}`;
-    const { data, error } = await supabaseClient.storage
-      .from("bento-images")
-      .upload(fileName, file);
+    const formData = new FormData();
+    formData.append("file", file);
 
-    if (error) {
+    const response = await fetch("/api/upload", { method: "POST", body: formData });
+    const result = await response.json();
+
+    if (!response.ok) {
       setErrorMessage("画像アップロードに失敗しました");
       return;
     }
 
-    const url = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/bento-images/${fileName}`;
-    setFormState((prev) => ({ ...prev, img: url }));
+    setFormState((prev) => ({ ...prev, img: result.url }));
   };
 
   // バリデーション
